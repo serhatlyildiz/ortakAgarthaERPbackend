@@ -11,4 +11,5 @@ public class ProductImages : IEntity
 
     public int ProductId { get; set; }  // Foreign key
     public string ProductImageUrl { get; set; }
+
 }

@@ -28,7 +28,7 @@ namespace Business.Concrete
 
         [SecuredOperation("category.add,admin")]
         [ValidationAspect(typeof(ProductValidator))]
-        [CacheRemoveAspect("IProductService.Get")]
+        [CacheRemoveAspect("ICategoryService.Get")]
         public IResult Add(Category category)
         {
             IResult result = BusinessRules.Run(CheckIfProductNameExists(category.CategoryName));
@@ -43,9 +43,9 @@ namespace Business.Concrete
             return new SuccessResult(Messages.CategoryAdded);
         }
 
-        [SecuredOperation("product.add,admin")]
+        [SecuredOperation("admin")]
         [ValidationAspect(typeof(ProductValidator))]
-        [CacheRemoveAspect("IProductService.Get")]
+        [CacheRemoveAspect("ICategoryService.Get")]
         public IResult Delete(Category category)
         {
             // Güncellenmek istenen ürünün veritabanında mevcut olup olmadığını kontrol et
