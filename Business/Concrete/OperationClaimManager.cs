@@ -28,7 +28,7 @@ namespace Business.Concrete
 
         [SecuredOperation("admin")]
         [ValidationAspect(typeof(ProductValidator))]
-        [CacheRemoveAspect("IProductService.Get")]
+        [CacheRemoveAspect("IOperationClaimService.Get")]
         public IResult Add(OperationClaim operationClaim)
         {
             var result = _operationClaimDal.Get(o => o.Id == operationClaim.Id);
@@ -44,7 +44,7 @@ namespace Business.Concrete
 
         [SecuredOperation("admin")]
         [ValidationAspect(typeof(ProductValidator))]
-        [CacheRemoveAspect("IProductService.Get")]
+        [CacheRemoveAspect("IOperationClaimService.Get")]
         public IResult Delete(OperationClaim operationClaim)
         {
             var result = _operationClaimDal.Get(o => o.Id == operationClaim.Id);
@@ -60,7 +60,7 @@ namespace Business.Concrete
 
         [SecuredOperation("admin")]
         [ValidationAspect(typeof(ProductValidator))]
-        [CacheRemoveAspect("IProductService.Get")]
+        [CacheRemoveAspect("IOperationClaimService.Get")]
         public IResult Update(OperationClaim operationClaim)
         {
             var result = _operationClaimDal.Get(o => o.Id == operationClaim.Id);
@@ -76,7 +76,7 @@ namespace Business.Concrete
 
         [SecuredOperation("admin")]
         [ValidationAspect(typeof(ProductValidator))]
-        [CacheRemoveAspect("IProductService.Get")]
+        [CacheRemoveAspect("IOperationClaimService.Get")]
         IDataResult<List<OperationClaim>> IOperationClaimService.GetAll()
         {
             return new SuccessDataResult<List<OperationClaim>>(_operationClaimDal.GetAll(), Messages.ProductsListed);

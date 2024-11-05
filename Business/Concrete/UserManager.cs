@@ -43,7 +43,7 @@ namespace Business.Concrete
 
         [SecuredOperation("admin")]
         [ValidationAspect(typeof(ProductValidator))]
-        [CacheRemoveAspect("IProductService.Get")]
+        [CacheRemoveAspect("IUserService.Get")]
         public IResult Update(Users user)
         {
             var userToUpdate = _userDal.Get(p => p.Id == user.Id);
@@ -59,7 +59,7 @@ namespace Business.Concrete
 
         [SecuredOperation("admin")]
         [ValidationAspect(typeof(ProductValidator))]
-        [CacheRemoveAspect("IProductService.Get")]
+        [CacheRemoveAspect("IUserService.Get")]
         public IResult Delete(Users user)
         {
             var userToDelete = _userDal.Get(u => u.Id == user.Id);
