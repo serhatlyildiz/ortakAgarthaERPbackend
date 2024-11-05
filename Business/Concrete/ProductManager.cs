@@ -51,6 +51,7 @@ namespace Business.Concrete
         }
 
         [CacheAspect] //key,value
+        [PerformanceAspect(5000)]
         public IDataResult<List<Product>> GetAll()
         {
             if (DateTime.Now.Hour == 23)
@@ -67,7 +68,6 @@ namespace Business.Concrete
         }
 
         [CacheAspect]
-        [PerformanceAspect(5000)]
         public IDataResult<Product> GetById(int productId)
         {
             return new SuccessDataResult<Product>(_ProductDal.Get(p => p.ProductId == productId));
