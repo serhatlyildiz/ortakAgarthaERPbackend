@@ -18,6 +18,13 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using Serilog;
+using Serilog.Context;
+using Serilog.Core;
+using Serilog.Sinks.MSSqlServer;
+using System.Collections.ObjectModel;
+using System.Data;
+using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -46,7 +53,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidIssuer = tokenOptions.Issuer,
             ValidAudience = tokenOptions.Audience,
             ValidateIssuerSigningKey = true,
-            IssuerSigningKey = SecurityKeyHelper.CreateSecurityKey(tokenOptions.SecurityKey)
+            IssuerSigningKey = SecurityKeyHelper.CreateSecurityKey(tokenOptions.SecurityKey),
+            NameClaimType = ClaimTypes.Name //JWT üzerinde name claimne karþýlýk gelen deðeri User.Identity.Name propertysinden elde edebiliriz.
         };
     });
 
@@ -54,6 +62,38 @@ builder.Services.AddDependencyRevolvers(new ICoreModule[]
 {
     new CoreModule()
 });
+
+var columnOptions = new ColumnOptions();
+columnOptions.Store.Clear();
+columnOptions.Store.Add(StandardColumn.Message);
+columnOptions.Store.Add(StandardColumn.Level);
+columnOptions.Store.Add(StandardColumn.TimeStamp);
+columnOptions.Store.Add(StandardColumn.Exception);
+columnOptions.Store.Add(StandardColumn.LogEvent);
+
+// MSSQL Server için user_name adlý bir kolon ekliyoruz
+columnOptions.AdditionalColumns = new Collection<SqlColumn>
+{
+    new SqlColumn { ColumnName = "user_name", DataType = SqlDbType.NVarChar, DataLength = 100 }
+};
+
+// Logger yapýlandýrmasý
+var log = new LoggerConfiguration()
+    .Enrich.With(new UsernameEnricher("CurrentUser")) // Enricher ile kullanýcý adýný ekliyoruz
+    .WriteTo.Console()
+    .WriteTo.File("logs/log.txt")
+    .WriteTo.MSSqlServer(
+        connectionString: @"Server=(localdb)\MSSQLLocalDB;Database=Northwind;Trusted_Connection=True",
+        sinkOptions: new MSSqlServerSinkOptions
+        {
+            TableName = "Logs",
+            AutoCreateSqlTable = true
+        },
+        columnOptions: columnOptions
+    )
+    .CreateLogger();
+
+builder.Host.UseSerilog(log);
 
 // Swagger eklemek
 builder.Services.AddEndpointsApiExplorer();
@@ -74,6 +114,13 @@ app.UseHttpsRedirection();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.Use(async (context, next) =>
+{
+    var username = context.User?.Identity?.IsAuthenticated != null || true ? context.User.Identity.Name : null;
+    LogContext.PushProperty("user_name", username);
+    await next();
+});
 
 app.MapControllers();
 

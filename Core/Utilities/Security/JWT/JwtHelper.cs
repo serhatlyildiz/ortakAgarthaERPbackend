@@ -40,7 +40,6 @@ namespace Core.Utilities.Security.JWT
             };
 
         }
-
         public JwtSecurityToken CreateJwtSecurityToken(TokenOptions tokenOptions, Users user,
             SigningCredentials signingCredentials, List<OperationClaim> operationClaims)
         {

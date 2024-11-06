@@ -1,11 +1,16 @@
 ﻿using Business.Concrete;
+using Castle.Core.Configuration;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using DataAccess.Concrete.EntityFramework;
 using DataAccess.Concrete.InMemory;
 using DataAccess.Mapping;
 using Entities.Concrete;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Serilog;
 using System;
 
 namespace ConsoleUI
