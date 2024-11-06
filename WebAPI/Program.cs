@@ -14,6 +14,7 @@ using DataAccess.Mapping;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -25,6 +26,7 @@ using Serilog.Sinks.MSSqlServer;
 using System.Collections.ObjectModel;
 using System.Data;
 using System.Security.Claims;
+using YourNamespace.Configurations;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,6 +41,9 @@ builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory())
 builder.Services.AddControllers();
 builder.Services.AddCors();
 builder.Services.AddAutoMapper(typeof(MappingProfile));
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddSingleton<ILogEventEnricher, UsernameEnricher>(); // Enricher'ý da burada ekliyoruz
+
 
 var tokenOptions = builder.Configuration.GetSection("TokenOptions").Get<TokenOptions>();
 
@@ -54,7 +59,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidAudience = tokenOptions.Audience,
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = SecurityKeyHelper.CreateSecurityKey(tokenOptions.SecurityKey),
-            NameClaimType = ClaimTypes.Name //JWT üzerinde name claimne karþýlýk gelen deðeri User.Identity.Name propertysinden elde edebiliriz.
+            //NameClaimType = ClaimTypes.Name //JWT üzerinde name claimne karþýlýk gelen deðeri User.Identity.Name propertysinden elde edebiliriz.
         };
     });
 
@@ -79,7 +84,10 @@ columnOptions.AdditionalColumns = new Collection<SqlColumn>
 
 // Logger yapýlandýrmasý
 var log = new LoggerConfiguration()
-    .Enrich.With(new UsernameEnricher("CurrentUser")) // Enricher ile kullanýcý adýný ekliyoruz
+    .Enrich.With(new UsernameEnricher(builder.Services.BuildServiceProvider().GetRequiredService<IHttpContextAccessor>())) // Enricher ile kullanýcý adýný ekliyoruz
+    .WriteTo.Seq(builder.Configuration["Seq:ServerURL"])
+    .Enrich.FromLogContext()
+    .MinimumLevel.Information()
     .WriteTo.Console()
     .WriteTo.File("logs/log.txt")
     .WriteTo.MSSqlServer(
@@ -95,6 +103,15 @@ var log = new LoggerConfiguration()
 
 builder.Host.UseSerilog(log);
 
+builder.Services.AddHttpLogging(logging =>
+{
+    logging.LoggingFields = HttpLoggingFields.All;
+    logging.RequestHeaders.Add("sec-ch-ua");    
+    logging.MediaTypeOptions.AddText("application/javascript");
+    logging.RequestBodyLogLimit = 4096;
+    logging.ResponseBodyLogLimit = 4096;
+});
+
 // Swagger eklemek
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -109,6 +126,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseSerilogRequestLogging(); // buradan sonrakileri yani aþaðýda kalanlarý logla
+app.UseHttpLogging();
 app.UseCors(builder => builder.WithOrigins("http://localhost:4200").AllowAnyHeader());
 app.UseHttpsRedirection();
 app.UseRouting();
@@ -117,11 +136,21 @@ app.UseAuthorization();
 
 app.Use(async (context, next) =>
 {
-    var username = context.User?.Identity?.IsAuthenticated != null || true ? context.User.Identity.Name : null;
+    // Kimlik doðrulamasý yapýlmýþ kullanýcý adý
+    var username = context.User?.Identity?.IsAuthenticated == true
+        ? context.User.Identity.Name
+        : "Anonymous";  // Kimlik doðrulamasý yapýlmamýþsa 'Anonymous' yazdýrýlýr
+
+    // LogContext'e user_name ekliyoruz
     LogContext.PushProperty("user_name", username);
+
+    // Sonraki middleware'e geçiþ yapýyoruz
     await next();
 });
+
 
 app.MapControllers();
 
 app.Run();
+
+
