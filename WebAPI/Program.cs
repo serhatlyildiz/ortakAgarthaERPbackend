@@ -83,7 +83,8 @@ columnOptions.AdditionalColumns = new Collection<SqlColumn>
     new SqlColumn { ColumnName = "user_name", DataType = SqlDbType.NVarChar, DataLength = 100 },
     new SqlColumn { ColumnName = "email", DataType = SqlDbType.NVarChar, DataLength = 100 },
     new SqlColumn { ColumnName = "machine_name", DataType = SqlDbType.NVarChar, DataLength = 100 },
-    new SqlColumn { ColumnName = "ip_address", DataType = SqlDbType.NVarChar, DataLength = 45 } // IP adresi için uygun uzunluk
+    new SqlColumn { ColumnName = "ip_address", DataType = SqlDbType.NVarChar, DataLength = 45 }, // IP adresi için uygun uzunluk
+    new SqlColumn { ColumnName = "request_id", DataType = SqlDbType.NVarChar, DataLength = 50 } // Request ID için sütun
 };
 
 // Logger yapýlandýrmasý
@@ -157,14 +158,18 @@ app.Use(async (context, next) =>
     var machineName = Environment.MachineName;
 
     // IP adresi (IHttpContextAccessor kullanarak alýnabilir)
-    //var ipAddress = context.Connection.RemoteIpAddress?.ToString() ?? "IP Not Found";
     var ipAddress = context.Connection.RemoteIpAddress?.ToString() ?? "IP Not Found";
+
+    var requestId = Guid.NewGuid().ToString();
+    context.Items["request_id"] = requestId;
+    context.Response.Headers.Add("X-Request-ID", requestId);
 
     // LogContext'e property'leri ekliyoruz
     LogContext.PushProperty("user_name", username);
     LogContext.PushProperty("email", email);
     LogContext.PushProperty("machine_name", machineName);
     LogContext.PushProperty("ip_address", ipAddress);
+    LogContext.PushProperty("request_id", requestId);
 
     // Sonraki middleware'e geçiþ yapýyoruz
     await next();
