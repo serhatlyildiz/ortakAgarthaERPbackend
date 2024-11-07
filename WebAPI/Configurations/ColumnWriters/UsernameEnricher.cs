@@ -3,35 +3,32 @@ using Serilog.Events;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 
-namespace YourNamespace.Configurations
+public class UsernameEnricher : ILogEventEnricher
 {
-    public class UsernameEnricher : ILogEventEnricher
+    private readonly IHttpContextAccessor _httpContextAccessor;
+
+    // Parametresiz yapıcı ekledik, ancak IHttpContextAccessor injection yapacağız
+    public UsernameEnricher() { }
+
+    // IHttpContextAccessor'ı dışarıdan alıyoruz
+    public UsernameEnricher(IHttpContextAccessor httpContextAccessor)
     {
-        private readonly IHttpContextAccessor _httpContextAccessor;
+        _httpContextAccessor = httpContextAccessor;
+    }
 
-        // Parametresiz yapıcı ekledik, ancak IHttpContextAccessor injection yapacağız
-        public UsernameEnricher() { }
+    public void Enrich(LogEvent logEvent, ILogEventPropertyFactory propertyFactory)
+    {
+        var user = _httpContextAccessor?.HttpContext?.User;
 
-        // IHttpContextAccessor'ı dışarıdan alıyoruz
-        public UsernameEnricher(IHttpContextAccessor httpContextAccessor)
+        if (user == null || !user.Identity.IsAuthenticated)
         {
-            _httpContextAccessor = httpContextAccessor;
+            logEvent.AddPropertyIfAbsent(propertyFactory.CreateProperty("user_name", "Anonymous"));
+            return;
         }
 
-        public void Enrich(LogEvent logEvent, ILogEventPropertyFactory propertyFactory)
-        {
-            var user = _httpContextAccessor?.HttpContext?.User;
+        // Kullanıcının ismini adresini alıyoruz
+        var name = user.FindFirst(ClaimTypes.Name)?.Value;
 
-            if (user == null || !user.Identity.IsAuthenticated)
-            {
-                logEvent.AddPropertyIfAbsent(propertyFactory.CreateProperty("user_email", "Anonymous"));
-                return;
-            }
-
-            // Kullanıcının e-posta adresini alıyoruz
-            var email = user.FindFirst(ClaimTypes.Email)?.Value;
-
-            logEvent.AddPropertyIfAbsent(propertyFactory.CreateProperty("user_email", email ?? "Unknown"));
-        }
+        logEvent.AddPropertyIfAbsent(propertyFactory.CreateProperty("user_name", name ?? "Unknown"));
     }
 }

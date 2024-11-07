@@ -1,4 +1,5 @@
 ﻿using Business.Abstract;
+using Core.Utilities.Security.JWT;
 using Entities.DTOs;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -16,6 +17,7 @@ namespace WebAPI.Controllers
             _authService = authService;
         }
 
+
         [HttpPost("login")]
         public ActionResult Login(UserForLoginDto userForLoginDto)
         {
@@ -28,11 +30,13 @@ namespace WebAPI.Controllers
             var result = _authService.CreateAccessToken(userToLogin.Data);
             if (result.Success)
             {
+
                 return Ok(result);
             }
 
             return BadRequest(result.Message);
         }
+
 
         [HttpPost("register")]
         public ActionResult Register(UserForRegisterDto userForRegisterDto)

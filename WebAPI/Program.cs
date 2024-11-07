@@ -26,7 +26,6 @@ using Serilog.Sinks.MSSqlServer;
 using System.Collections.ObjectModel;
 using System.Data;
 using System.Security.Claims;
-using YourNamespace.Configurations;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -43,6 +42,8 @@ builder.Services.AddCors();
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton<ILogEventEnricher, UsernameEnricher>(); // Enricher'ý da burada ekliyoruz
+builder.Services.AddSingleton<ILogEventEnricher, EmailEnricher>(); // Enricher'ý da burada ekliyoruz
+builder.Services.AddSingleton<ILogEventEnricher, IpAddressEnricher>(); // Enricher'ý da burada ekliyoruz
 
 
 var tokenOptions = builder.Configuration.GetSection("TokenOptions").Get<TokenOptions>();
@@ -59,7 +60,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidAudience = tokenOptions.Audience,
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = SecurityKeyHelper.CreateSecurityKey(tokenOptions.SecurityKey),
-            //NameClaimType = ClaimTypes.Name //JWT üzerinde name claimne karþýlýk gelen deðeri User.Identity.Name propertysinden elde edebiliriz.
+            NameClaimType = ClaimTypes.Name //JWT üzerinde name claimne karþýlýk gelen deðeri User.Identity.Name propertysinden elde edebiliriz.
         };
     });
 
@@ -79,12 +80,18 @@ columnOptions.Store.Add(StandardColumn.LogEvent);
 // MSSQL Server için user_name adlý bir kolon ekliyoruz
 columnOptions.AdditionalColumns = new Collection<SqlColumn>
 {
-    new SqlColumn { ColumnName = "user_name", DataType = SqlDbType.NVarChar, DataLength = 100 }
+    new SqlColumn { ColumnName = "user_name", DataType = SqlDbType.NVarChar, DataLength = 100 },
+    new SqlColumn { ColumnName = "email", DataType = SqlDbType.NVarChar, DataLength = 100 },
+    new SqlColumn { ColumnName = "machine_name", DataType = SqlDbType.NVarChar, DataLength = 100 },
+    new SqlColumn { ColumnName = "ip_address", DataType = SqlDbType.NVarChar, DataLength = 45 } // IP adresi için uygun uzunluk
 };
 
 // Logger yapýlandýrmasý
 var log = new LoggerConfiguration()
     .Enrich.With(new UsernameEnricher(builder.Services.BuildServiceProvider().GetRequiredService<IHttpContextAccessor>())) // Enricher ile kullanýcý adýný ekliyoruz
+    .Enrich.With(new IpAddressEnricher(builder.Services.BuildServiceProvider().GetRequiredService<IHttpContextAccessor>())) // Dinamik IP adresini ekliyoruz
+    .Enrich.With(new EmailEnricher(builder.Services.BuildServiceProvider().GetRequiredService<IHttpContextAccessor>())) // Dinamik e-posta ekliyoruz
+    .Enrich.WithMachineName()
     .WriteTo.Seq(builder.Configuration["Seq:ServerURL"])
     .Enrich.FromLogContext()
     .MinimumLevel.Information()
@@ -128,11 +135,13 @@ if (app.Environment.IsDevelopment())
 
 app.UseSerilogRequestLogging(); // buradan sonrakileri yani aþaðýda kalanlarý logla
 app.UseHttpLogging();
+app.UseRouting();
 app.UseCors(builder => builder.WithOrigins("http://localhost:4200").AllowAnyHeader());
 app.UseHttpsRedirection();
-app.UseRouting();
+
 app.UseAuthentication();
 app.UseAuthorization();
+
 
 app.Use(async (context, next) =>
 {
@@ -141,12 +150,26 @@ app.Use(async (context, next) =>
         ? context.User.Identity.Name
         : "Anonymous";  // Kimlik doðrulamasý yapýlmamýþsa 'Anonymous' yazdýrýlýr
 
-    // LogContext'e user_name ekliyoruz
+    // Kullanýcýnýn e-posta bilgisi
+    var email = context.User?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value ?? "Email Not Found";
+
+    // Bilgisayar adý
+    var machineName = Environment.MachineName;
+
+    // IP adresi (IHttpContextAccessor kullanarak alýnabilir)
+    //var ipAddress = context.Connection.RemoteIpAddress?.ToString() ?? "IP Not Found";
+    var ipAddress = context.Connection.RemoteIpAddress?.ToString() ?? "IP Not Found";
+
+    // LogContext'e property'leri ekliyoruz
     LogContext.PushProperty("user_name", username);
+    LogContext.PushProperty("email", email);
+    LogContext.PushProperty("machine_name", machineName);
+    LogContext.PushProperty("ip_address", ipAddress);
 
     // Sonraki middleware'e geçiþ yapýyoruz
     await next();
 });
+
 
 
 app.MapControllers();
