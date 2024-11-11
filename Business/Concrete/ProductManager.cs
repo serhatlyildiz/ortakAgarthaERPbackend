@@ -33,7 +33,7 @@ namespace Business.Concrete
             //business codes
 
             //Kural 1 - Aynı isimde ürün eklenemez
-            //Kural 2 - 10dan fazlaaynı kategoride ürün eklenememsin
+            //Kural 2 - 10dan fazla aynı kategoride ürün eklenememsin
             //Kural 3 - Eğer mevcut kategori sayısı 15'i geçtiyse yeni ürün eklenemez
 
 
