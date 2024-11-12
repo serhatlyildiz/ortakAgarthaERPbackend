@@ -42,7 +42,6 @@ namespace Business.Concrete
         }
 
         [SecuredOperation("admin")]
-        [ValidationAspect(typeof(ProductValidator))]
         [CacheRemoveAspect("IUserService.Get")]
         public IResult Update(Users user)
         {
@@ -58,11 +57,10 @@ namespace Business.Concrete
         }
 
         [SecuredOperation("admin")]
-        [ValidationAspect(typeof(ProductValidator))]
         [CacheRemoveAspect("IUserService.Get")]
-        public IResult Delete(Users user)
+        public IResult Delete(int userID)
         {
-            var userToDelete = _userDal.Get(u => u.Id == user.Id);
+            var userToDelete = _userDal.Get(u => u.Id == userID);
 
             if (userToDelete == null)
             {
