@@ -31,7 +31,7 @@ namespace Business.Concrete
         [CacheRemoveAspect("IOperationClaimService.Get")]
         public IResult Add(OperationClaim operationClaim)
         {
-            var result = _operationClaimDal.Get(o => o.Id == operationClaim.Id);
+            var result = _operationClaimDal.Get(oc => oc.Id == operationClaim.Id);
 
             if (result == null)
             {
@@ -47,7 +47,7 @@ namespace Business.Concrete
         [CacheRemoveAspect("IOperationClaimService.Get")]
         public IResult Delete(OperationClaim operationClaim)
         {
-            var result = _operationClaimDal.Get(o => o.Id == operationClaim.Id);
+            var result = _operationClaimDal.Get(oc => oc.Id == operationClaim.Id);
 
             if (result == null)
             {
@@ -63,7 +63,7 @@ namespace Business.Concrete
         [CacheRemoveAspect("IOperationClaimService.Get")]
         public IResult Update(OperationClaim operationClaim)
         {
-            var result = _operationClaimDal.Get(o => o.Id == operationClaim.Id);
+            var result = _operationClaimDal.Get(oc => oc.Id == operationClaim.Id);
 
             if (result == null)
             {

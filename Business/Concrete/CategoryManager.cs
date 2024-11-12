@@ -47,7 +47,7 @@ namespace Business.Concrete
         public IResult Delete(int categoryID)
         {
             // Güncellenmek istenen ürünün veritabanında mevcut olup olmadığını kontrol et
-            var result = _categoryDal.Get(p => p.CategoryId == categoryID);
+            var result = _categoryDal.Get(c => c.CategoryId == categoryID);
 
             if (result == null)
             {
@@ -72,7 +72,7 @@ namespace Business.Concrete
 
         public IResult Update(Category category)
         {
-            var result = _categoryDal.Get(p => p.CategoryId == category.CategoryId);
+            var result = _categoryDal.Get(c => c.CategoryId == category.CategoryId);
 
             if (result == null)
             {
@@ -85,7 +85,7 @@ namespace Business.Concrete
 
         private IResult CheckIfProductNameExists(string categoryName)
         {
-            var result = _categoryDal.GetAll(p => p.CategoryName == categoryName).Any();
+            var result = _categoryDal.GetAll(c => c.CategoryName == categoryName).Any();
             if (result)
             {
                 return new ErrorResult(Messages.CategoryNameAlreadyExists);

@@ -54,10 +54,10 @@ namespace Business.Concrete
         [PerformanceAspect(5000)]
         public IDataResult<List<Product>> GetAll()
         {
-            if (DateTime.Now.Hour == 23)
-            {
-                return new ErrorDataResult<List<Product>>(Messages.MaintenanceTime);
-            }
+            //if (DateTime.Now.Hour == 23)
+            //{
+            //    return new ErrorDataResult<List<Product>>(Messages.MaintenanceTime);
+            //}
 
             return new SuccessDataResult<List<Product>>(_ProductDal.GetAll(),Messages.ProductsListed);
         }
