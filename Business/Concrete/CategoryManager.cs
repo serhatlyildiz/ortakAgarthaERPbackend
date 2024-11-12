@@ -54,7 +54,7 @@ namespace Business.Concrete
                 return new ErrorResult(Messages.CategoryNotFound); // Eğer ürün yoksa hata döndür
             }
 
-            _categoryDal.Delete(category);
+            _categoryDal.Delete(result);
             return new SuccessResult(Messages.CategoryDeleted); // Başarı mesajı döndür
         }
 
