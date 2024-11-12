@@ -45,7 +45,7 @@ namespace Business.Concrete
         [CacheRemoveAspect("IUserService.Get")]
         public IResult Update(Users user)
         {
-            var userToUpdate = _userDal.Get(p => p.Id == user.Id);
+            var userToUpdate = _userDal.Get(u => u.Id == user.Id);
 
             if (userToUpdate == null)
             {

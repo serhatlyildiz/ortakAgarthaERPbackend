@@ -35,7 +35,7 @@ namespace Business.Concrete
 
         public IDataResult<List<ProductImages>> GetByProductId(int productId)
         {
-            return new SuccessDataResult<List<ProductImages>>(_productImagesDal.GetAll(p => p.ProductId == productId));
+            return new SuccessDataResult<List<ProductImages>>(_productImagesDal.GetAll(pi => pi.ProductId == productId));
         }
 
         public IResult Update(ProductImages productImages)

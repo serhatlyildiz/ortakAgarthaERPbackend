@@ -38,15 +38,29 @@ namespace Business.Constants
         public static string UserUpdated = "Kullanıcı güncellendi";
         public static string UserDeleted = "Kullanıcı silindi";
 
-        //------------------------------------------- Operation Claims ------------------------------------------
+        //------------------------------------------- OPERATION CLAIMS ------------------------------------------
         public static string OperationClaimNotFound = "Rol bulunamadı";
         public static string OperationClaimAdded = "Rol eklendi";
         public static string OperationClaimDeleted = "Rol silindi";
         public static string OperationClaimUpdated = "Rol güncellendi";
 
-        //------------------------------------------- User Operation Claims ------------------------------------------
+        //------------------------------------------- USER OPERATION CLAIMS ------------------------------------------
         public static string UserOperationClaimUpdated = "Rol güncellendi";
         public static string UserOperationClaimAdded = "Rol tanımlandı";
         public static string UserOperationClaimDeleted = "Rol kaldırıldı";
+
+        //--------------------------------------------CUSTOMER------------------------------------------------------
+        public static string CustomerEmailAlreadyExists = "Bu mail zaten kullanılıyor";
+        public static string CustomerAdded = "Başarıyla kayıt olundu";
+        public static string CustomersListed = "Müşteriler listelendi";
+        public static string CustomerNotFound = "Kullanıcı bulunamadı";
+        public static string CustomerUpdated = "Bilgileriniz güncellendi";
+        public static string CustomerDeleted = "Hesap başarıyla silindi";
+
+        //----------------------------------------------ORDER------------------------------------------------------
+        public static string OrderAdded = "Sipariş oluşturuldu";
+        public static string OrdersListed = "Siparişler Listelendi";
+        public static string OrderUpdated = "Sipariş güncellendi";
+        public static string OrderDeleted = " numaralı siparişiniz iptal edilmiştir";
     }
 }
