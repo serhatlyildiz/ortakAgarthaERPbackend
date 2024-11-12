@@ -27,7 +27,6 @@ namespace Business.Concrete
         }
 
         [SecuredOperation("category.add,admin")]
-        [ValidationAspect(typeof(ProductValidator))]
         [CacheRemoveAspect("ICategoryService.Get")]
         public IResult Add(Category category)
         {
@@ -44,12 +43,11 @@ namespace Business.Concrete
         }
 
         [SecuredOperation("admin")]
-        [ValidationAspect(typeof(ProductValidator))]
         [CacheRemoveAspect("ICategoryService.Get")]
-        public IResult Delete(Category category)
+        public IResult Delete(int categoryID)
         {
             // Güncellenmek istenen ürünün veritabanında mevcut olup olmadığını kontrol et
-            var result = _categoryDal.Get(p => p.CategoryId == category.CategoryId);
+            var result = _categoryDal.Get(p => p.CategoryId == categoryID);
 
             if (result == null)
             {

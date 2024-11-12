@@ -155,9 +155,9 @@ namespace Business.Concrete
 
         [SecuredOperation("product.add,admin")]
         [CacheRemoveAspect("IProductService.Get")]
-        public IResult Delete(Product product)
+        public IResult Delete(int productID)
         {
-            var result = _ProductDal.Get(p => p.ProductId == product.ProductId);
+            var result = _ProductDal.Get(p => p.ProductId == productID);
 
             if (result == null)
             {
