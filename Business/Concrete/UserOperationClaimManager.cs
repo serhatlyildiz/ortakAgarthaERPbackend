@@ -51,6 +51,13 @@ namespace Business.Concrete
 
         [SecuredOperation("admin")]
         [CacheRemoveAspect("IUserOperationClaim.Get")]
+        public IDataResult<List<UserOperationClaim>> GetAllByUserId(int userId)
+        {
+            return new SuccessDataResult<List<UserOperationClaim>>(_userOperationClaimDal.GetAll(u => u.UserId == userId));
+        }
+
+        [SecuredOperation("admin")]
+        [CacheRemoveAspect("IUserOperationClaim.Get")]
         public IResult Update(UserOperationClaim userOperationClaim)
         {
             _userOperationClaimDal.Update(userOperationClaim);
