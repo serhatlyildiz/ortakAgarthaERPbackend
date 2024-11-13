@@ -12,7 +12,7 @@ namespace Entities.Concrete
     {
         [Key]
         public int OrderId { get; set; }
-        public int CustomerId { get; set; }
+        public int UserId { get; set; }
         public int ProductId { get; set; }
         public DateTime OrderDate { get; set; }
 

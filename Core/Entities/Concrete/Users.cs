@@ -16,6 +16,9 @@ namespace Core.Entities.Concrete
         public string Email { get; set; }
         public byte[] PasswordSalt { get; set; }
         public byte[] PasswordHash { get; set; }
+        public string? City { get; set; }
+        public string? District { get; set; }
+        public string? Adress { get; set; }
         public bool Status { get; set; }
     }
 }

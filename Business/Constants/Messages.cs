@@ -43,24 +43,20 @@ namespace Business.Constants
         public static string OperationClaimAdded = "Rol eklendi";
         public static string OperationClaimDeleted = "Rol silindi";
         public static string OperationClaimUpdated = "Rol güncellendi";
+        public static string OperationClaimListed = "Roller listelendi";
 
         //------------------------------------------- USER OPERATION CLAIMS ------------------------------------------
         public static string UserOperationClaimUpdated = "Rol güncellendi";
         public static string UserOperationClaimAdded = "Rol tanımlandı";
         public static string UserOperationClaimDeleted = "Rol kaldırıldı";
-
-        //--------------------------------------------CUSTOMER------------------------------------------------------
-        public static string CustomerEmailAlreadyExists = "Bu mail zaten kullanılıyor";
-        public static string CustomerAdded = "Başarıyla kayıt olundu";
-        public static string CustomersListed = "Müşteriler listelendi";
-        public static string CustomerNotFound = "Kullanıcı bulunamadı";
-        public static string CustomerUpdated = "Bilgileriniz güncellendi";
-        public static string CustomerDeleted = "Hesap başarıyla silindi";
+        public static string UserOperationClaimListed = "Roller listelendi";
 
         //----------------------------------------------ORDER------------------------------------------------------
         public static string OrderAdded = "Sipariş oluşturuldu";
         public static string OrdersListed = "Siparişler Listelendi";
         public static string OrderUpdated = "Sipariş güncellendi";
         public static string OrderDeleted = " numaralı siparişiniz iptal edilmiştir";
+
+
     }
 }

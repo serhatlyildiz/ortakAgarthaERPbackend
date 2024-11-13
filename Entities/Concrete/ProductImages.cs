@@ -5,9 +5,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 public class ProductImages : IEntity
 {
-    [Key]  // Bu özellik birincil anahtar olarak tanımlanıyor
+    [Key]  
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int Id { get; set; }  // Her varlık için birincil anahtar özelliği ekleyin
+    public int Id { get; set; }  
 
     public int ProductId { get; set; }  // Foreign key
     public string ProductImageUrl { get; set; }

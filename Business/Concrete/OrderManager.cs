@@ -46,9 +46,9 @@ namespace Business.Concrete
             return new SuccessDataResult<List<Order>>(_orderDal.GetAll(), Messages.ProductsListed);
         }
 
-        public IDataResult<List<Order>> GetAllByCustomerId(int orderCustomerID)
+        public IDataResult<List<Order>> GetAllByUserId(int orderUserID)
         {
-            return new SuccessDataResult<List<Order>>(_orderDal.GetAll(o => o.CustomerId == orderCustomerID));
+            return new SuccessDataResult<List<Order>>(_orderDal.GetAll(o => o.UserId == orderUserID));
         }
 
         public IDataResult<List<Order>> GetAllByDate(DateTime orderDate)
