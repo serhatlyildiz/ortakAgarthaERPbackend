@@ -71,11 +71,13 @@ namespace Business.Concrete
             return new SuccessResult(Messages.OperationClaimUpdated);
         }
 
+        
         [SecuredOperation("admin")]
         [CacheAspect]
-        IDataResult<List<OperationClaim>> IOperationClaimService.GetAll()
+        public IDataResult<List<OperationClaim>> GetAll()
         {
             return new SuccessDataResult<List<OperationClaim>>(_operationClaimDal.GetAll(), Messages.OperationClaimListed);
         }
+        
     }
 }

@@ -14,9 +14,18 @@ namespace Core.Utilities.Interceptors
         {
             var classAttributes = type.GetCustomAttributes<MethodInterceptionBaseAttribute>
                 (true).ToList();
+            /*
             var methodAttributes = type.GetMethod(method.Name)
                 .GetCustomAttributes<MethodInterceptionBaseAttribute>(true);
-            classAttributes.AddRange(methodAttributes);
+            classAttributes.AddRange(methodAttributes);*/
+            var methodInfo = type.GetMethod(method.Name);
+            if (methodInfo == null)
+            {
+                throw new ArgumentNullException(nameof(methodInfo), $"Method '{method.Name}' not found in type '{type.FullName}'.");
+            }
+
+            var methodAttributes = methodInfo.GetCustomAttributes<MethodInterceptionBaseAttribute>(true);
+
 
             return classAttributes.OrderBy(x => x.Priority).ToArray();
         }
