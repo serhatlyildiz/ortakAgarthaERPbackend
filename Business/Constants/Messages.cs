@@ -57,6 +57,18 @@ namespace Business.Constants
         public static string OrderUpdated = "Sipariş güncellendi";
         public static string OrderDeleted = " numaralı siparişiniz iptal edilmiştir";
 
+        //--------------------------------------------PRODUCTSTOCKS-----------------------------------------------
+        public static string ProductStocksAdded = "Stoğa Eklendi";
+        public static string ProductStocksListed = "Stoklar Listelendi";
+        public static string ProductStocksNotFound = "Stok bulunamadı";
+        public static string ProductStocksUpdated = "Stok güncellendi";
+        public static string ProductStocksDeleted = "Stok bilgisi silindi";
 
+        //---------------------------------------------COLORS--------------------------------------------------------
+        public static string ColorAdded = "Renk eklendi";
+        public static string ColorDeleted = "Renk silindi";
+        public static string ColorUpdated = "Renk güncellendi";
+        public static string ColorNotFound = "Renk bulunamadı";
+        public static string ColorNameAlreadyExists = "Renk zaten var";
     }
 }

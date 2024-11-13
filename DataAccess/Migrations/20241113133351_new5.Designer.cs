@@ -4,6 +4,7 @@ using DataAccess.Concrete.EntityFramework;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(NorthwindContext))]
-    partial class NorthwindContextModelSnapshot : ModelSnapshot
+    [Migration("20241113133351_new5")]
+    partial class new5
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -120,23 +123,6 @@ namespace DataAccess.Migrations
                     b.ToTable("Categories");
                 });
 
-            modelBuilder.Entity("Entities.Concrete.Colors", b =>
-                {
-                    b.Property<int>("ColorId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ColorId"));
-
-                    b.Property<string>("ColorName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("ColorId");
-
-                    b.ToTable("Colors");
-                });
-
             modelBuilder.Entity("Entities.Concrete.Order", b =>
                 {
                     b.Property<int>("OrderId")
@@ -173,9 +159,6 @@ namespace DataAccess.Migrations
                     b.Property<string>("Images")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ProductColorId")
-                        .HasColumnType("int");
-
                     b.Property<string>("ProductDescription")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -183,9 +166,6 @@ namespace DataAccess.Migrations
                     b.Property<string>("ProductName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("UnitPrice")
-                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("ProductId");
 
@@ -206,6 +186,9 @@ namespace DataAccess.Migrations
                     b.Property<string>("ProductSize")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("UnitPrice")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<short>("UnitsInStock")
                         .HasColumnType("smallint");
