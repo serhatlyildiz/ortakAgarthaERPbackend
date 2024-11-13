@@ -30,7 +30,7 @@ namespace Business.Concrete
         [CacheRemoveAspect("ICategoryService.Get")]
         public IResult Add(Category category)
         {
-            IResult result = BusinessRules.Run(CheckIfProductNameExists(category.CategoryName));
+            IResult result = BusinessRules.Run(CheckIfCategoryNameExists(category.CategoryName));
 
             if (result != null)
             {
@@ -46,12 +46,12 @@ namespace Business.Concrete
         [CacheRemoveAspect("ICategoryService.Get")]
         public IResult Delete(int categoryID)
         {
-            // Güncellenmek istenen ürünün veritabanında mevcut olup olmadığını kontrol et
+            // Güncellenmek istenen kategori veritabanında mevcut olup olmadığını kontrol et
             var result = _categoryDal.Get(c => c.CategoryId == categoryID);
 
             if (result == null)
             {
-                return new ErrorResult(Messages.CategoryNotFound); // Eğer ürün yoksa hata döndür
+                return new ErrorResult(Messages.CategoryNotFound); // Eğer kategori yoksa hata döndür
             }
 
             _categoryDal.Delete(result);
@@ -70,20 +70,22 @@ namespace Business.Concrete
             return new SuccessDataResult<Category>(_categoryDal.Get(c => c.CategoryId == categoryId));
         }
 
+        [SecuredOperation("admin")]
+        [CacheRemoveAspect("ICategoryService.Get")]
         public IResult Update(Category category)
         {
             var result = _categoryDal.Get(c => c.CategoryId == category.CategoryId);
 
             if (result == null)
             {
-                return new ErrorResult(Messages.CategoryNotFound); // Eğer ürün yoksa hata döndür
+                return new ErrorResult(Messages.CategoryNotFound); // Eğer kategori yoksa hata döndür
             }
 
             _categoryDal.Update(category);
             return new SuccessResult(Messages.CategoryUpdated); // Başarı mesajı döndür
         }
 
-        private IResult CheckIfProductNameExists(string categoryName)
+        private IResult CheckIfCategoryNameExists(string categoryName)
         {
             var result = _categoryDal.GetAll(c => c.CategoryName == categoryName).Any();
             if (result)

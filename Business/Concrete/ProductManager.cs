@@ -73,10 +73,12 @@ namespace Business.Concrete
             return new SuccessDataResult<Product>(_ProductDal.Get(p => p.ProductId == productId));
         }
 
+        /*
         public IDataResult<List<Product>> GetByUnitPrice(decimal min, decimal max)
         {
             return new SuccessDataResult<List<Product>>(_ProductDal.GetAll(p => p.UnitPrice >= min && p.UnitPrice <= max));
         }
+        */
 
         public IDataResult<List<ProductDetailDto>> GetProductDetails()
         {
@@ -141,6 +143,7 @@ namespace Business.Concrete
             return new SuccessResult();
         }
 
+        /*
         [TransactionScopeAspect]
         public IResult AddTransactionalTest(Product product)
         {
@@ -152,6 +155,7 @@ namespace Business.Concrete
             Add(product);
             return new SuccessResult("Ürün bir işlem içinde başarıyla eklendi");
         }
+        */
 
         [SecuredOperation("product.add,admin")]
         [CacheRemoveAspect("IProductService.Get")]

@@ -3,7 +3,7 @@ using Castle.Core.Configuration;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using DataAccess.Concrete.EntityFramework;
-using DataAccess.Concrete.InMemory;
+//using DataAccess.Concrete.InMemory;
 using DataAccess.Mapping;
 using Entities.Concrete;
 using Microsoft.AspNetCore.Hosting;
