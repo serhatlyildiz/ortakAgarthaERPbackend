@@ -70,3 +70,4 @@ namespace ConsoleUI
     }
 }
 //ddeğişiklik
+//merhaba
