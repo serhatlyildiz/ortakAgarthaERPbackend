@@ -15,6 +15,7 @@ namespace Entities.Concrete
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int CategoryId { get; set; }
+        public int SuperCategoryId { get; set; }
         public string CategoryName { get; set; }
 
     }
