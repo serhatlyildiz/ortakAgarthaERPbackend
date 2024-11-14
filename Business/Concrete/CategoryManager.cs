@@ -27,11 +27,10 @@ namespace Business.Concrete
         }
 
         [SecuredOperation("category.add,admin")]
-        [ValidationAspect(typeof(ProductValidator))]
-        [CacheRemoveAspect("IProductService.Get")]
+        [CacheRemoveAspect("ICategoryService.Get")]
         public IResult Add(Category category)
         {
-            IResult result = BusinessRules.Run(CheckIfProductNameExists(category.CategoryName));
+            IResult result = BusinessRules.Run(CheckIfCategoryNameExists(category.CategoryName));
 
             if (result != null)
             {
@@ -43,20 +42,19 @@ namespace Business.Concrete
             return new SuccessResult(Messages.CategoryAdded);
         }
 
-        [SecuredOperation("product.add,admin")]
-        [ValidationAspect(typeof(ProductValidator))]
-        [CacheRemoveAspect("IProductService.Get")]
-        public IResult Delete(Category category)
+        [SecuredOperation("admin")]
+        [CacheRemoveAspect("ICategoryService.Get")]
+        public IResult Delete(int categoryID)
         {
-            // Güncellenmek istenen ürünün veritabanında mevcut olup olmadığını kontrol et
-            var result = _categoryDal.Get(p => p.CategoryId == category.CategoryId);
+            // Güncellenmek istenen kategori veritabanında mevcut olup olmadığını kontrol et
+            var result = _categoryDal.Get(c => c.CategoryId == categoryID);
 
             if (result == null)
             {
-                return new ErrorResult(Messages.CategoryNotFound); // Eğer ürün yoksa hata döndür
+                return new ErrorResult(Messages.CategoryNotFound); // Eğer kategori yoksa hata döndür
             }
 
-            _categoryDal.Delete(category);
+            _categoryDal.Delete(result);
             return new SuccessResult(Messages.CategoryDeleted); // Başarı mesajı döndür
         }
 
@@ -72,22 +70,24 @@ namespace Business.Concrete
             return new SuccessDataResult<Category>(_categoryDal.Get(c => c.CategoryId == categoryId));
         }
 
+        [SecuredOperation("admin")]
+        [CacheRemoveAspect("ICategoryService.Get")]
         public IResult Update(Category category)
         {
-            var result = _categoryDal.Get(p => p.CategoryId == category.CategoryId);
+            var result = _categoryDal.Get(c => c.CategoryId == category.CategoryId);
 
             if (result == null)
             {
-                return new ErrorResult(Messages.CategoryNotFound); // Eğer ürün yoksa hata döndür
+                return new ErrorResult(Messages.CategoryNotFound); // Eğer kategori yoksa hata döndür
             }
 
             _categoryDal.Update(category);
             return new SuccessResult(Messages.CategoryUpdated); // Başarı mesajı döndür
         }
 
-        private IResult CheckIfProductNameExists(string categoryName)
+        private IResult CheckIfCategoryNameExists(string categoryName)
         {
-            var result = _categoryDal.GetAll(p => p.CategoryName == categoryName).Any();
+            var result = _categoryDal.GetAll(c => c.CategoryName == categoryName).Any();
             if (result)
             {
                 return new ErrorResult(Messages.CategoryNameAlreadyExists);

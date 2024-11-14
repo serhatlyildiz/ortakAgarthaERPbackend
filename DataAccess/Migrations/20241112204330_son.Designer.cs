@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(NorthwindContext))]
-    [Migration("20241104142634_new7")]
-    partial class new7
+    [Migration("20241112204330_son")]
+    partial class son
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -116,17 +116,41 @@ namespace DataAccess.Migrations
 
             modelBuilder.Entity("Entities.Concrete.Customer", b =>
                 {
-                    b.Property<string>("CustomerId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("CustomerId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Property<string>("City")
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CustomerId"));
+
+                    b.Property<string>("CustomerAdress")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("CompanyName")
+                    b.Property<string>("CustomerCity")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ContactName")
+                    b.Property<string>("CustomerDistrict")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CustomerEmail")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CustomerFirstName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CustomerLastName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CustomerPhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<byte[]>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<byte[]>("PasswordSalt")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
 
                     b.HasKey("CustomerId");
 
@@ -141,19 +165,14 @@ namespace DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderId"));
 
-                    b.Property<string>("CustomerId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("EmployeeId")
+                    b.Property<int>("CustomerId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("OrderDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("ShipCity")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
 
                     b.HasKey("OrderId");
 

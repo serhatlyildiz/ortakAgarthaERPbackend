@@ -33,7 +33,7 @@ namespace Business.Concrete
             //business codes
 
             //Kural 1 - Aynı isimde ürün eklenemez
-            //Kural 2 - 10dan fazlaaynı kategoride ürün eklenememsin
+            //Kural 2 - 10dan fazla aynı kategoride ürün eklenememsin
             //Kural 3 - Eğer mevcut kategori sayısı 15'i geçtiyse yeni ürün eklenemez
 
 
@@ -51,12 +51,13 @@ namespace Business.Concrete
         }
 
         [CacheAspect] //key,value
+        [PerformanceAspect(5000)]
         public IDataResult<List<Product>> GetAll()
         {
-            if (DateTime.Now.Hour == 23)
-            {
-                return new ErrorDataResult<List<Product>>(Messages.MaintenanceTime);
-            }
+            //if (DateTime.Now.Hour == 23)
+            //{
+            //    return new ErrorDataResult<List<Product>>(Messages.MaintenanceTime);
+            //}
 
             return new SuccessDataResult<List<Product>>(_ProductDal.GetAll(),Messages.ProductsListed);
         }
@@ -67,16 +68,17 @@ namespace Business.Concrete
         }
 
         [CacheAspect]
-        [PerformanceAspect(5000)]
         public IDataResult<Product> GetById(int productId)
         {
             return new SuccessDataResult<Product>(_ProductDal.Get(p => p.ProductId == productId));
         }
 
+        /*
         public IDataResult<List<Product>> GetByUnitPrice(decimal min, decimal max)
         {
             return new SuccessDataResult<List<Product>>(_ProductDal.GetAll(p => p.UnitPrice >= min && p.UnitPrice <= max));
         }
+        */
 
         public IDataResult<List<ProductDetailDto>> GetProductDetails()
         {
@@ -141,6 +143,7 @@ namespace Business.Concrete
             return new SuccessResult();
         }
 
+        /*
         [TransactionScopeAspect]
         public IResult AddTransactionalTest(Product product)
         {
@@ -152,12 +155,13 @@ namespace Business.Concrete
             Add(product);
             return new SuccessResult("Ürün bir işlem içinde başarıyla eklendi");
         }
+        */
 
         [SecuredOperation("product.add,admin")]
         [CacheRemoveAspect("IProductService.Get")]
-        public IResult Delete(Product product)
+        public IResult Delete(int productID)
         {
-            var result = _ProductDal.Get(p => p.ProductId == product.ProductId);
+            var result = _ProductDal.Get(p => p.ProductId == productID);
 
             if (result == null)
             {

@@ -5,11 +5,28 @@
 namespace DataAccess.Migrations
 {
     /// <inheritdoc />
-    public partial class new8 : Migration
+    public partial class new4 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "ProductImages");
+
+            migrationBuilder.AddColumn<string>(
+                name: "Images",
+                table: "Products",
+                type: "nvarchar(max)",
+                nullable: true);
+        }
+
+        /// <inheritdoc />
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.DropColumn(
+                name: "Images",
+                table: "Products");
+
             migrationBuilder.CreateTable(
                 name: "ProductImages",
                 columns: table => new
@@ -23,13 +40,6 @@ namespace DataAccess.Migrations
                 {
                     table.PrimaryKey("PK_ProductImages", x => x.Id);
                 });
-        }
-
-        /// <inheritdoc />
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.DropTable(
-                name: "ProductImages");
         }
     }
 }

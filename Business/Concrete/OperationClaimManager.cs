@@ -27,27 +27,25 @@ namespace Business.Concrete
         }
 
         [SecuredOperation("admin")]
-        [ValidationAspect(typeof(ProductValidator))]
-        [CacheRemoveAspect("IProductService.Get")]
+        [CacheRemoveAspect("IOperationClaimService.Get")]
         public IResult Add(OperationClaim operationClaim)
         {
-            var result = _operationClaimDal.Get(o => o.Id == operationClaim.Id);
+            var result = _operationClaimDal.Get(oc => oc.Id == operationClaim.Id);
 
             if (result == null)
             {
                 return new ErrorResult(Messages.OperationClaimNotFound); // Eğer rol yoksa hata döndür
             }
 ;
-            _operationClaimDal.Delete(result);
+            _operationClaimDal.Add(result);
             return new SuccessResult(Messages.OperationClaimAdded);
         }
 
         [SecuredOperation("admin")]
-        [ValidationAspect(typeof(ProductValidator))]
-        [CacheRemoveAspect("IProductService.Get")]
+        [CacheRemoveAspect("IOperationClaimService.Get")]
         public IResult Delete(OperationClaim operationClaim)
         {
-            var result = _operationClaimDal.Get(o => o.Id == operationClaim.Id);
+            var result = _operationClaimDal.Get(oc => oc.Id == operationClaim.Id);
 
             if (result == null)
             {
@@ -59,11 +57,10 @@ namespace Business.Concrete
         }
 
         [SecuredOperation("admin")]
-        [ValidationAspect(typeof(ProductValidator))]
-        [CacheRemoveAspect("IProductService.Get")]
+        [CacheRemoveAspect("IOperationClaimService.Get")]
         public IResult Update(OperationClaim operationClaim)
         {
-            var result = _operationClaimDal.Get(o => o.Id == operationClaim.Id);
+            var result = _operationClaimDal.Get(oc => oc.Id == operationClaim.Id);
 
             if (result == null)
             {
@@ -74,12 +71,13 @@ namespace Business.Concrete
             return new SuccessResult(Messages.OperationClaimUpdated);
         }
 
+        
         [SecuredOperation("admin")]
-        [ValidationAspect(typeof(ProductValidator))]
-        [CacheRemoveAspect("IProductService.Get")]
-        IDataResult<List<OperationClaim>> IOperationClaimService.GetAll()
+        [CacheAspect]
+        public IDataResult<List<OperationClaim>> GetAll()
         {
-            return new SuccessDataResult<List<OperationClaim>>(_operationClaimDal.GetAll(), Messages.ProductsListed);
+            return new SuccessDataResult<List<OperationClaim>>(_operationClaimDal.GetAll(), Messages.OperationClaimListed);
         }
+        
     }
 }

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace DataAccess.Concrete.EntityFramework
 {
-    public class EfProductImagesDal: EfEntityRepositoryBase<ProductImages, NorthwindContext>, IProductImagesDal
+    public class EfColorsDal : EfEntityRepositoryBase<Colors,NorthwindContext>, IColorDal
     {
 
     }

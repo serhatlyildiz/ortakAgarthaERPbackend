@@ -44,9 +44,9 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost("delete")]
-        public IActionResult Delete(Category category)
+        public IActionResult Delete(int categoryID)
         {
-            var result = _categoryService.Delete(category);
+            var result = _categoryService.Delete(categoryID);
             if (result.Success)
             {
                 return Ok(result);

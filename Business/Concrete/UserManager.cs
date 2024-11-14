@@ -42,11 +42,10 @@ namespace Business.Concrete
         }
 
         [SecuredOperation("admin")]
-        [ValidationAspect(typeof(ProductValidator))]
-        [CacheRemoveAspect("IProductService.Get")]
+        [CacheRemoveAspect("IUserService.Get")]
         public IResult Update(Users user)
         {
-            var userToUpdate = _userDal.Get(p => p.Id == user.Id);
+            var userToUpdate = _userDal.Get(u => u.Id == user.Id);
 
             if (userToUpdate == null)
             {
@@ -58,11 +57,10 @@ namespace Business.Concrete
         }
 
         [SecuredOperation("admin")]
-        [ValidationAspect(typeof(ProductValidator))]
-        [CacheRemoveAspect("IProductService.Get")]
-        public IResult Delete(Users user)
+        [CacheRemoveAspect("IUserService.Get")]
+        public IResult Delete(int userID)
         {
-            var userToDelete = _userDal.Get(u => u.Id == user.Id);
+            var userToDelete = _userDal.Get(u => u.Id == userID);
 
             if (userToDelete == null)
             {

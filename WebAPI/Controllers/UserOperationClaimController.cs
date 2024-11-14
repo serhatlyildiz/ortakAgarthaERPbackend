@@ -49,6 +49,19 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
+        [HttpGet("getallbyuserid")]
+        public IActionResult GetAllByUserId(int userId)
+        {
+            Thread.Sleep(1000);
+
+            var result = _userOperationClaimService.GetAllByUserId(userId);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+
         [HttpGet("getall")]
         public IActionResult GetAll()
         {

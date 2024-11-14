@@ -48,8 +48,8 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
-        [HttpGet("getbycategory")]
-        public IActionResult GetByCategory(int categoryId)
+        [HttpGet("getallbycategory")]
+        public IActionResult GetAllByCategory(int categoryId)
         {
             var result = _productService.GetAllByCategoryId(categoryId);
             if (result.Success)
@@ -82,9 +82,9 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost("delete")]
-        public IActionResult Delete(Product product)
+        public IActionResult Delete(int productID)
         {
-            var result = _productService.Delete(product);
+            var result = _productService.Delete(productID);
             if (result.Success)
             {
                 return Ok(result);

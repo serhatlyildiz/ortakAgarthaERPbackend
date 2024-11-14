@@ -27,8 +27,7 @@ namespace Business.Concrete
         }
 
         [SecuredOperation("admin")]
-        [ValidationAspect(typeof(ProductValidator))]
-        [CacheRemoveAspect("IProductService.Get")]
+        [CacheRemoveAspect("IUserOperationClaim.Get")]
         public IResult Add(UserOperationClaim userOperationClaim)
         {
             _userOperationClaimDal.Add(userOperationClaim);
@@ -36,19 +35,29 @@ namespace Business.Concrete
         }
 
         [SecuredOperation("admin")]
-        [ValidationAspect(typeof(ProductValidator))]
-        [CacheRemoveAspect("IProductService.Get")]
+        [CacheRemoveAspect("IUserOperationClaim.Get")]
         public IResult Delete(UserOperationClaim userOperationClaim)
         {
             _userOperationClaimDal.Delete(userOperationClaim);
             return new SuccessResult(Messages.UserOperationClaimDeleted);
         }
 
+        [SecuredOperation("admin")]
+        [CacheAspect]
         public IDataResult<List<UserOperationClaim>> GetAll()
         {
-            return new SuccessDataResult<List<UserOperationClaim>>(_userOperationClaimDal.GetAll(), Messages.ProductsListed);
+            return new SuccessDataResult<List<UserOperationClaim>>(_userOperationClaimDal.GetAll(), Messages.OperationClaimListed);
         }
 
+        [SecuredOperation("admin")]
+        [CacheRemoveAspect("IUserOperationClaim.Get")]
+        public IDataResult<List<UserOperationClaim>> GetAllByUserId(int userId)
+        {
+            return new SuccessDataResult<List<UserOperationClaim>>(_userOperationClaimDal.GetAll(u => u.UserId == userId));
+        }
+
+        [SecuredOperation("admin")]
+        [CacheRemoveAspect("IUserOperationClaim.Get")]
         public IResult Update(UserOperationClaim userOperationClaim)
         {
             _userOperationClaimDal.Update(userOperationClaim);

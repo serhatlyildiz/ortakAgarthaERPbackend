@@ -20,10 +20,10 @@ namespace DataAccess.Mapping
             //CreateMap<Product, ProductDetailDto>()
             //.ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.CategoryName));
 
-            CreateMap<Product, ProductDetailDto>()
+            //CreateMap<Product, ProductDetailDto>()
             //.ForMember(dest => dest.CategoryName,
                        //opt => opt.MapFrom(src => src.Category.CategoryName))
-                       .ForMember(dest => dest.UnitInStock, opt => opt.MapFrom(src => src.UnitsInStock));
+                       //.ForMember(dest => dest.UnitInStock, opt => opt.MapFrom(src => src.UnitsInStock));
         }
     }
 }

@@ -38,15 +38,37 @@ namespace Business.Constants
         public static string UserUpdated = "Kullanıcı güncellendi";
         public static string UserDeleted = "Kullanıcı silindi";
 
-        //------------------------------------------- Operation Claims ------------------------------------------
+        //------------------------------------------- OPERATION CLAIMS ------------------------------------------
         public static string OperationClaimNotFound = "Rol bulunamadı";
         public static string OperationClaimAdded = "Rol eklendi";
         public static string OperationClaimDeleted = "Rol silindi";
         public static string OperationClaimUpdated = "Rol güncellendi";
+        public static string OperationClaimListed = "Roller listelendi";
 
-        //------------------------------------------- User Operation Claims ------------------------------------------
+        //------------------------------------------- USER OPERATION CLAIMS ------------------------------------------
         public static string UserOperationClaimUpdated = "Rol güncellendi";
         public static string UserOperationClaimAdded = "Rol tanımlandı";
         public static string UserOperationClaimDeleted = "Rol kaldırıldı";
+        public static string UserOperationClaimListed = "Roller listelendi";
+
+        //----------------------------------------------ORDER------------------------------------------------------
+        public static string OrderAdded = "Sipariş oluşturuldu";
+        public static string OrdersListed = "Siparişler Listelendi";
+        public static string OrderUpdated = "Sipariş güncellendi";
+        public static string OrderDeleted = " numaralı siparişiniz iptal edilmiştir";
+
+        //--------------------------------------------PRODUCTSTOCKS-----------------------------------------------
+        public static string ProductStocksAdded = "Stoğa Eklendi";
+        public static string ProductStocksListed = "Stoklar Listelendi";
+        public static string ProductStocksNotFound = "Stok bulunamadı";
+        public static string ProductStocksUpdated = "Stok güncellendi";
+        public static string ProductStocksDeleted = "Stok bilgisi silindi";
+
+        //---------------------------------------------COLORS--------------------------------------------------------
+        public static string ColorAdded = "Renk eklendi";
+        public static string ColorDeleted = "Renk silindi";
+        public static string ColorUpdated = "Renk güncellendi";
+        public static string ColorNotFound = "Renk bulunamadı";
+        public static string ColorNameAlreadyExists = "Renk zaten var";
     }
 }

@@ -1,0 +1,26 @@
+version: "3.8"
+
+services:
+  seq:
+    image: datalust/seq:latest
+    container_name: NewSeq
+    environment:
+      - ACCEPT_EULA=Y
+      - SEQ_USERNAME=seq
+      - SEQ_PASSWORD=123
+    ports:
+      - "5351:80"  # Seq web arayüzüne 5351 portu üzerinden erişim
+    networks:
+      - agarthaerp_default
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro  # Read-only user secrets
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro  # Read-only ASP.NET HTTPS certs
+      - evyes_volume:/var/lib/seq  # Seq verisi için harici volume
+
+networks:
+  agarthaerp_default:
+    driver: bridge  # Ağ yapılandırması
+
+volumes:
+  evyes_volume:
+    external: true  # Harici volume bağlanacak
