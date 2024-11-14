@@ -65,7 +65,9 @@ namespace ConsoleUI
             else
             {
                 Console.WriteLine(result.Message);
-                //asdasdad
+                //asdasdaduıdhaIDHIUhdıua
+                //asdosajodjasıdası
+                //aısudohuhdsaıudhasıu
             }
         }
     }
