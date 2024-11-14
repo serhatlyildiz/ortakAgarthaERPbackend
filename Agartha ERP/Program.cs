@@ -69,7 +69,3 @@ namespace ConsoleUI
         }
     }
 }
-//durali
-
-//yenibranç denemesi
-///adsdas
