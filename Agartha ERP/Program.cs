@@ -60,7 +60,6 @@ namespace ConsoleUI
                 foreach (var product in result.Data)
                 {
                     Console.WriteLine(product.ProductName + "/" + product.CategoryName);
-                    //525258
                 }
             }
             else
@@ -70,7 +69,3 @@ namespace ConsoleUI
         }
     }
 }
-
-//duraliasan 
-//123
-//1234544984948
