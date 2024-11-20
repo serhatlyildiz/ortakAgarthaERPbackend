@@ -16,5 +16,7 @@ namespace Entities.DTOs
         public string? City { get; set; }
         public string? District { get; set; }
         public string? Adress { get; set; }
+        public string Cinsiyet { get; set; }
+        public bool Status { get; set; }
     }
 }

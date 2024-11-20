@@ -69,6 +69,10 @@ namespace DataAccess.Migrations
                     b.Property<string>("Adress")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Cinsiyet")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("City")
                         .HasColumnType("nvarchar(max)");
 
@@ -233,6 +237,48 @@ namespace DataAccess.Migrations
                     b.HasKey("SuperCategoryId");
 
                     b.ToTable("SuperCategories");
+                });
+
+            modelBuilder.Entity("Entities.Concrete.ilceler", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
+
+                    b.Property<string>("ilce")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ilno")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("id");
+
+                    b.ToTable("ilceler");
+                });
+
+            modelBuilder.Entity("Entities.Concrete.iller", b =>
+                {
+                    b.Property<int>("ilNo")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ilNo"));
+
+                    b.Property<string>("bolgeNo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("iladi")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ilNo");
+
+                    b.ToTable("iller");
                 });
 #pragma warning restore 612, 618
         }

@@ -41,6 +41,14 @@ namespace WebAPI.Controllers
         [HttpPost("register")]
         public ActionResult Register(UserForRegisterDto userForRegisterDto)
         {
+            Console.WriteLine("Gönderilen form verisi:");
+            Console.WriteLine($"Email: {userForRegisterDto.Email}");
+            Console.WriteLine($"FirstName: {userForRegisterDto.FirstName}");
+            Console.WriteLine($"LastName: {userForRegisterDto.LastName}");
+            Console.WriteLine($"Cinsiyet: {userForRegisterDto.Cinsiyet}");
+
+            //Console.WriteLine("Alınan DTO: " + JsonConvert.SerializeObject(userForRegisterDto));
+
             var userExists = _authService.UserExists(userForRegisterDto.Email);
             if (!userExists.Success)
             {

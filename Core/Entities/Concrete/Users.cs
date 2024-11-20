@@ -20,5 +20,6 @@ namespace Core.Entities.Concrete
         public string? District { get; set; }
         public string? Adress { get; set; }
         public bool Status { get; set; }
+        public string Cinsiyet { get; set; }
     }
 }

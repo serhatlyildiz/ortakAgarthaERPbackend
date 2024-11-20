@@ -10,19 +10,20 @@ namespace DataAccess.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.RenameColumn(
-                name: "Id",
-                table: "UserOperationClaims",
-                newName: "UserOperationClaimId");
+            migrationBuilder.AddColumn<string>(
+                name: "Cinsiyet",
+                table: "Users",
+                type: "nvarchar(max)",
+                nullable: false,
+                defaultValue: "");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.RenameColumn(
-                name: "UserOperationClaimId",
-                table: "UserOperationClaims",
-                newName: "Id");
+            migrationBuilder.DropColumn(
+                name: "Cinsiyet",
+                table: "Users");
         }
     }
 }

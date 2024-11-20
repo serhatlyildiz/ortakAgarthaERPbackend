@@ -26,6 +26,8 @@ namespace DataAccess.Concrete.EntityFramework
         //public DbSet<ProductImages> ProductImages { get; set; }
         public DbSet<SuperCategory> SuperCategories { get; set; }
         public DbSet<ProductStocks> ProductStocks { get; set; }
+        public DbSet<iller> iller { get; set; }
+        public DbSet<ilceler> ilceler { get; set; }
 
     }
 }

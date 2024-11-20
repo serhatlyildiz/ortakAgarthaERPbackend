@@ -26,6 +26,7 @@ namespace Business.Concrete
 
         public IDataResult<Users> Register(UserForRegisterDto userForRegisterDto, string password)
         {
+            Console.WriteLine("girdi");
             byte[] passwordHash, passwordSalt;
             HashingHelper.CreatePasswordHash(password, out passwordHash, out passwordSalt);
             var user = new Users
@@ -38,7 +39,8 @@ namespace Business.Concrete
                 City = userForRegisterDto.City,
                 District = userForRegisterDto.District,
                 Adress= userForRegisterDto.Adress,
-                Status = true
+                Cinsiyet=userForRegisterDto.Cinsiyet,
+                Status = true,
             };
             _userService.Add(user);
             return new SuccessDataResult<Users>(user, Messages.UserRegistered);
