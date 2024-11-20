@@ -64,5 +64,26 @@ namespace WebAPI.Controllers
 
             return BadRequest(result.Message);
         }
+
+        [HttpPost("request-password-reset")]
+        public IActionResult RequestPasswordReset(PasswordResetRequestDto passwordResetRequestDto)
+        {
+            var result = _authService.RequestPasswordReset(passwordResetRequestDto);
+            if (!result.Success)
+                return BadRequest(result.Message);
+
+            return Ok(result.Message);
+        }
+
+        [HttpPost("reset-password")]
+        public IActionResult ResetPassword(PasswordResetDto passwordResetDto)
+        {
+            var result = _authService.ResetPassword(passwordResetDto);
+            if (!result.Success)
+                return BadRequest(result.Message);
+
+            return Ok(result.Message);
+        }
+
     }
 }
