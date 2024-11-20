@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Business.Constants
+﻿namespace Business.Constants
 {
     public static class Messages
     {
@@ -70,5 +64,11 @@ namespace Business.Constants
         public static string ColorUpdated = "Renk güncellendi";
         public static string ColorNotFound = "Renk bulunamadı";
         public static string ColorNameAlreadyExists = "Renk zaten var";
+
+
+        public static string PasswordResetRequested = "Şifre sıfırlama isteği alındı. E-postanızı kontrol edin.";
+        public static string InvalidOrExpiredToken = "Geçersiz veya süresi dolmuş bir token.";
+        public static string PasswordResetSuccessful = "Şifre başarıyla sıfırlandı.";
+
     }
 }

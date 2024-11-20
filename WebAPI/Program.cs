@@ -1,8 +1,5 @@
 using Autofac;
-using Autofac.Core;
 using Autofac.Extensions.DependencyInjection;
-using Business.Abstract;
-using Business.Concrete;
 using Business.DependencyRevolvers.Autofac;
 using Core.DependencyRevolvers;
 using Core.Extensions;
@@ -13,13 +10,7 @@ using DataAccess.Abstract;
 using DataAccess.Concrete.EntityFramework;
 using DataAccess.Mapping;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpLogging;
-using Microsoft.Data.SqlClient;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
@@ -47,6 +38,8 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton<ILogEventEnricher, UsernameEnricher>(); // Enricher'ý da burada ekliyoruz
 builder.Services.AddSingleton<ILogEventEnricher, EmailEnricher>(); // Enricher'ý da burada ekliyoruz
 builder.Services.AddSingleton<ILogEventEnricher, IpAddressEnricher>(); // Enricher'ý da burada ekliyoruz
+builder.Services.AddScoped<IPasswordResetDal, EfPasswordResetDal>();
+
 
 
 var tokenOptions = builder.Configuration.GetSection("TokenOptions").Get<TokenOptions>();
@@ -118,7 +111,7 @@ builder.Host.UseSerilog(log);
 builder.Services.AddHttpLogging(logging =>
 {
     logging.LoggingFields = HttpLoggingFields.All;
-    logging.RequestHeaders.Add("sec-ch-ua");    
+    logging.RequestHeaders.Add("sec-ch-ua");
     logging.MediaTypeOptions.AddText("application/javascript");
     logging.RequestBodyLogLimit = 4096;
     logging.ResponseBodyLogLimit = 4096;
@@ -210,5 +203,3 @@ app.Use(async (context, next) =>
 app.MapControllers();
 
 app.Run();
-
-

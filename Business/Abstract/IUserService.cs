@@ -1,10 +1,5 @@
 ﻿using Core.Entities.Concrete;
 using Core.Utilities.Results;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Business.Abstract
 {
@@ -17,5 +12,6 @@ namespace Business.Abstract
 
         IDataResult<List<Users>> GetAll();
         Users GetByMail(string email);
+        Users GetById(int id);
     }
 }
