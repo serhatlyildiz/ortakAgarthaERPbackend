@@ -16,6 +16,7 @@ namespace Entities.DTOs
         public string CategoryName { get; set; }
         public string ColorName { get; set; }
         public short UnitInStock { get; set; }
-        
+        public bool IsActive { get; set; }
     }
+
 }
