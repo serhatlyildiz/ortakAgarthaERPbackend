@@ -46,6 +46,7 @@ namespace WebAPI.Controllers
             Console.WriteLine($"FirstName: {userForRegisterDto.FirstName}");
             Console.WriteLine($"LastName: {userForRegisterDto.LastName}");
             Console.WriteLine($"Cinsiyet: {userForRegisterDto.Cinsiyet}");
+            Console.WriteLine($"City: {userForRegisterDto.City}");
 
             //Console.WriteLine("Alınan DTO: " + JsonConvert.SerializeObject(userForRegisterDto));
 

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(NorthwindContext))]
-    [Migration("20241120115357_2011241455-forgotpass")]
-    partial class _2011241455forgotpass
+    [Migration("20241121072125_new")]
+    partial class @new
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -5,6 +5,7 @@ using Core.Aspects.Autofac.Caching;
 using Core.Entities.Concrete;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
+using Entities.DTOs;
 
 namespace Business.Concrete
 {
@@ -43,7 +44,10 @@ namespace Business.Concrete
                 return new ErrorResult(Messages.UserNotFound);
             }
 
-            _userDal.Update(user);
+            // Durumu kontrol et ve kullanıcıyı güncelle
+            userToUpdate.Status = user.Status;
+
+            _userDal.Update(userToUpdate);
             return new SuccessResult(Messages.UserUpdated);
         }
 
@@ -71,5 +75,12 @@ namespace Business.Concrete
         {
             return _userDal.Get(u => u.Id == id);
         }
+
+        public IDataResult<List<UserWithRolesDto>> GetAllWithRoles()
+        {
+            var usersWithRoles = _userDal.GetAllWithRoles();
+            return new SuccessDataResult<List<UserWithRolesDto>>(usersWithRoles);
+        }
+
     }
 }

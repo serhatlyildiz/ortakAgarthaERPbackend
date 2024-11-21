@@ -1,5 +1,6 @@
 ﻿using Business.Abstract;
 using Core.Entities.Concrete;
+using DataAccess.Abstract;
 using Entities.Concrete;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,10 +11,12 @@ namespace WebAPI.Controllers
     public class UsersController : ControllerBase
     {
         IUserService _userService;
+        IUserDal _userDal;
 
-        public UsersController(IUserService userService)
+        public UsersController(IUserService userService, IUserDal userDal)
         {
             _userService = userService;
+            _userDal = userDal;
         }
 
         [HttpGet("getall")]
@@ -43,8 +46,19 @@ namespace WebAPI.Controllers
         [HttpPost("update")]
         public IActionResult Update(Users user)
         {
-            var result = _userService.Update(user);
+            var result = _userService.Update(user);  // Service çağrısı
             if (result.Success)
+            {
+                return Ok(result);  // Başarılı güncelleme
+            }
+            return BadRequest(result);  // Hata durumu
+        }
+
+        [HttpGet("getallwithroles")]
+        public IActionResult getAllWithRoles()
+        {
+            var result = _userDal.GetAllWithRoles();
+            if (result.Count>0)
             {
                 return Ok(result);
             }
