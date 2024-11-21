@@ -13,6 +13,6 @@ namespace Entities.Concrete
         [Key]
         public int id { get; set; }
         public string ilce { get; set; }
-        public string ilno { get; set; }
+        public int ilno { get; set; }
     }
 }
