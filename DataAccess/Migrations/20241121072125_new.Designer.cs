@@ -18,7 +18,6 @@ namespace DataAccess.Migrations
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
-
         }
     }
 }
