@@ -1,7 +1,6 @@
 ﻿using Business.Abstract;
 using Core.Entities.Concrete;
 using DataAccess.Abstract;
-using Entities.Concrete;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers
@@ -58,7 +57,7 @@ namespace WebAPI.Controllers
         public IActionResult getAllWithRoles()
         {
             var result = _userDal.GetAllWithRoles();
-            if (result.Count>0)
+            if (result.Count > 0)
             {
                 return Ok(result);
             }

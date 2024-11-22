@@ -65,7 +65,7 @@
         public static string ColorNotFound = "Renk bulunamadı";
         public static string ColorNameAlreadyExists = "Renk zaten var";
 
-
+        //-------------------------------------------FORGOT-PASS-----------------------------------------------------
         public static string PasswordResetRequested = "Şifre sıfırlama isteği alındı. E-postanızı kontrol edin.";
         public static string InvalidOrExpiredToken = "Geçersiz veya süresi dolmuş bir token.";
         public static string PasswordResetSuccessful = "Şifre başarıyla sıfırlandı.";

@@ -9,8 +9,8 @@ namespace WebAPI.Controllers
     public class OrderController : ControllerBase
     {
         IOrderService _orderService;
-        public OrderController(IOrderService orderService) 
-        { 
+        public OrderController(IOrderService orderService)
+        {
             _orderService = orderService;
         }
 

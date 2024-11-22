@@ -4,16 +4,9 @@ using Business.Constants;
 using Business.ValidationRules.FluentValidation;
 using Core.Aspects.Autofac.Caching;
 using Core.Aspects.Autofac.Validation;
-using Core.Utilities.Business;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
-using DataAccess.Concrete.EntityFramework;
 using Entities.Concrete;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Business.Concrete
 {
@@ -59,7 +52,7 @@ namespace Business.Concrete
         {
             return new SuccessDataResult<List<ProductStocks>>(_productStocksDal.GetAll(), Messages.ProductsListed);
         }
-        
+
         [CacheAspect]
         public IDataResult<List<ProductStocks>> GetAllByProductId(int ProductId)
         {
@@ -71,7 +64,7 @@ namespace Business.Concrete
         {
             return new SuccessDataResult<ProductStocks>(_productStocksDal.Get(p => p.ProductId == ProductId));
         }
-        
+
 
         [CacheRemoveAspect("IProductStocksService.Get")]
         public IResult Update(ProductStocks productStocks)

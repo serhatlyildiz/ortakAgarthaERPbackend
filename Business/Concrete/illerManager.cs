@@ -1,14 +1,7 @@
 ﻿using Business.Abstract;
-using Business.Constants;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
-using DataAccess.Concrete.EntityFramework;
 using Entities.Concrete;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Business.Concrete
 {
@@ -23,7 +16,7 @@ namespace Business.Concrete
 
         public IDataResult<List<iller>> GetAll()
         {
-            return new SuccessDataResult<List<iller>>(_illerDal.GetAll(),"");
+            return new SuccessDataResult<List<iller>>(_illerDal.GetAll(), "");
         }
 
         public IDataResult<iller> GetById(int ilId)

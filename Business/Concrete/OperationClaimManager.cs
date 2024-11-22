@@ -1,19 +1,10 @@
 ﻿using Business.Abstract;
 using Business.BusinessAspect.Autofac;
 using Business.Constants;
-using Business.ValidationRules.FluentValidation;
 using Core.Aspects.Autofac.Caching;
-using Core.Aspects.Autofac.Validation;
 using Core.Entities.Concrete;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
-using DataAccess.Concrete.EntityFramework;
-using Entities.Concrete;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Business.Concrete
 {
@@ -21,7 +12,7 @@ namespace Business.Concrete
     {
         IOperationClaimDal _operationClaimDal;
 
-        public  OperationClaimManager(IOperationClaimDal operationClaimDal)
+        public OperationClaimManager(IOperationClaimDal operationClaimDal)
         {
             _operationClaimDal = operationClaimDal;
         }
@@ -71,13 +62,13 @@ namespace Business.Concrete
             return new SuccessResult(Messages.OperationClaimUpdated);
         }
 
-        
+
         [SecuredOperation("admin")]
         [CacheAspect]
         public IDataResult<List<OperationClaim>> GetAll()
         {
             return new SuccessDataResult<List<OperationClaim>>(_operationClaimDal.GetAll(), Messages.OperationClaimListed);
         }
-        
+
     }
 }
