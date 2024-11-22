@@ -28,7 +28,7 @@
         public static string PasswordError = "Parola hatası";
         public static string SuccessfulLogin = "Başarılı giriş";
         public static string UserAlreadyExists = "Kullanıcı mevcut";
-        public static string AccessTokenCreated = "Token oluşturuldu";
+        public static string AccessTokenCreated = "Giriş başarılı";
         public static string UserUpdated = "Kullanıcı güncellendi";
         public static string UserDeleted = "Kullanıcı silindi";
 
