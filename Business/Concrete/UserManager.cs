@@ -5,6 +5,7 @@ using Core.Aspects.Autofac.Caching;
 using Core.Entities.Concrete;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
+using DataAccess.Concrete.EntityFramework;
 using Entities.DTOs;
 
 namespace Business.Concrete
@@ -53,17 +54,19 @@ namespace Business.Concrete
 
         [SecuredOperation("admin")]
         [CacheRemoveAspect("IUserService.Get")]
-        public IResult Delete(int userID)
+        public IResult Delete(int Id)
         {
-            var userToDelete = _userDal.Get(u => u.Id == userID);
+            var result = _userDal.Get(p => p.Id == Id);
 
-            if (userToDelete == null)
+            if (result == null)
             {
-                return new ErrorResult(Messages.UserNotFound);
+                return new ErrorResult(Messages.ProductNotFound);
             }
+            if (result.Status) result.Status = false;
+            else result.Status = true;
 
-            _userDal.Delete(userToDelete);
-            return new SuccessResult(Messages.UserDeleted);
+            _userDal.Update(result);
+            return new SuccessResult(result.FirstName + " " + result.LastName + Messages.UserDeleted);
         }
 
         public IDataResult<List<Users>> GetAll()
