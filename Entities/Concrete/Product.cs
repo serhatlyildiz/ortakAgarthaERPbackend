@@ -20,6 +20,7 @@ namespace Entities.Concrete
         public List<string>? Images { get; set; }
         [Column(TypeName = "decimal(18,2)")]
         public decimal UnitPrice { get; set; }
+        public bool IsActive { get; set; }
 
     }
 }

@@ -37,7 +37,7 @@ namespace Business.Concrete
             //Kural 3 - Eğer mevcut kategori sayısı 15'i geçtiyse yeni ürün eklenemez
 
 
-            IResult result =  BusinessRules.Run(CheckIfProductCountOfCategoryCorrect(product.CategoryId),
+            IResult result = BusinessRules.Run(CheckIfProductCountOfCategoryCorrect(product.CategoryId),
                 CheckIfProductNameExists(product.ProductName), CheckIfCategoryLimitExceded());
 
             if (result != null)
@@ -52,37 +52,48 @@ namespace Business.Concrete
 
         [CacheAspect] //key,value
         [PerformanceAspect(5000)]
+        [SecuredOperation("product.add,admin")]
+        public IDataResult<List<Product>> GetAllForAdmin()
+        {
+            return new SuccessDataResult<List<Product>>(_ProductDal.GetAll(), Messages.ProductsListed);
+        }
+        [CacheAspect]
+        [PerformanceAspect(5000)]
         public IDataResult<List<Product>> GetAll()
         {
-            //if (DateTime.Now.Hour == 23)
-            //{
-            //    return new ErrorDataResult<List<Product>>(Messages.MaintenanceTime);
-            //}
-
-            return new SuccessDataResult<List<Product>>(_ProductDal.GetAll(),Messages.ProductsListed);
+            return new SuccessDataResult<List<Product>>(_ProductDal.GetAll().Where(p => p.IsActive == true).ToList(), Messages.ProductsListed);
         }
+
+
 
         public IDataResult<List<Product>> GetAllByCategoryId(int id)
         {
-            return new SuccessDataResult<List<Product>>(_ProductDal.GetAll(p => p.CategoryId == id));
+            var result = new SuccessDataResult<List<Product>>(GetAllForAdmin().Data.Where(p => p.CategoryId == id).ToList());
+            if (result.Success) return result;
+            return new SuccessDataResult<List<Product>>(GetAll().Data.Where(p => p.CategoryId == id).ToList());
         }
 
         [CacheAspect]
-        public IDataResult<Product> GetById(int productId)
+        [SecuredOperation("product.add,admin")]
+        public IDataResult<Product> GetByIdForAdmin(int id)
         {
-            return new SuccessDataResult<Product>(_ProductDal.Get(p => p.ProductId == productId));
+            return new SuccessDataResult<Product>(_ProductDal.Get(p => p.ProductId == id));
+        }
+        [CacheAspect]
+        public IDataResult<Product> GetById(int id)
+        {
+            return new SuccessDataResult<Product>(_ProductDal.Get(p => p.ProductId == id && p.IsActive == true));
         }
 
-        /*
-        public IDataResult<List<Product>> GetByUnitPrice(decimal min, decimal max)
-        {
-            return new SuccessDataResult<List<Product>>(_ProductDal.GetAll(p => p.UnitPrice >= min && p.UnitPrice <= max));
-        }
-        */
 
-        public IDataResult<List<ProductDetailDto>> GetProductDetails()
+        [SecuredOperation("product.add,admin")]
+        public IDataResult<List<ProductDetailDto>> GetProductDetailsForAdmin()
         {
             return new SuccessDataResult<List<ProductDetailDto>>(_ProductDal.GetProductDetails());
+        }
+        public IDataResult<List<ProductDetailDto>> GetProductDetails()
+        {
+            return new SuccessDataResult<List<ProductDetailDto>>(_ProductDal.GetProductDetails().Where(p => p.IsActive == true).ToList());
         }
 
         [SecuredOperation("product.add,admin")]
@@ -124,7 +135,7 @@ namespace Business.Concrete
         }
 
         private IResult CheckIfProductNameExists(string productName)
-        { 
+        {
             var result = _ProductDal.GetAll(p => p.ProductName == productName).Any();
             if (result)
             {
@@ -136,7 +147,7 @@ namespace Business.Concrete
         private IResult CheckIfCategoryLimitExceded()
         {
             var result = _categoryService.GetAll();
-            if (result.Data.Count>15)
+            if (result.Data.Count > 15)
             {
                 return new ErrorResult(Messages.CategoryLimitExceded);
             }
@@ -165,13 +176,13 @@ namespace Business.Concrete
 
             if (result == null)
             {
-                return new ErrorResult(Messages.ProductNotFound); // Eğer ürün yoksa hata döndür
+                return new ErrorResult(Messages.ProductNotFound);
             }
+            if (result.IsActive) result.IsActive = false;
+            else result.IsActive = true;
 
-            // Ürünü sil
-            string silinenUrun = result.ProductName;
-            _ProductDal.Delete(result);
-            return new SuccessResult(silinenUrun + Messages.ProductDeleted);
+            _ProductDal.Update(result);
+            return new SuccessResult(result.ProductName + Messages.ProductDeleted);
         }
     }
 }

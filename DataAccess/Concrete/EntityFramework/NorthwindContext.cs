@@ -24,5 +24,6 @@ namespace DataAccess.Concrete.EntityFramework
         public DbSet<iller> iller { get; set; }
         public DbSet<ilceler> ilceler { get; set; }
         public DbSet<PasswordResetRequest> PasswordResetRequests { get; set; }
+        public DbSet<ProductStatusHistory> ProductStatusHistories { get; set; }
     }
 }
