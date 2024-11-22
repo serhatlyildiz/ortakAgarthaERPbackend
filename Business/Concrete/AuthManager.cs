@@ -53,7 +53,7 @@ namespace Business.Concrete
             {
                 return new ErrorDataResult<Users>(Messages.UserNotFound);
             }
-            if (userToCheck.Status==false)
+            if (userToCheck.Status == false)
             {
                 return new ErrorDataResult<Users>(Messages.UserNotFound);
             }

@@ -1,7 +1,5 @@
 ﻿using Business.Abstract;
-using Core.Utilities.Security.JWT;
 using Entities.DTOs;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers

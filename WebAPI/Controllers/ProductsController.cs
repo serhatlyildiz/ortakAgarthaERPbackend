@@ -1,9 +1,6 @@
 ﻿using Business.Abstract;
 using Entities.Concrete;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Threading;
 
 namespace WebAPI.Controllers
 {
@@ -74,8 +71,8 @@ namespace WebAPI.Controllers
         public IActionResult Add(Product product)
         {
             var result = _productService.Add(product);
-            if (result.Success) 
-            { 
+            if (result.Success)
+            {
                 return Ok(result);
             }
             return BadRequest(result);
@@ -104,4 +101,3 @@ namespace WebAPI.Controllers
         }
     }
 }
- 

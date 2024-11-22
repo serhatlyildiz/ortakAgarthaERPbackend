@@ -1,6 +1,5 @@
 ﻿using Core.Entities.Concrete;
 using Core.Utilities.Results;
-using Entities.DTOs;
 
 namespace Business.Abstract
 {
@@ -10,7 +9,6 @@ namespace Business.Abstract
         public void Add(Users user);
         IResult Update(Users user);
         IResult Delete(int userID);
-
         IDataResult<List<Users>> GetAll();
         Users GetByMail(string email);
         Users GetById(int id);

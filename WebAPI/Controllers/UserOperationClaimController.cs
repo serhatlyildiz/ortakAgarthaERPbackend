@@ -1,6 +1,5 @@
 ﻿using Business.Abstract;
 using Core.Entities.Concrete;
-using DataAccess.Abstract;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers
@@ -10,7 +9,7 @@ namespace WebAPI.Controllers
     public class UserOperationClaimController : ControllerBase
     {
         IUserOperationClaimService _userOperationClaimService;
-        
+
         public UserOperationClaimController(IUserOperationClaimService userOperationClaimService)
         {
             _userOperationClaimService = userOperationClaimService;
