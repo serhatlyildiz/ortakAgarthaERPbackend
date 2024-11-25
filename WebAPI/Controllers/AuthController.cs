@@ -71,7 +71,7 @@ namespace WebAPI.Controllers
             if (!result.Success)
                 return BadRequest(result.Message);
 
-            return Ok(result.Message);
+            return Ok(result);
         }
 
         [HttpPost("reset-password")]
