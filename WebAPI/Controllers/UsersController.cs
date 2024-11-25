@@ -1,6 +1,7 @@
 ﻿using Business.Abstract;
 using Core.Entities.Concrete;
 using DataAccess.Abstract;
+using Entities.DTOs;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers
@@ -43,14 +44,14 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost("update")]
-        public IActionResult Update(Users user)
+        public IActionResult Update(UserForUpdateDto user)
         {
-            var result = _userService.Update(user);  // Service çağrısı
+            var result = _userService.Update(user);
             if (result.Success)
             {
-                return Ok(result);  // Başarılı güncelleme
+                return Ok(result);
             }
-            return BadRequest(result);  // Hata durumu
+            return BadRequest(result);
         }
 
         [HttpGet("getallwithroles")]

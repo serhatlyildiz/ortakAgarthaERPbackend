@@ -4,6 +4,7 @@ using Business.Constants;
 using Core.Aspects.Autofac.Caching;
 using Core.Entities.Concrete;
 using Core.Utilities.Results;
+using Core.Utilities.Security.Hashing;
 using DataAccess.Abstract;
 using DataAccess.Concrete.EntityFramework;
 using Entities.DTOs;
@@ -83,6 +84,30 @@ namespace Business.Concrete
         {
             var usersWithRoles = _userDal.GetAllWithRoles();
             return new SuccessDataResult<List<UserWithRolesDto>>(usersWithRoles);
+        }
+
+        public IResult Update(UserForUpdateDto userDto)
+        {
+            var userToUpdate = _userDal.Get(u => u.Id == userDto.Id);
+
+            if (userToUpdate == null)
+            {
+                return new ErrorResult(Messages.UserNotFound);
+            }
+
+
+            userToUpdate.FirstName = userDto.FirstName;
+            userToUpdate.LastName = userDto.LastName;
+            userToUpdate.Email = userDto.Email;
+            userToUpdate.City = userDto.City;
+            userToUpdate.District = userDto.District;
+            userToUpdate.Adress = userDto.Adress;
+            userToUpdate.Cinsiyet = userDto.Cinsiyet;
+
+            // Veritabanında güncelleme
+            _userDal.Update(userToUpdate);
+
+            return new SuccessResult(Messages.UserUpdated);
         }
 
     }
