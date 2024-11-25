@@ -30,9 +30,6 @@ namespace Business.DependencyRevolvers.Autofac
             builder.RegisterType<OperationClaimManager>().As<IOperationClaimService>().SingleInstance();
             builder.RegisterType<EfOperationClaimDal>().As<IOperationClaimDal>().SingleInstance();
 
-            builder.RegisterType<UserOperationClaimManager>().As<IUserOperationClaimService>().SingleInstance();
-            builder.RegisterType<EfUserOperationClaimDal>().As<IUserOperationClaimDal>().SingleInstance();
-
             builder.RegisterType<illerManager>().As<IillerService>().SingleInstance();
             builder.RegisterType<EfillerDal>().As<IillerDal>().SingleInstance();
 
