@@ -16,11 +16,15 @@ namespace DataAccess.Concrete.EntityFramework
         {
             using (var context = new NorthwindContext())
             {
+                // Kullanıcının rollerine göre işlem yapıyoruz
                 var result = from operationClaim in context.OperationClaims
-                             join userOperationClaim in context.UserOperationClaims
-                             on operationClaim.Id equals userOperationClaim.OperationClaimId
-                             where userOperationClaim.UserId == user.Id
-                             select new OperationClaim { Id = operationClaim.Id, Name = operationClaim.Name };
+                             where user.Roles.Contains(operationClaim.Id)  // Kullanıcının rollerine göre filtreleme
+                             select new OperationClaim
+                             {
+                                 Id = operationClaim.Id,
+                                 Name = operationClaim.Name
+                             };
+
                 return result.ToList();
             }
         }
@@ -30,12 +34,6 @@ namespace DataAccess.Concrete.EntityFramework
             using (var context = new NorthwindContext())
             {
                 var result = from user in context.Users
-                             join userClaim in context.UserOperationClaims
-                             on user.Id equals userClaim.UserId into userClaimsGroup
-                             from userClaim in userClaimsGroup.DefaultIfEmpty() // Left join
-                             join operationClaim in context.OperationClaims
-                             on userClaim.OperationClaimId equals operationClaim.Id into operationClaimsGroup
-                             from operationClaim in operationClaimsGroup.DefaultIfEmpty() // Left join
                              select new UserWithRolesDto
                              {
                                  Id = user.Id,
@@ -47,9 +45,9 @@ namespace DataAccess.Concrete.EntityFramework
                                  Adress = user.Adress,
                                  Status = user.Status,
                                  Cinsiyet = user.Cinsiyet,
-                                 Roles = userClaim != null
+                                 Roles = user.Roles != null && user.Roles.Any()  // Eğer kullanıcının rolleri varsa
                                      ? context.OperationClaims
-                                           .Where(claim => claim.Id == userClaim.OperationClaimId)
+                                           .Where(claim => user.Roles.Contains(claim.Id))  // Kullanıcının rollerine göre filtreleme
                                            .Select(claim => claim.Name)
                                            .ToList()
                                      : new List<string> { "Müşteri" } // Rolü olmayan kullanıcıya "Müşteri" ata
