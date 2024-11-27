@@ -57,6 +57,34 @@ namespace DataAccess.Concrete.EntityFramework
                 return result.ToList();
             }
         }
+
+        public List<UserForUpdateDto> GetAllForUpdates()
+        {
+            using (var context = new NorthwindContext())
+            {
+                var result = from user in context.Users
+                             select new UserForUpdateDto
+                             {
+                                 Id = user.Id,
+                                 FirstName = user.FirstName,
+                                 LastName = user.LastName,
+                                 Email = user.Email,
+                                 City = user.City,
+                                 District = user.District,
+                                 Adress = user.Adress,
+                                 Status = user.Status,
+                                 Cinsiyet = user.Cinsiyet,
+                                 Roles = user.Roles != null && user.Roles.Any()  // Eğer kullanıcının rolleri varsa
+                                     ? context.OperationClaims
+                                           .Where(claim => user.Roles.Contains(claim.Id))  // Kullanıcının rollerine göre filtreleme
+                                           .Select(claim => claim.Id)
+                                           .ToList()
+                                     : new List<int> { 4 } // Rolü olmayan kullanıcıya "Müşteri" ata
+                             };
+
+                return result.ToList();
+            }
+        }
     }
 }
 
