@@ -4,9 +4,7 @@ using Business.Constants;
 using Core.Aspects.Autofac.Caching;
 using Core.Entities.Concrete;
 using Core.Utilities.Results;
-using Core.Utilities.Security.Hashing;
 using DataAccess.Abstract;
-using DataAccess.Concrete.EntityFramework;
 using Entities.DTOs;
 
 namespace Business.Concrete
@@ -86,7 +84,7 @@ namespace Business.Concrete
             return new SuccessDataResult<List<UserWithRolesDto>>(usersWithRoles);
         }
 
-        public IResult Update(UserForUpdateDto userDto)
+        public IResult UpdateForAdmin(UserForUpdateDto userDto)
         {
             var userToUpdate = _userDal.Get(u => u.Id == userDto.Id);
 
@@ -95,20 +93,38 @@ namespace Business.Concrete
                 return new ErrorResult(Messages.UserNotFound);
             }
 
+            if (!string.IsNullOrWhiteSpace(userDto.FirstName))
+                userToUpdate.FirstName = userDto.FirstName;
 
-            userToUpdate.FirstName = userDto.FirstName;
-            userToUpdate.LastName = userDto.LastName;
-            userToUpdate.Email = userDto.Email;
-            userToUpdate.City = userDto.City;
-            userToUpdate.District = userDto.District;
-            userToUpdate.Adress = userDto.Adress;
-            userToUpdate.Cinsiyet = userDto.Cinsiyet;
+            if (!string.IsNullOrWhiteSpace(userDto.LastName))
+                userToUpdate.LastName = userDto.LastName;
 
-            // Veritabanında güncelleme
+            if (!string.IsNullOrWhiteSpace(userDto.Email))
+                userToUpdate.Email = userDto.Email;
+
+            if (!string.IsNullOrWhiteSpace(userDto.City))
+                userToUpdate.City = userDto.City;
+
+            if (!string.IsNullOrWhiteSpace(userDto.District))
+                userToUpdate.District = userDto.District;
+
+            if (!string.IsNullOrWhiteSpace(userDto.Adress))
+                userToUpdate.Adress = userDto.Adress;
+
+            if (!string.IsNullOrWhiteSpace(userDto.Adress))
+                userToUpdate.Cinsiyet = userDto.Cinsiyet;
+
+            userToUpdate.Status = userDto.Status;
+            userToUpdate.Roles = userDto.Roles;
+
             _userDal.Update(userToUpdate);
 
             return new SuccessResult(Messages.UserUpdated);
         }
 
+        public IDataResult<UserForUpdateDto> GetByIdAdmin(int id)
+        {
+            return new SuccessDataResult<UserForUpdateDto>(_userDal.GetAllForUpdates().Find(u => u.Id == id));
+        }
     }
 }

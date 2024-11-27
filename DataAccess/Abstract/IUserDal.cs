@@ -15,6 +15,7 @@ namespace DataAccess.Abstract
     {
         List<OperationClaim> GetClaims(Users user);
         List<UserWithRolesDto> GetAllWithRoles();
+        List<UserForUpdateDto> GetAllForUpdates();
 
     }
 }

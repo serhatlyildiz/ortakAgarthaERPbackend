@@ -46,7 +46,7 @@ namespace WebAPI.Controllers
         [HttpPost("update")]
         public IActionResult Update(UserForUpdateDto user)
         {
-            var result = _userService.Update(user);
+            var result = _userService.UpdateForAdmin(user);
             if (result.Success)
             {
                 return Ok(result);
@@ -63,6 +63,15 @@ namespace WebAPI.Controllers
                 return Ok(result);
             }
             return BadRequest(result);
+        }
+
+        [HttpGet("getbyid")]
+        public IActionResult GetById(int id)
+        {
+            var result = _userService.GetByIdAdmin(id);
+            if (result == null)
+                return BadRequest(result);
+            return Ok(result);
         }
     }
 }
