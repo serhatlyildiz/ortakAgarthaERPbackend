@@ -41,6 +41,7 @@ namespace Business.Concrete
                 Adress = userForRegisterDto.Adress,
                 Cinsiyet = userForRegisterDto.Cinsiyet,
                 Status = true,
+                Roles = [4],
             };
             _userService.Add(user);
             return new SuccessDataResult<Users>(user, Messages.UserRegistered);

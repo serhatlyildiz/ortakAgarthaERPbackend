@@ -2,6 +2,7 @@
 using Core.Entities.Concrete;
 using DataAccess.Abstract;
 using Entities.DTOs;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -50,13 +51,12 @@ namespace DataAccess.Concrete.EntityFramework
                                            .Where(claim => user.Roles.Contains(claim.Id))  // Kullanıcının rollerine göre filtreleme
                                            .Select(claim => claim.Name)
                                            .ToList()
-                                     : new List<string> { "Müşteri" } // Rolü olmayan kullanıcıya "Müşteri" ata
+                                     : new List<string> { "customer" } // Rolü olmayan kullanıcıya "Müşteri" ata
                              };
 
                 return result.ToList();
             }
         }
-
     }
 }
 

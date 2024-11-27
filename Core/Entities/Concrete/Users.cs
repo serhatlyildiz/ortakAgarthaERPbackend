@@ -21,6 +21,6 @@ namespace Core.Entities.Concrete
         public string? Adress { get; set; }
         public bool Status { get; set; }
         public string Cinsiyet { get; set; }
-        public List<int> Roles { get; set; }
+        public List<int>? Roles { get; set; }
     }
 }
