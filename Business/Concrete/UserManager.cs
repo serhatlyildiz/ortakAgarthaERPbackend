@@ -6,16 +6,19 @@ using Core.Entities.Concrete;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.DTOs;
+using System.Linq;
 
 namespace Business.Concrete
 {
     public class UserManager : IUserService
     {
         IUserDal _userDal;
+        IOperationClaimDal _operationClaimDal;
 
-        public UserManager(IUserDal userDal)
+        public UserManager(IUserDal userDal, IOperationClaimDal operationClaimDal)
         {
             _userDal = userDal;
+            _operationClaimDal = operationClaimDal;
         }
 
         public List<OperationClaim> GetClaims(Users user)
@@ -120,6 +123,62 @@ namespace Business.Concrete
             _userDal.Update(userToUpdate);
 
             return new SuccessResult(Messages.UserUpdated);
+        }
+
+        public IDataResult<List<Users>> GetFilteredUsers(UserFilterDto filter)
+        {
+            var query = _userDal.GetAll().AsQueryable(); // Başlangıçta tüm kullanıcıları alıyoruz
+
+            // Filtreleme işlemleri
+            if (!string.IsNullOrEmpty(filter.Firstname))
+            {
+                string lowerCaseName = filter.Firstname.ToLower();
+                query = query.Where(u => u.FirstName.ToLower().Contains(lowerCaseName));
+            }
+
+            if (!string.IsNullOrEmpty(filter.City))
+            {
+                query = query.Where(u => u.City.Contains(filter.City));
+            }
+
+            if (!string.IsNullOrEmpty(filter.District))
+            {
+                query = query.Where(u => u.District.Contains(filter.District));
+            }
+
+            if (filter.Status.HasValue)
+            {
+                query = query.Where(u => u.Status == filter.Status.Value); // Status değerini kontrol ediyoruz
+            }
+
+            if (!string.IsNullOrEmpty(filter.Gender))
+            {
+                query = query.Where(u => u.Cinsiyet.Equals(filter.Gender, StringComparison.OrdinalIgnoreCase)); // Cinsiyet filtresi
+            }
+
+            if (!string.IsNullOrEmpty(filter.Role))
+            {
+                if (filter.Role == "0")
+                {
+                    // Eğer "0" ise, rolü olmayan kullanıcıları getirin
+                    query = query.Where(u => !u.Roles.Any());
+                }
+                else
+                {
+                    int roleId;
+                    if (int.TryParse(filter.Role, out roleId))
+                    {
+                        // Eğer geçerli bir rol ID'si ise, o rolü olan kullanıcıları getirin
+                        query = query.Where(u => u.Roles.Contains(roleId));
+                    }
+                }
+            }
+
+            // Filtrelenmiş kullanıcıları listeye dönüştürüyoruz
+            var users = query.ToList();
+
+            // Sonuç döndürülüyor
+            return new SuccessDataResult<List<Users>>(users, "Users filtered successfully.");
         }
 
         public IDataResult<UserForUpdateDto> GetByIdAdmin(int id)

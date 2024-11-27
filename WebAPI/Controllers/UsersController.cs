@@ -65,6 +65,15 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
+        [HttpPost("getfilteredusers")]
+        public IActionResult GetFilteredUsers([FromBody] UserFilterDto filter)
+        {
+            var result = _userService.GetFilteredUsers(filter);
+            if (result.Success)
+            {
+                return Ok(result.Data);
+            }
+            return BadRequest(result.Message);
         [HttpGet("getbyid")]
         public IActionResult GetById(int id)
         {

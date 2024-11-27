@@ -14,6 +14,8 @@ namespace Business.Abstract
         IDataResult<List<Users>> GetAll();
         Users GetByMail(string email);
         Users GetById(int id);
+
+        IDataResult<List<Users>> GetFilteredUsers(UserFilterDto filter);
         IDataResult<UserForUpdateDto> GetByIdAdmin(int id);
     }
 }
