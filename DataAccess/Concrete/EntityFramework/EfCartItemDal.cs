@@ -4,7 +4,7 @@ using Entities.Concrete;
 
 namespace DataAccess.Concrete.EntityFramework
 {
-    public class EfSuperCategory : EfEntityRepositoryBase<SuperCategory, NorthwindContext>, ISuperCategoryDal
+    public class EfCartItemDal : EfEntityRepositoryBase<CartItem, NorthwindContext>, ICartItemDal
     {
 
     }
