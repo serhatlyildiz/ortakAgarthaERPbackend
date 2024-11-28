@@ -1,13 +1,11 @@
 ﻿using Core.Entities;
-using System.ComponentModel.DataAnnotations;
 
-namespace Entities.Concrete
+namespace Entities.DTOs
 {
-    public class Cart : IEntity
+    public class CartDto : IDto
     {
-        [Key]
         public int CartId { get; set; }
-        public List<int>? CartItems { get; set; }
+        public List<CartItemDto> CartItems { get; set; }
         public int UserId { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime UpdateDate { get; set; }

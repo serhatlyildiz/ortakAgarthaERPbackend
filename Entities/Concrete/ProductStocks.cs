@@ -14,6 +14,7 @@ namespace Entities.Concrete
         [Key]
         public int ProductStockId { get; set; }
         public int ProductId { get; set; }
+        public int ProductColorId { get; set; }
         public string ProductSize { get; set; }
         public short UnitsInStock { get; set; }
     }

@@ -12,17 +12,17 @@ namespace DataAccess.Concrete.EntityFramework
         }
         public DbSet<Product> Products { get; set; }
         public DbSet<Category> Categories { get; set; }
-
         public DbSet<Colors> Colors { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OperationClaim> OperationClaims { get; set; }
         public DbSet<Users> Users { get; set; }
-        //public DbSet<ProductImages> ProductImages { get; set; }
         public DbSet<SuperCategory> SuperCategories { get; set; }
         public DbSet<ProductStocks> ProductStocks { get; set; }
         public DbSet<iller> iller { get; set; }
         public DbSet<ilceler> ilceler { get; set; }
         public DbSet<PasswordResetRequest> PasswordResetRequests { get; set; }
         public DbSet<ProductStatusHistory> ProductStatusHistories { get; set; }
+        public DbSet<Cart> Carts { get; set; }
+        public DbSet<CartItem> CartItems { get; set; }
     }
 }

@@ -2,15 +2,15 @@
 
 namespace Entities.DTOs
 {
-    public class ProductDetailDto : IDto
+    public class ProductDto : IDto
     {
         public int ProductId { get; set; }
         public int CategoryId { get; set; }
         public string ProductName { get; set; }
-        public string CategoryName { get; set; }
-        public string ColorName { get; set; }
-        public short UnitInStock { get; set; }
+        public string ProductDescription { get; set; }
+        public decimal UnitPrice { get; set; }
         public bool IsActive { get; set; }
+        public List<string>? Images { get; set; }
     }
 
 }
