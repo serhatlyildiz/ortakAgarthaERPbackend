@@ -74,6 +74,8 @@ namespace WebAPI.Controllers
                 return Ok(result.Data);
             }
             return BadRequest(result.Message);
+        }
+
         [HttpGet("getbyid")]
         public IActionResult GetById(int id)
         {
