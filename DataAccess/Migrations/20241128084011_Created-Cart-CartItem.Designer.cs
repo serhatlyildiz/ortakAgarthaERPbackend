@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(NorthwindContext))]
-    [Migration("20241126135028_new261124")]
-    partial class new261124
+    [Migration("20241128084011_Created-Cart-CartItem")]
+    partial class CreatedCartCartItem
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
