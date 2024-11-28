@@ -22,7 +22,7 @@ namespace Business.Concrete
         [CacheRemoveAspect("ICategoryService.Get")]
         public IResult Add(Category category)
         {
-            IResult result = BusinessRules.Run(CheckIfCategoryNameExists(category.CategoryName));
+            IResult result = BusinessRules.Run(CheckIfCategoryNameExists(category.CategoryName,category.SuperCategoryId));
 
             if (result != null)
             {
@@ -57,9 +57,10 @@ namespace Business.Concrete
         }
 
         //Select * from Categories where CategoryId = 3
-        public IDataResult<Category> GetById(int categoryId)
+        public IDataResult<List<Category>> GetBySuperCategoryId(int superCategoryId)
         {
-            return new SuccessDataResult<Category>(_categoryDal.Get(c => c.CategoryId == categoryId));
+            var categories = _categoryDal.GetAll(c => c.SuperCategoryId == superCategoryId);
+            return new SuccessDataResult<List<Category>>(categories);
         }
 
         [SecuredOperation("admin")]
@@ -77,9 +78,9 @@ namespace Business.Concrete
             return new SuccessResult(Messages.CategoryUpdated); // Başarı mesajı döndür
         }
 
-        private IResult CheckIfCategoryNameExists(string categoryName)
+        private IResult CheckIfCategoryNameExists(string categoryName, int superCategoryId)
         {
-            var result = _categoryDal.GetAll(c => c.CategoryName == categoryName).Any();
+            var result = _categoryDal.GetAll(c => (c.CategoryName == categoryName && c.SuperCategoryId == superCategoryId)).Any();
             if (result)
             {
                 return new ErrorResult(Messages.CategoryNameAlreadyExists);

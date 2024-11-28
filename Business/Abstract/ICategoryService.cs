@@ -1,5 +1,6 @@
 ﻿using Core.Utilities.Results;
 using Entities.Concrete;
+using System.Collections.Generic;
 
 namespace Business.Abstract
 {
@@ -9,6 +10,6 @@ namespace Business.Abstract
         IResult Add(Category category);
         IResult Update(Category category);
         IResult Delete(int categoryID);
-        IDataResult<Category> GetById(int categoryId);
+        IDataResult<List<Category>> GetBySuperCategoryId(int superCategoryId);
     }
 }

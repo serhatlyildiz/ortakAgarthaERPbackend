@@ -63,5 +63,16 @@ namespace WebAPI.Controllers
             }
             return BadRequest(result);
         }
+
+        [HttpGet("getbysupercategoryid")]
+        public IActionResult Get(int superCategoryId)
+        {
+            var result = _categoryService.GetBySuperCategoryId(superCategoryId);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
     }
 }

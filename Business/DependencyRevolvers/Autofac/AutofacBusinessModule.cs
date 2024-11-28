@@ -36,6 +36,9 @@ namespace Business.DependencyRevolvers.Autofac
             builder.RegisterType<ilcelerManager>().As<IilcelerService>().SingleInstance();
             builder.RegisterType<EfilcelerDal>().As<IilcelerDal>().SingleInstance();
 
+            builder.RegisterType<SuperCategoryManager>().As<ISuperCategoryService>().SingleInstance();
+            builder.RegisterType<EfSuperCategory>().As<ISuperCategoryDal>().SingleInstance();
+
             var assembly = System.Reflection.Assembly.GetExecutingAssembly();
 
             builder.RegisterAssemblyTypes(assembly).AsImplementedInterfaces()
