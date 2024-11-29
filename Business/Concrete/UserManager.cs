@@ -67,7 +67,7 @@ namespace Business.Concrete
             if (result.Status) result.Status = false;
             else result.Status = true;
 
-            _userDal.Update(result);
+            _userDal.Delete(result);
             return new SuccessResult(result.FirstName + " " + result.LastName + Messages.UserDeleted);
         }
 
@@ -134,6 +134,13 @@ namespace Business.Concrete
             {
                 string lowerCaseName = filter.Firstname.ToLower();
                 query = query.Where(u => u.FirstName.ToLower().Contains(lowerCaseName));
+            }
+
+            // Filtreleme işlemleri
+            if (!string.IsNullOrEmpty(filter.LastName))
+            {
+                string lowerCaseName = filter.LastName.ToLower();
+                query = query.Where(u => u.LastName.ToLower().Contains(lowerCaseName));
             }
 
             if (!string.IsNullOrEmpty(filter.City))

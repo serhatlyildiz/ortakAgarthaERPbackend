@@ -10,6 +10,7 @@ namespace Entities.DTOs
     public class UserFilterDto : IDto
     {
         public string Firstname { get; set; }
+        public string LastName { get; set; }
         public string City { get; set; }
         public string District { get; set; }
         public bool? Status { get; set; }
