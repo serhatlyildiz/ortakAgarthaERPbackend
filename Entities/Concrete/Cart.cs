@@ -13,5 +13,6 @@ namespace Entities.Concrete
         public DateTime UpdateDate { get; set; }
         public decimal TotalPrice { get; set; }
         public bool Status { get; set; }
+        public bool IsCompleted { get; set; }
     }
 }

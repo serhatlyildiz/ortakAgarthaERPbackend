@@ -1,4 +1,5 @@
 ﻿using Business.Abstract;
+using Business.Constants;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
@@ -10,92 +11,82 @@ namespace Business.Concrete
     {
         private ICartDal _cartDal;
         private ICartItemDal _itemDal;
+        private readonly IProductDal _productDal;
+        private readonly IProductService _productService;
+        private readonly IUserDal _userDal;
 
-        public CartManager(ICartDal cartDal, ICartItemDal cartItemDal)
+        public CartManager(ICartDal cartDal, ICartItemDal cartItemDal, IProductDal productDal, IProductService productService, IUserDal userDal)
         {
             _cartDal = cartDal;
             _itemDal = cartItemDal;
+            _productDal = productDal;
+            _productService = productService;
+            _userDal = userDal;
         }
 
         public IResult AddToCart(AddToCartForUsersDto addToCartForUsers)
         {
-            //// Kullanıcıya ait aktif sepeti al
-            //var result = _cartDal.Get(c => c.UserId == addToCartForUsers.UserId && c.Status == false);
+            var user = _userDal.Get(u => u.Id == addToCartForUsers.UserId);
+            if (user == null)
+            {
+                return new ErrorResult(Messages.UserNotFound);
+            }
 
-            //// Eğer sepet bulunursa
-            //if (result != null)
-            //{
-            //    // Mevcut sepetteki ürünleri kontrol et
-            //    var cartItems = result.CartItems;
+            Cart cart = GetCartByUserId(addToCartForUsers.UserId).Data;
 
-            //    _itemDal.GetAll().FindAll(ci => ci);
-            //    // Sepetteki ürünlerden gelen productId'yi arayın
-            //    var existingItem = cartItems.FirstOrDefault(ci => ci.ProductId == addToCartForUsers.ProductId);
+            if (cart == null)
+            {
+                CreateCart(addToCartForUsers.ProductId);
+                cart = GetCartByUserId(addToCartForUsers.UserId).Data;
+            }
 
-            //    // Eğer ürün zaten sepette varsa, sayısını artır
-            //    if (existingItem != null)
-            //    {
-            //        existingItem.Quantity += 1; // Sayıyı 1 artırıyoruz
-            //        _itemDal.Update(existingItem); // Güncellenmiş ürünü veritabanına kaydediyoruz
-            //        return new SuccessResult("Ürün sepete eklendi ve sayısı artırıldı.");
-            //    }
-            //    else
-            //    {
-            //        // Eğer ürün sepette yoksa yeni bir CartItem oluşturun
-            //        var newItem = new CartItem
-            //        {
-            //            ProductId = addToCartForUsers.ProductId,
-            //            Quantity = 1,
-            //            Price = addToCartForUsers.Price // Fiyat bilgisi de verilebilir
-            //        };
+            List<CartItem> cartItems = _itemDal.GetAll().Where(ci => cart.CartItems.Contains(ci.CartItemId)).ToList();
 
-            //        _itemDal.Add(newItem); // Yeni ürünü ekliyoruz
-            //        result.ListCartItems.Add(newItem); // Sepet listesini güncelliyoruz
-            //        _cartDal.Update(result); // Sepeti güncelliyoruz
-
-            //        return new SuccessResult("Yeni ürün sepete eklendi.");
-            //    }
-            //}
-            //else
-            //{
-            //    // Eğer sepet yoksa, yeni bir sepet oluştur
-            //    var newCart = new Cart
-            //    {
-            //        UserId = addToCartForUsers.UserId,
-            //        Status = false, // Durum aktif (0)
-            //        CreatedDate = DateTime.Now,
-            //        UpdatedDate = DateTime.Now,
-            //        TotalPrice = 0, // Başlangıçta fiyatı sıfır
-            //        ListCartItems = new List<CartItem>()
-            //    };
-
-            //    // Yeni CartItem ekle
-            //    var newItem = new CartItem
-            //    {
-            //        ProductId = addToCartForUsers.ProductId,
-            //        Quantity = 1,
-            //        Price = addToCartForUsers.Price // Fiyat bilgisi
-            //    };
-
-            //    _itemDal.Add(newItem); // Yeni ürünü ekliyoruz
-            //    newCart.ListCartItems.Add(newItem); // Sepet listesine ekliyoruz
-
-            //    _cartDal.Add(newCart); // Yeni sepeti veritabanına ekliyoruz
-
-            //    return new SuccessResult("Yeni sepet oluşturuldu ve ürün eklendi.");
-            //}
-            return null;
+            if (cartItems.Any(ci => ci.ProductId == addToCartForUsers.ProductId))
+            {
+                CartItem cartItem = cartItems.Where(c => c.ProductId == addToCartForUsers.ProductId).First();
+                cartItem.Quantity += 1;
+                cartItem.UnitPrice = _productService.GetById(addToCartForUsers.ProductId).Data.UnitPrice * cartItem.Quantity;
+                _itemDal.Update(cartItem);
+            }
+            else
+            {
+                cart.CartItems.Add(CreateCartItem(addToCartForUsers.ProductId));
+                _cartDal.Update(cart);
+            }
+            return new SuccessResult("Ürün eklendi.");
         }
 
+        public IResult CreateCart(int userId)
+        {
+            Cart cart = new Cart();
+            cart.UserId = userId;
+            cart.CartItems = [];
+            cart.Status = true;
+            cart.CreatedDate = DateTime.Now;
+            cart.UpdateDate = DateTime.Now;
+            cart.IsCompleted = false;
+            _cartDal.Add(cart);
+            return new SuccessResult("Sepet Oluşturuldu.");
+        }
+        public int CreateCartItem(int productId)
+        {
+            CartItem cartItem = new CartItem();
+            cartItem.ProductId = productId;
+            cartItem.Quantity = 1;
+            cartItem.UnitPrice = _productService.GetById(productId).Data.UnitPrice;
+            _itemDal.Add(cartItem);
+            return cartItem.CartItemId;
+        }
 
         public IResult ClearCart(int userId)
         {
             throw new NotImplementedException();
         }
 
-        public IDataResult<CartDto> GetCartByUserId(int userId)
+        public IDataResult<Cart> GetCartByUserId(int userId)
         {
-            throw new NotImplementedException();
+            return new SuccessDataResult<Cart>(_cartDal.Get(c => c.UserId == userId && c.Status == false));
         }
 
         public IDataResult<decimal> GetTotalPrice(int userId)
