@@ -10,5 +10,6 @@ namespace Entities.Concrete
         public int ProductId { get; set; }
         public short Quantity { get; set; }
         public decimal UnitPrice { get; set; }
+        public bool Status { get; set; }
     }
 }

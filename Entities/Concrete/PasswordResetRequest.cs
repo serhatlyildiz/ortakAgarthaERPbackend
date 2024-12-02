@@ -10,7 +10,7 @@ namespace Entities.Concrete
         public int UserId { get; set; }
         public string ResetToken { get; set; }
         public DateTime ExpirationTime { get; set; }
-        public bool IsUsed { get; set; }
+        public bool Status { get; set; }
 
     }
 }

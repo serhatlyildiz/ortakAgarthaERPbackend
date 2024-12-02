@@ -16,10 +16,9 @@ namespace Entities.Concrete
         public int CategoryId { get; set; }
         public string ProductName { get; set; }
         public string ProductDescription { get; set; }  
-        public List<string>? Images { get; set; }
         [Column(TypeName = "decimal(18,2)")]
         public decimal UnitPrice { get; set; }
-        public bool IsActive { get; set; }
+        public bool Status { get; set; }
 
     }
 }
