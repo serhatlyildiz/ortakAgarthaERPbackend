@@ -13,5 +13,6 @@ namespace Entities.Concrete
         [Key]
         public int SuperCategoryId { get; set; }
         public string SuperCategoryName { get; set; }
+        public bool Status { get; set; }
     }
 }
