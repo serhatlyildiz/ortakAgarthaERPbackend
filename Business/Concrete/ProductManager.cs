@@ -7,6 +7,7 @@ using Core.Aspects.Autofac.Validation;
 using Core.Utilities.Business;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
+using DataAccess.Concrete.EntityFramework;
 using Entities.Concrete;
 using Entities.DTOs;
 
@@ -90,10 +91,6 @@ namespace Business.Concrete
         public IDataResult<List<ProductDetailDto>> GetProductDetailsForAdmin()
         {
             return new SuccessDataResult<List<ProductDetailDto>>(_ProductDal.GetProductDetails());
-        }
-        public IDataResult<List<ProductDetailDto>> GetProductDetails()
-        {
-            return new SuccessDataResult<List<ProductDetailDto>>(_ProductDal.GetProductDetails().Where(p => p.IsActive == true).ToList());
         }
 
         [SecuredOperation("product.add,admin")]
@@ -181,6 +178,12 @@ namespace Business.Concrete
 
             _ProductDal.Delete(result);
             return new SuccessResult(result.ProductName + Messages.ProductDeleted);
+        }
+
+        public IDataResult<List<ProductDetailDto>> GetProductDetails()
+        {
+            var productDetails = _ProductDal.GetProductDetails();
+            return new SuccessDataResult<List<ProductDetailDto>>(productDetails);
         }
     }
 }
