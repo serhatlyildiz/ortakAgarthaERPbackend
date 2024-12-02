@@ -1,4 +1,6 @@
 ﻿using Core.Utilities.Results;
+using System.Net;
+using System.Net.Mail;
 
 namespace Core.Utilities.Helpers
 {
@@ -7,70 +9,48 @@ namespace Core.Utilities.Helpers
         public static IResult SendPasswordResetEmail(string email, string resetToken)
         {
             var resetLink = $"http://localhost:5038/reset-password?token={resetToken}";
-            return new SuccessResult(resetLink);
-            var subject = "Şifre Sıfırlama Talebi";
+            var subject = "ŞİFRE SIFIRLAMA TALEBİ";
             var body = $"Şifre sıfırlama linkiniz: <a href='{resetLink}'>Buraya Tıklayın</a>";
 
-            //SendEmail(email, subject, body);
+            var result = YandexSmtp(email, subject, body);
+            return result;
         }
 
-        //public static void SendEmail(string toEmail, string subject, string body)
-        //{
-        //    try
-        //    {
-        //        // Gmail servisi alınıyor
-        //        var service = GoogleOAuthHelper.GetGmailService();
+        private static IResult YandexSmtp(string toEmail, string subject, string body)
+        {
+            var fromEmail = "duraliasan@yandex.com";
+            var appPassword = "flvnducroqrwnwca";
 
-        //        // E-posta mesajı hazırlanıyor
-        //        var mailMessage = new MailMessage
-        //        {
-        //            From = new MailAddress("duraliasan06ank@gmail.com"),
-        //            Subject = subject,
-        //            Body = body,
-        //            IsBodyHtml = true
-        //        };
-        //        mailMessage.To.Add(toEmail);
 
-        //        // E-posta içeriğini base64 encoding formatında Gmail API'ye gönderilecek şekilde hazırlıyoruz
-        //        var message = new Message
-        //        {
-        //            Raw = EncodeMessage(mailMessage)
-        //        };
+            var smtpClient = new SmtpClient()
+            {
+                Port = 587, // SSL: 465, TLS: 587, Eski:25
+                Credentials = new NetworkCredential(fromEmail, appPassword),
+                EnableSsl = true,
+                Host = "smtp.yandex.com",
+                UseDefaultCredentials = false,
+                Timeout = 50000,
 
-        //        // E-posta gönderimi
-        //        var request = service.Users.Messages.Send(message, "me");
-        //        var result = request.Execute();
+            };
 
-        //        Console.WriteLine($"E-posta başarıyla gönderildi. Mesaj ID: {result.Id}");
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Console.WriteLine($"E-posta gönderilemedi: {ex.Message}");
-        //    }
-        //}
+            var mailMessage = new MailMessage
+            {
+                From = new MailAddress(fromEmail),
+                Subject = subject,
+                Body = body,
+                IsBodyHtml = true
+            };
+            mailMessage.To.Add(toEmail);
 
-        //// MailMessage'i base64 encoding formatına dönüştürme
-        //private static string EncodeMessage(MailMessage mailMessage)
-        //{
-        //    var emailContent = new StringBuilder();
-
-        //    // Başlıklar
-        //    emailContent.AppendLine("From: " + mailMessage.From.Address);
-        //    emailContent.AppendLine("To: " + string.Join(",", mailMessage.To));
-        //    emailContent.AppendLine("Subject: " + mailMessage.Subject);
-        //    emailContent.AppendLine("MIME-Version: 1.0");
-        //    emailContent.AppendLine("Content-Type: text/html; charset=UTF-8");
-        //    emailContent.AppendLine();
-
-        //    // Gövde
-        //    emailContent.AppendLine(mailMessage.Body);
-
-        //    // E-posta içeriğini Base64'e encode et
-        //    byte[] byteArray = Encoding.UTF8.GetBytes(emailContent.ToString());
-        //    return Convert.ToBase64String(byteArray)
-        //        .Replace('+', '-')
-        //        .Replace('/', '_')
-        //        .Replace("=", "");
-        //}
+            try
+            {
+                smtpClient.Send(mailMessage);
+                return new SuccessResult("Mail kutunuzu kontrol edin.");
+            }
+            catch (Exception ex)
+            {
+                return new ErrorResult("E-mail gönderilemedi.");
+            }
+        }
     }
 }

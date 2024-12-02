@@ -34,7 +34,7 @@ namespace Business.Concrete
             return new SuccessResult(Messages.CategoryAdded);
         }
 
-        //[SecuredOperation("admin")]
+        [SecuredOperation("admin")]
         [CacheRemoveAspect("ICategoryService.Get")]
         public IResult Delete(int categoryID)
         {
