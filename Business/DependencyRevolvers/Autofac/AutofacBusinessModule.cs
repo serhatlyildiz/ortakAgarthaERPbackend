@@ -39,6 +39,11 @@ namespace Business.DependencyRevolvers.Autofac
             builder.RegisterType<SuperCategoryManager>().As<ISuperCategoryService>().SingleInstance();
             builder.RegisterType<EfSuperCategory>().As<ISuperCategoryDal>().SingleInstance();
 
+            builder.RegisterType<CartManager>().As<ICartService>().SingleInstance();
+            builder.RegisterType<EfCartDal>().As<ICartDal>().SingleInstance();
+
+            builder.RegisterType<EfCartItemDal>().As<ICartItemDal>().SingleInstance();
+
             var assembly = System.Reflection.Assembly.GetExecutingAssembly();
 
             builder.RegisterAssemblyTypes(assembly).AsImplementedInterfaces()

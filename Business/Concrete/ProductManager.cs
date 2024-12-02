@@ -168,7 +168,7 @@ namespace Business.Concrete
         }
         */
 
-        [SecuredOperation("product.add,admin")]
+        //[SecuredOperation("product.add,admin")]
         [CacheRemoveAspect("IProductService.Get")]
         public IResult Delete(int productID)
         {
@@ -178,8 +178,8 @@ namespace Business.Concrete
             {
                 return new ErrorResult(Messages.ProductNotFound);
             }
-            if (result.IsActive) result.IsActive = false;
-            else result.IsActive = true;
+            //if (result.IsActive) result.IsActive = false;
+            //else result.IsActive = true;
 
             _ProductDal.Update(result);
             return new SuccessResult(result.ProductName + Messages.ProductDeleted);
