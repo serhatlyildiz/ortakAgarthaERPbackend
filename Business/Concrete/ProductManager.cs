@@ -61,7 +61,7 @@ namespace Business.Concrete
         [PerformanceAspect(5000)]
         public IDataResult<List<Product>> GetAll()
         {
-            return new SuccessDataResult<List<Product>>(_ProductDal.GetAll().Where(p => p.IsActive == true).ToList(), Messages.ProductsListed);
+            return new SuccessDataResult<List<Product>>(_ProductDal.GetAll().Where(p => p.Status == true).ToList(), Messages.ProductsListed);
         }
 
 
@@ -82,7 +82,7 @@ namespace Business.Concrete
         [CacheAspect]
         public IDataResult<Product> GetById(int id)
         {
-            return new SuccessDataResult<Product>(_ProductDal.Get(p => p.ProductId == id && p.IsActive == true));
+            return new SuccessDataResult<Product>(_ProductDal.Get(p => p.ProductId == id && p.Status == true));
         }
 
 
@@ -178,8 +178,8 @@ namespace Business.Concrete
             {
                 return new ErrorResult(Messages.ProductNotFound);
             }
-            if (result.IsActive) result.IsActive = false;
-            else result.IsActive = true;
+            if (result.Status) result.Status = false;
+            else result.Status = true;
 
             _ProductDal.Update(result);
             return new SuccessResult(result.ProductName + Messages.ProductDeleted);

@@ -96,7 +96,7 @@ namespace Business.Concrete
                 UserId = user.Id,
                 ResetToken = token,
                 ExpirationTime = expirationTime,
-                IsUsed = false
+                Status = false
             };
 
             _passwordResetDal.Add(passwordReset);
@@ -109,7 +109,7 @@ namespace Business.Concrete
 
         public IResult ResetPassword(PasswordResetDto passwordResetDto)
         {
-            var resetEntry = _passwordResetDal.Get(p => p.ResetToken == passwordResetDto.ResetToken && !p.IsUsed);
+            var resetEntry = _passwordResetDal.Get(p => p.ResetToken == passwordResetDto.ResetToken && !p.Status);
 
             if (resetEntry == null || resetEntry.ExpirationTime < DateTime.Now)
                 return new ErrorResult(Messages.InvalidOrExpiredToken);
@@ -126,7 +126,7 @@ namespace Business.Concrete
 
             _userService.Update(user);
 
-            resetEntry.IsUsed = true;
+            resetEntry.Status = true;
             _passwordResetDal.Update(resetEntry);
 
             return new SuccessResult(Messages.PasswordResetSuccessful);

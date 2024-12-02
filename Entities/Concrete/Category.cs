@@ -17,6 +17,7 @@ namespace Entities.Concrete
         public int CategoryId { get; set; }
         public int SuperCategoryId { get; set; }
         public string CategoryName { get; set; }
+        public bool Status { get; set; }
 
     }
 }
