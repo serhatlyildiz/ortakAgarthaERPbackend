@@ -28,7 +28,7 @@ namespace Business.Concrete
         {
             var user = _userDal.Get(u => u.Id == addToCartForUsers.UserId);
             if (user == null) return new ErrorResult(Messages.UserNotFound);
-            var product = _productDal.GetProductDetails().Where(p => p.ProductId == addToCartForUsers.ProductId || p.IsActive == true || p.UnitInStock >= 0);
+            var product = _productDal.GetProductDetails().Where(p => p.ProductId == addToCartForUsers.ProductId || p.Status == true || p.UnitsInStock >= 0);
             if (product == null) return new ErrorResult(Messages.ProductNotFound);
 
 

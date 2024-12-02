@@ -62,9 +62,9 @@ namespace WebAPI.Controllers
             var result = _productService.GetProductDetails();
             if (result.Success)
             {
-                return Ok(result);
+                return Ok(result.Data);
             }
-            return BadRequest(result);
+            return BadRequest(result.Message);
         }
 
         [HttpPost("add")]
