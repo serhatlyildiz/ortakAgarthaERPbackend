@@ -27,16 +27,16 @@ namespace Business.Concrete
         public IResult AddToCart(AddToCartForUsersDto addToCartForUsers)
         {
             var user = _userDal.Get(u => u.Id == addToCartForUsers.UserId);
-            if (user == null)
-            {
-                return new ErrorResult(Messages.UserNotFound);
-            }
+            if (user == null) return new ErrorResult(Messages.UserNotFound);
+            var product = _productDal.GetProductDetails().Where(p => p.ProductId == addToCartForUsers.ProductId || p.IsActive == true || p.UnitInStock >= 0);
+            if (product == null) return new ErrorResult(Messages.ProductNotFound);
+
 
             Cart cart = GetCartByUserId(addToCartForUsers.UserId).Data;
 
             if (cart == null)
             {
-                CreateCart(addToCartForUsers.ProductId);
+                CreateCart(addToCartForUsers.UserId);
                 cart = GetCartByUserId(addToCartForUsers.UserId).Data;
             }
 
@@ -49,11 +49,10 @@ namespace Business.Concrete
                 cartItem.UnitPrice = _productService.GetById(addToCartForUsers.ProductId).Data.UnitPrice * cartItem.Quantity;
                 _itemDal.Update(cartItem);
             }
-            else
-            {
-                cart.CartItems.Add(CreateCartItem(addToCartForUsers.ProductId));
-                _cartDal.Update(cart);
-            }
+            else cart.CartItems.Add(CreateCartItem(addToCartForUsers.ProductId));
+
+            cart.UpdateDate = DateTime.Now;
+            _cartDal.Update(cart);
             return new SuccessResult("Ürün eklendi.");
         }
 
@@ -86,7 +85,7 @@ namespace Business.Concrete
 
         public IDataResult<Cart> GetCartByUserId(int userId)
         {
-            return new SuccessDataResult<Cart>(_cartDal.Get(c => c.UserId == userId && c.Status == false));
+            return new SuccessDataResult<Cart>(_cartDal.Get(c => c.UserId == userId && c.Status == true));
         }
 
         public IDataResult<decimal> GetTotalPrice(int userId)
