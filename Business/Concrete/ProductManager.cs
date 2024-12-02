@@ -168,7 +168,7 @@ namespace Business.Concrete
         }
         */
 
-        //[SecuredOperation("product.add,admin")]
+        [SecuredOperation("product.add,admin")]
         [CacheRemoveAspect("IProductService.Get")]
         public IResult Delete(int productID)
         {
@@ -179,11 +179,7 @@ namespace Business.Concrete
                 return new ErrorResult(Messages.ProductNotFound);
             }
 
-            if (result.Status) result.Status = false;
-            else result.Status = true;
-
-
-            _ProductDal.Update(result);
+            _ProductDal.Delete(result);
             return new SuccessResult(result.ProductName + Messages.ProductDeleted);
         }
     }
