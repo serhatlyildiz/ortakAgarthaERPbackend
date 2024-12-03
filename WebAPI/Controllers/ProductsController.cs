@@ -1,5 +1,6 @@
-﻿using Business.Abstract;
+using Business.Abstract;
 using Entities.Concrete;
+using Entities.DTOs;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
@@ -99,6 +100,16 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
+        [HttpPost("filter")]
+        public IActionResult Filter([FromBody] ProductFilterModel filter)
+        {
+            var result = _productService.GetProductDetailsWithFilters(filter);
+            if (result.Success)
+            {
+                return Ok(result.Data);
+            }
+            return BadRequest(result.Message);
+
         [HttpGet("restore")]
         public IActionResult Restore(int productID)
         {
@@ -108,6 +119,7 @@ namespace WebAPI.Controllers
                 return Ok(result);
             }
             return BadRequest(result);
+
         }
     }
 }

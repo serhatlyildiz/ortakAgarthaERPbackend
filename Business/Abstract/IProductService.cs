@@ -13,6 +13,7 @@ namespace Business.Abstract
         IResult Add(Product product);
         IResult Update(Product product);
         IResult Delete(int productID);
+        IDataResult<List<ProductDetailDto>> GetProductDetailsWithFilters(ProductFilterModel filter);
         IResult Restore(int productID);
     }
 }

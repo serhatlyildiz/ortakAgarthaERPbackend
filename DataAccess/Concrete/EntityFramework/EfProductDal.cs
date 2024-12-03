@@ -89,7 +89,7 @@ namespace DataAccess.Concrete.EntityFramework
                     query = query.Where(q => q.UnitPrice <= filter.MaxPrice.Value);
                 if (filter.MinStock.HasValue)
                     query = query.Where(q => q.UnitsInStock >= filter.MinStock.Value);
-                if (filter.MaxStock.HasValue)
+                if (filter.MaxStock.HasValue && filter.MaxStock.Value > 0)
                     query = query.Where(q => q.UnitsInStock <= filter.MaxStock.Value);
                 if (!string.IsNullOrEmpty(filter.ColorName))
                     query = query.Where(q => q.ColorName.Contains(filter.ColorName));
@@ -101,6 +101,7 @@ namespace DataAccess.Concrete.EntityFramework
                 return query.ToList();
             }
         }
+
 
     }
 }

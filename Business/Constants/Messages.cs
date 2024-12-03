@@ -13,6 +13,7 @@
         public static string ProductDeleted = " ürünü silindi";
         public static string Restored = " Geri yüklendi.";
         public static string ProductUpdated = "Ürün güncellendi";
+        public static string ProductsFiltered = "Filtreleme uygulandı";
 
         //------------------------------------------- CATEGORY ------------------------------------------
         public static string CategoryLimitExceded = "Kategori limiti aşıldığı için yeni ürün eklenemiyor";
@@ -71,6 +72,5 @@
         public static string InvalidOrExpiredToken = "Geçersiz veya süresi dolmuş bir token.";
         public static string PasswordResetSuccessful = "Şifre başarıyla sıfırlandı.";
 
-        
     }
 }
