@@ -186,10 +186,24 @@ namespace Business.Concrete
             return new SuccessDataResult<List<ProductDetailDto>>(productDetails);
         }
 
+
         public IDataResult<List<ProductDetailDto>> GetProductDetailsWithFilters(ProductFilterModel filter)
         {
             var result = _ProductDal.GetProductDetailsWithFilters(filter);
             return new SuccessDataResult<List<ProductDetailDto>>(result, Messages.ProductsFiltered);
+
+        public IResult Restore(int productID)
+        {
+            var result = _ProductDal.Get(p => p.ProductId == productID);
+
+            if (result == null)
+            {
+                return new ErrorResult(Messages.ProductNotFound);
+            }
+
+            _ProductDal.Restore(result);
+            return new SuccessResult(result.ProductName + Messages.Restored);
+
         }
     }
 }

@@ -11,6 +11,7 @@
         public static string ProductNameAlreadyExists = "Bu isimde zaten başka bir ürün var";
         public static string ProductNotFound = "Ürün bulunamadı";
         public static string ProductDeleted = " ürünü silindi";
+        public static string Restored = " Geri yüklendi.";
         public static string ProductUpdated = "Ürün güncellendi";
         public static string ProductsFiltered = "Filtreleme uygulandı";
 
@@ -68,10 +69,8 @@
 
         //-------------------------------------------FORGOT-PASS-----------------------------------------------------
         public static string PasswordResetRequested = "Şifre sıfırlama isteği alındı. E-postanızı kontrol edin.";
-        public static string InvalidOrExpiredToken = "Geçersiz veya süresi dolmuş bir bağlantı.";
+        public static string InvalidOrExpiredToken = "Geçersiz veya süresi dolmuş bir token.";
         public static string PasswordResetSuccessful = "Şifre başarıyla sıfırlandı.";
-
-
 
     }
 }

@@ -14,6 +14,6 @@ namespace Business.Abstract
         IResult Update(Product product);
         IResult Delete(int productID);
         IDataResult<List<ProductDetailDto>> GetProductDetailsWithFilters(ProductFilterModel filter);
-
+        IResult Restore(int productID);
     }
 }
