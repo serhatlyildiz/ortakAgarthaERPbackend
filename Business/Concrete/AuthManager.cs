@@ -104,7 +104,7 @@ namespace Business.Concrete
             // E-posta gönderme işlemi
             var result = EmailHelper.SendPasswordResetEmail(user.Email, token);
 
-            return new SuccessResult(result.Message);
+            return result;
         }
 
         public IResult ResetPassword(PasswordResetDto passwordResetDto)

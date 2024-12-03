@@ -69,7 +69,7 @@ namespace WebAPI.Controllers
         {
             var result = _authService.RequestPasswordReset(passwordResetRequestDto);
             if (!result.Success)
-                return BadRequest(result.Message);
+                return BadRequest(result);
 
             return Ok(result);
         }
@@ -79,9 +79,9 @@ namespace WebAPI.Controllers
         {
             var result = _authService.ResetPassword(passwordResetDto);
             if (!result.Success)
-                return BadRequest(result.Message);
+                return BadRequest(result);
 
-            return Ok(result.Message);
+            return Ok(result);
         }
 
     }

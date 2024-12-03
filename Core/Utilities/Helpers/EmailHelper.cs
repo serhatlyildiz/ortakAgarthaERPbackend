@@ -8,7 +8,7 @@ namespace Core.Utilities.Helpers
     {
         public static IResult SendPasswordResetEmail(string email, string resetToken)
         {
-            var resetLink = $"http://localhost:5038/reset-password?token={resetToken}";
+            var resetLink = $"http://localhost:4200/password-reset?token={resetToken}";
             var subject = "ŞİFRE SIFIRLAMA TALEBİ";
             var body = $"Şifre sıfırlama linkiniz: <a href='{resetLink}'>Buraya Tıklayın</a>";
 
