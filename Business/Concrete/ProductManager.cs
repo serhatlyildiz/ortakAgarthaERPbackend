@@ -185,5 +185,11 @@ namespace Business.Concrete
             var productDetails = _ProductDal.GetProductDetails();
             return new SuccessDataResult<List<ProductDetailDto>>(productDetails);
         }
+
+        public IDataResult<List<ProductDetailDto>> GetProductDetailsWithFilters(ProductFilterModel filter)
+        {
+            var result = _ProductDal.GetProductDetailsWithFilters(filter);
+            return new SuccessDataResult<List<ProductDetailDto>>(result, Messages.ProductsFiltered);
+        }
     }
 }
