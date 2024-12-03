@@ -67,7 +67,7 @@
 
         //-------------------------------------------FORGOT-PASS-----------------------------------------------------
         public static string PasswordResetRequested = "Şifre sıfırlama isteği alındı. E-postanızı kontrol edin.";
-        public static string InvalidOrExpiredToken = "Geçersiz veya süresi dolmuş bir token.";
+        public static string InvalidOrExpiredToken = "Geçersiz veya süresi dolmuş bir bağlantı.";
         public static string PasswordResetSuccessful = "Şifre başarıyla sıfırlandı.";
 
     }
