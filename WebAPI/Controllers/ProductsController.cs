@@ -56,6 +56,7 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
+
         [HttpGet("getproductdetails")]
         public IActionResult GetProductDetails()
         {

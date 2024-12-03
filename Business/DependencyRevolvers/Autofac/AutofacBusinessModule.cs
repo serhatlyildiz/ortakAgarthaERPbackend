@@ -42,6 +42,9 @@ namespace Business.DependencyRevolvers.Autofac
             builder.RegisterType<CartManager>().As<ICartService>().SingleInstance();
             builder.RegisterType<EfCartDal>().As<ICartDal>().SingleInstance();
 
+            builder.RegisterType<ColorsManager>().As<IColorsService>().SingleInstance();
+            builder.RegisterType<EfColorsDal>().As<IColorDal>().SingleInstance();
+
             builder.RegisterType<EfCartItemDal>().As<ICartItemDal>().SingleInstance();
 
             var assembly = System.Reflection.Assembly.GetExecutingAssembly();
