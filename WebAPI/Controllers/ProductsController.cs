@@ -1,5 +1,6 @@
 ﻿using Business.Abstract;
 using Entities.Concrete;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers
@@ -21,9 +22,6 @@ namespace WebAPI.Controllers
         [HttpGet("getall")]
         public IActionResult GetAll()
         {
-            //Swagger
-            //Dependency chain --
-
             Thread.Sleep(1000);
 
             var result = _productService.GetAll();
@@ -63,9 +61,9 @@ namespace WebAPI.Controllers
             var result = _productService.GetProductDetails();
             if (result.Success)
             {
-                return Ok(result.Data);
+                return Ok(result);
             }
-            return BadRequest(result.Message);
+            return BadRequest(result);
         }
 
         [HttpPost("add")]
@@ -94,6 +92,17 @@ namespace WebAPI.Controllers
         public IActionResult Update(Product product)
         {
             var result = _productService.Update(product);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+
+        [HttpGet("restore")]
+        public IActionResult Restore(int productID)
+        {
+            var result = _productService.Restore(productID);
             if (result.Success)
             {
                 return Ok(result);

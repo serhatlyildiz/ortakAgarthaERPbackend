@@ -1,5 +1,4 @@
 ﻿using Business.Abstract;
-using Core.Entities.Concrete;
 using DataAccess.Abstract;
 using Entities.DTOs;
 using Microsoft.AspNetCore.Mvc;
@@ -83,6 +82,17 @@ namespace WebAPI.Controllers
             if (result == null)
                 return BadRequest(result);
             return Ok(result);
+        }
+
+        [HttpGet("restore")]
+        public IActionResult Restore(int userID)
+        {
+            var result = _userService.Restore(userID);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
         }
     }
 }
