@@ -11,6 +11,7 @@ namespace Business.Abstract
         IResult Update(Users user);
         IResult UpdateForAdmin(UserForUpdateDto user);
         IResult Delete(int userID);
+        IResult Restore(int userID);
         IDataResult<List<Users>> GetAll();
         Users GetByMail(string email);
         Users GetById(int id);

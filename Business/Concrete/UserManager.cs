@@ -5,6 +5,7 @@ using Core.Aspects.Autofac.Caching;
 using Core.Entities.Concrete;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
+using DataAccess.Concrete.EntityFramework;
 using Entities.DTOs;
 using System.Linq;
 
@@ -64,8 +65,6 @@ namespace Business.Concrete
             {
                 return new ErrorResult(Messages.ProductNotFound);
             }
-            if (result.Status) result.Status = false;
-            else result.Status = true;
 
             _userDal.Delete(result);
             return new SuccessResult(result.FirstName + " " + result.LastName + Messages.UserDeleted);
@@ -191,6 +190,19 @@ namespace Business.Concrete
         public IDataResult<UserForUpdateDto> GetByIdAdmin(int id)
         {
             return new SuccessDataResult<UserForUpdateDto>(_userDal.GetAllForUpdates().Find(u => u.Id == id));
+        }
+
+        public IResult Restore(int Id)
+        {
+            var result = _userDal.Get(p => p.Id == Id);
+
+            if (result == null)
+            {
+                return new ErrorResult(Messages.ProductNotFound);
+            }
+
+            _userDal.Restore(result);
+            return new SuccessResult(result.FirstName + Messages.Restored);
         }
     }
 }

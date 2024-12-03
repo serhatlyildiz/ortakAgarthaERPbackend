@@ -185,5 +185,18 @@ namespace Business.Concrete
             var productDetails = _ProductDal.GetProductDetails();
             return new SuccessDataResult<List<ProductDetailDto>>(productDetails);
         }
+
+        public IResult Restore(int productID)
+        {
+            var result = _ProductDal.Get(p => p.ProductId == productID);
+
+            if (result == null)
+            {
+                return new ErrorResult(Messages.ProductNotFound);
+            }
+
+            _ProductDal.Restore(result);
+            return new SuccessResult(result.ProductName + Messages.Restored);
+        }
     }
 }
