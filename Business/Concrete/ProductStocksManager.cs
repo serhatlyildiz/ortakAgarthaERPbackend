@@ -59,6 +59,11 @@ namespace Business.Concrete
             return new SuccessDataResult<List<ProductStocks>>(_productStocksDal.GetAll(p => p.ProductId == ProductId));
         }
 
+        public IDataResult<ProductStocks> GetById(int productStocksId)
+        {
+            return new SuccessDataResult<ProductStocks>(_productStocksDal.Get(ps => ps.ProductStockId == productStocksId));
+        }
+
         [CacheAspect]
         public IDataResult<ProductStocks> GetByProductId(int ProductId)
         {

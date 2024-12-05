@@ -14,5 +14,7 @@ namespace Entities.Concrete
         public int id { get; set; }
         public string ilce { get; set; }
         public int ilno { get; set; }
+        public bool Status { get; set; }
+
     }
 }

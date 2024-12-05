@@ -10,6 +10,8 @@ namespace Entities.Concrete
         public int UserId { get; set; }
         public int ProductId { get; set; }
         public DateTime OrderDate { get; set; }
+        public bool Status { get; set; }
+
 
     }
 }
