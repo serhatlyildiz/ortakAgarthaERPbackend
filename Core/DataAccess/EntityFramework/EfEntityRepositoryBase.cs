@@ -1,6 +1,9 @@
-﻿using Core.Entities;
+﻿using Castle.Components.DictionaryAdapter.Xml;
+using Core.Entities;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using System.Reflection;
 
 namespace Core.DataAccess.EntityFramework
 {
@@ -37,6 +40,14 @@ namespace Core.DataAccess.EntityFramework
         {
             using (TContext context = new TContext())
             {
+                //var entity = context.Set<TEntity>().SingleOrDefault(filter);
+
+                //var status = typeof(TEntity).GetProperty("Status").GetValue(entity);
+                //if (status == null || status.Equals(false))
+                //{
+                //    return null;
+                //}
+
                 return context.Set<TEntity>().SingleOrDefault(filter);
             }
         }

@@ -42,7 +42,7 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
-        [HttpPost("delete")]
+        [HttpGet("delete")]
         public IActionResult Delete(int productStocksId)
         {
             var result = _productStocksService.Delete(productStocksId);
@@ -77,6 +77,17 @@ namespace WebAPI.Controllers
 
         [HttpGet("getbyproductid")]
         public IActionResult GetByProductId(int productId)
+        {
+            var result = _productStocksService.GetByProductId(productId);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+
+        [HttpGet("restore")]
+        public IActionResult getRestore(int productId)
         {
             var result = _productStocksService.GetByProductId(productId);
             if (result.Success)

@@ -67,6 +67,17 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
+        [HttpGet("getproductstockdetails")]
+        public IActionResult GetProductStockDetails(int productStockId)
+        {
+            var result = _productService.GetProductStockDetails(productStockId);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+
         [HttpPost("add")]
         public IActionResult Add(Product product)
         {
@@ -109,6 +120,7 @@ namespace WebAPI.Controllers
                 return Ok(result.Data);
             }
             return BadRequest(result.Message);
+        }
 
         [HttpGet("restore")]
         public IActionResult Restore(int productID)

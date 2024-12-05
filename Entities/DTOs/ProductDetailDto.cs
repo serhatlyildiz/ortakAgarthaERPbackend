@@ -1,5 +1,6 @@
 ﻿public class ProductDetailDto
 {
+    public int ProductStockId { get; set; }
     public int ProductId { get; set; }
     public int ColorId { get; set; }
     public int ProductStocksId { get; set; }
