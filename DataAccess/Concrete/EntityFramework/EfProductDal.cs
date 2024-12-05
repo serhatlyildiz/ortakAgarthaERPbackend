@@ -46,7 +46,7 @@ namespace DataAccess.Concrete.EntityFramework
                                           Status = ps.Status
                                       }).ToList();
 
-                return productDetails;
+                return productDetails.Where(x => x.Status == true).ToList();
             }
         }
 

@@ -11,49 +11,57 @@ namespace Business.Concrete
     {
         private ICartDal _cartDal;
         private ICartItemDal _itemDal;
-        private readonly IProductDal _productDal;
         private readonly IProductService _productService;
-        private readonly IUserDal _userDal;
+        private readonly IUserService _userService;
+        private readonly IProductStocksService _productStocksService;
 
-        public CartManager(ICartDal cartDal, ICartItemDal cartItemDal, IProductDal productDal, IProductService productService, IUserDal userDal)
+        public CartManager(ICartDal cartDal, ICartItemDal cartItemDal, IProductService productService, IUserService userService, IProductStocksService productStocksService)
         {
             _cartDal = cartDal;
             _itemDal = cartItemDal;
-            _productDal = productDal;
             _productService = productService;
-            _userDal = userDal;
+            _userService = userService;
+            _productStocksService = productStocksService;
         }
 
         public IResult AddToCart(AddToCartForUsersDto addToCartForUsers)
         {
-            var user = _userDal.Get(u => u.Id == addToCartForUsers.UserId);
+            var user = _userService.GetById(addToCartForUsers.UserId);
             if (user == null) return new ErrorResult(Messages.UserNotFound);
-            var product = _productDal.GetProductDetails().Where(p => p.ProductId == addToCartForUsers.ProductId || p.Status == true || p.UnitsInStock >= 0);
-            if (product == null) return new ErrorResult(Messages.ProductNotFound);
+
+            var productStocks = _productStocksService.GetById(addToCartForUsers.ProductStockId);
+            if (productStocks.Data == null || productStocks.Data.UnitsInStock <= 0) return new ErrorResult(Messages.ProductNotFound);
 
 
-            Cart cart = GetCartByUserId(addToCartForUsers.UserId).Data;
+            var cart = GetCartByUserId(addToCartForUsers.UserId);
 
             if (cart == null)
             {
                 CreateCart(addToCartForUsers.UserId);
-                cart = GetCartByUserId(addToCartForUsers.UserId).Data;
+                cart = GetCartByUserId(addToCartForUsers.UserId);
             }
 
             List<CartItem> cartItems = _itemDal.GetAll().Where(ci => cart.CartItems.Contains(ci.CartItemId)).ToList();
 
-            if (cartItems.Any(ci => ci.ProductId == addToCartForUsers.ProductId))
+            if (cartItems.Any(ci => ci.ProductStockId == addToCartForUsers.ProductStockId))
             {
-                CartItem cartItem = cartItems.Where(c => c.ProductId == addToCartForUsers.ProductId).First();
+                CartItem cartItem = cartItems.Where(c => c.ProductStockId == addToCartForUsers.ProductStockId).First();
                 cartItem.Quantity += addToCartForUsers.Quantity;
-                if (cartItem.Quantity >= addToCartForUsers.Quantity)
+                if (cartItem.Quantity > productStocks.Data.UnitsInStock)
                 {
                     return new ErrorResult("Stok sınırına ulaşıldı.");
                 }
-                cartItem.UnitPrice = _productService.GetById(addToCartForUsers.ProductId).Data.UnitPrice * cartItem.Quantity;
+                cartItem.UnitPrice = _productService.GetById(_productStocksService.GetById(addToCartForUsers.ProductStockId).Data.ProductId).Data.UnitPrice * cartItem.Quantity;
+                cart.TotalPrice += cartItem.UnitPrice;
                 _itemDal.Update(cartItem);
             }
-            else cart.CartItems.Add(CreateCartItem(addToCartForUsers.ProductId));
+            else
+            {
+                var result = CreateCartItem(addToCartForUsers, productStocks);
+                if (!result.Success) return new ErrorResult("Stok sınırı aşıldı.");
+                cart.CartItems.Add(result.Data.CartItemId);
+                cart.TotalPrice += result.Data.UnitPrice;
+            }
 
             cart.UpdateDate = DateTime.Now;
             _cartDal.Update(cart);
@@ -69,38 +77,37 @@ namespace Business.Concrete
             cart.CreatedDate = DateTime.Now;
             cart.UpdateDate = DateTime.Now;
             cart.IsCompleted = false;
+            cart.TotalPrice = 0;
             _cartDal.Add(cart);
             return new SuccessResult("Sepet Oluşturuldu.");
         }
-        public int CreateCartItem(int productId)
+        public IDataResult<CartItem> CreateCartItem(AddToCartForUsersDto addToCartForUsers, IDataResult<ProductStocks> productStocks)
         {
             CartItem cartItem = new CartItem();
-            cartItem.ProductId = productId;
-            cartItem.Quantity = 1;
-            cartItem.UnitPrice = _productService.GetById(productId).Data.UnitPrice;
+            cartItem.ProductStockId = addToCartForUsers.ProductStockId;
+            cartItem.Status = true;
+            cartItem.Quantity = addToCartForUsers.Quantity;
+            cartItem.UnitPrice = _productService.GetById(_productStocksService.GetById(addToCartForUsers.ProductStockId).Data.ProductId).Data.UnitPrice * cartItem.Quantity;
+            if (cartItem.Quantity > productStocks.Data.UnitsInStock)
+            {
+                return new ErrorDataResult<CartItem>("Stok sınırına ulaşıldı.");
+            }
             _itemDal.Add(cartItem);
-            return cartItem.CartItemId;
+            return new SuccessDataResult<CartItem>(cartItem);
         }
 
         public IResult ClearCart(int userId)
         {
-            throw new NotImplementedException();
+            var cart = GetCartByUserId(userId);
+            cart.Status = false;
+            cart.TotalPrice = 0;
+            _cartDal.Update(cart);
+            return new SuccessResult("Sepet boşaldı.");
         }
 
-        public IDataResult<Cart> GetCartByUserId(int userId)
+        public Cart GetCartByUserId(int userId)
         {
-            return new SuccessDataResult<Cart>(_cartDal.Get(c => c.UserId == userId && c.Status == true));
-        }
-
-        public IDataResult<decimal> GetTotalPrice(int userId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IResult RemoveFromCart(AddToCartForUsersDto addToCartForUsers)
-        {
-            throw new NotImplementedException();
+            return _cartDal.Get(c => c.UserId == userId);
         }
     }
-
 }
