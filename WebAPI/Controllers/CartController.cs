@@ -21,7 +21,7 @@ namespace WebAPI.Controllers
             var result = _cartService.AddToCart(addToCartForUsersDto);
             if (!result.Success)
             {
-                return BadRequest(result.Message);
+                return BadRequest(result);
             }
             return Ok(result);
         }
