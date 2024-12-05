@@ -210,7 +210,7 @@ namespace Business.Concrete
         public IDataResult<List<ProductDetailDto>> GetProductStockDetails(int productStockId)
         {
             var productDetails = _ProductDal.GetProductDetails()
-                                        .Where(p => p.ProductStockId == productStockId)
+                                        .Where(p => p.ProductStocksId == productStockId)
                                         .ToList();
 
             // Veritabanından alınan veriyi DTO'ya dönüştürme (varsa)

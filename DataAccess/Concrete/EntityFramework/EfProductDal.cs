@@ -46,7 +46,7 @@ namespace DataAccess.Concrete.EntityFramework
                                           Status = ps.Status
                                       }).ToList();
 
-                return productDetails;
+                return productDetails.Where(x => x.Status == true).ToList();
             }
         }
 
@@ -99,7 +99,7 @@ namespace DataAccess.Concrete.EntityFramework
                 if (!string.IsNullOrEmpty(filter.ProductSize))
                     query = query.Where(q => q.ProductSize.Equals(filter.ProductSize));
 
-                return query.ToList();
+                return query.ToList().Where(x => x.Status == true).ToList();
             }
         }
     }
