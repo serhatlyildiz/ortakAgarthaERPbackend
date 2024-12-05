@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Core.DataAccess.EntityFramework;
+using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
 using Entities.DTOs;
@@ -27,6 +28,7 @@ namespace DataAccess.Concrete.EntityFramework
                                       join co in context.Colors on ps.ProductColorId equals co.ColorId
                                       select new ProductDetailDto
                                       {
+                                          ProductStockId = ps.ProductStockId,
                                           ProductId = p.ProductId,
                                           CategoryId = c.CategoryId,
                                           SuperCategoryId = c.SuperCategoryId,
@@ -59,6 +61,7 @@ namespace DataAccess.Concrete.EntityFramework
                             join co in context.Colors on ps.ProductColorId equals co.ColorId
                             select new ProductDetailDto
                             {
+                                ProductStockId = ps.ProductStockId,
                                 ProductId = p.ProductId,
                                 CategoryId = c.CategoryId,
                                 SuperCategoryId = c.SuperCategoryId,
@@ -94,14 +97,10 @@ namespace DataAccess.Concrete.EntityFramework
                 if (!string.IsNullOrEmpty(filter.ColorName))
                     query = query.Where(q => q.ColorName.Contains(filter.ColorName));
                 if (!string.IsNullOrEmpty(filter.ProductSize))
-                    query = query.Where(q => q.ProductSize.Contains(filter.ProductSize));
-                if (filter.Status.HasValue)
-                    query = query.Where(q => q.Status == filter.Status.Value);
+                    query = query.Where(q => q.ProductSize.Equals(filter.ProductSize));
 
                 return query.ToList();
             }
         }
-
-
     }
 }

@@ -83,7 +83,7 @@ namespace Business.Concrete
         [CacheAspect]
         public IDataResult<Product> GetById(int id)
         {
-            return new SuccessDataResult<Product>(_ProductDal.Get(p => p.ProductId == id && p.Status == true));
+            return new SuccessDataResult<Product>(_ProductDal.Get(p => p.ProductId == id));
         }
 
 
@@ -191,6 +191,7 @@ namespace Business.Concrete
         {
             var result = _ProductDal.GetProductDetailsWithFilters(filter);
             return new SuccessDataResult<List<ProductDetailDto>>(result, Messages.ProductsFiltered);
+        }
 
         public IResult Restore(int productID)
         {
@@ -205,5 +206,17 @@ namespace Business.Concrete
             return new SuccessResult(result.ProductName + Messages.Restored);
 
         }
+
+        public IDataResult<List<ProductDetailDto>> GetProductStockDetails(int productStockId)
+        {
+            var productDetails = _ProductDal.GetProductDetails()
+                                        .Where(p => p.ProductStockId == productStockId)
+                                        .ToList();
+
+            // Veritabanından alınan veriyi DTO'ya dönüştürme (varsa)
+            return new SuccessDataResult<List<ProductDetailDto>>(productDetails);
+        }
     }
 }
+
+   
