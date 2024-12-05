@@ -109,6 +109,7 @@ namespace WebAPI.Controllers
                 return Ok(result.Data);
             }
             return BadRequest(result.Message);
+        }
 
         [HttpGet("restore")]
         public IActionResult Restore(int productID)

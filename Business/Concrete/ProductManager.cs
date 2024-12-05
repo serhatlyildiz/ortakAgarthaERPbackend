@@ -191,6 +191,7 @@ namespace Business.Concrete
         {
             var result = _ProductDal.GetProductDetailsWithFilters(filter);
             return new SuccessDataResult<List<ProductDetailDto>>(result, Messages.ProductsFiltered);
+        }
 
         public IResult Restore(int productID)
         {

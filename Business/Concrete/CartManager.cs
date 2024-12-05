@@ -45,7 +45,11 @@ namespace Business.Concrete
             if (cartItems.Any(ci => ci.ProductId == addToCartForUsers.ProductId))
             {
                 CartItem cartItem = cartItems.Where(c => c.ProductId == addToCartForUsers.ProductId).First();
-                cartItem.Quantity += 1;
+                cartItem.Quantity += addToCartForUsers.Quantity;
+                if (cartItem.Quantity >= addToCartForUsers.Quantity)
+                {
+                    return new ErrorResult("Stok sınırına ulaşıldı.");
+                }
                 cartItem.UnitPrice = _productService.GetById(addToCartForUsers.ProductId).Data.UnitPrice * cartItem.Quantity;
                 _itemDal.Update(cartItem);
             }
