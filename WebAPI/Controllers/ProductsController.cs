@@ -55,7 +55,7 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
-
+        
         [HttpGet("getproductdetails")]
         public IActionResult GetProductDetails()
         {
@@ -67,6 +67,7 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
+        
         [HttpGet("getproductstockdetails")]
         public IActionResult GetProductStockDetails(int productStockId)
         {
@@ -77,6 +78,7 @@ namespace WebAPI.Controllers
             }
             return BadRequest(result);
         }
+        
 
         [HttpPost("add")]
         public IActionResult Add(Product product)
@@ -111,6 +113,7 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
+        
         [HttpPost("filter")]
         public IActionResult Filter([FromBody] ProductFilterModel filter)
         {
@@ -121,6 +124,7 @@ namespace WebAPI.Controllers
             }
             return BadRequest(result.Message);
         }
+        
 
         [HttpGet("restore")]
         public IActionResult Restore(int productID)

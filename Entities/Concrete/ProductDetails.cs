@@ -2,20 +2,19 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Entities.Concrete
 {
-    public class ProductStocks: IEntity
+    public class ProductDetails: IEntity
     {
         [Key]
-        public int ProductStocksId { get; set; }
         public int ProductDetailsId { get; set; }
-        public int ProductColorId { get; set; }
-        public short UnitsInStock { get; set; }
-        public List<string>? Images { get; set; }
+        public int ProductId { get; set; }
+        public string ProductSize { get; set; }
         public bool Status { get; set; }
     }
 }

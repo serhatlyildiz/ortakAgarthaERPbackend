@@ -13,15 +13,15 @@ namespace Business.Concrete
         private ICartItemDal _itemDal;
         private readonly IProductService _productService;
         private readonly IUserService _userService;
-        private readonly IProductStocksService _productStocksService;
+        //private readonly IProductStocksService _productStocksService;
 
-        public CartManager(ICartDal cartDal, ICartItemDal cartItemDal, IProductService productService, IUserService userService, IProductStocksService productStocksService)
+        public CartManager(ICartDal cartDal, ICartItemDal cartItemDal, IProductService productService, IUserService userService) //(,IProductStocksService productStocksService)
         {
             _cartDal = cartDal;
             _itemDal = cartItemDal;
             _productService = productService;
             _userService = userService;
-            _productStocksService = productStocksService;
+            //_productStocksService = productStocksService;
         }
 
         public IResult AddToCart(AddToCartForUsersDto addToCartForUsers)
@@ -29,8 +29,8 @@ namespace Business.Concrete
             var user = _userService.GetById(addToCartForUsers.UserId);
             if (user == null) return new ErrorResult(Messages.UserNotFound);
 
-            var productStocks = _productStocksService.GetById(addToCartForUsers.ProductStockId);
-            if (productStocks.Data == null || productStocks.Data.UnitsInStock <= 0) return new ErrorResult(Messages.ProductNotFound);
+            //var productStocks = _productStocksService.GetById(addToCartForUsers.ProductStockId);
+            //if (productStocks.Data == null || productStocks.Data.UnitsInStock <= 0) return new ErrorResult(Messages.ProductNotFound);
 
 
             var cart = GetCartByUserId(addToCartForUsers.UserId);
@@ -42,7 +42,7 @@ namespace Business.Concrete
             }
 
             List<CartItem> cartItems = _itemDal.GetAll().Where(ci => cart.CartItems.Contains(ci.CartItemId)).ToList();
-
+            /*
             if (cartItems.Any(ci => ci.ProductStockId == addToCartForUsers.ProductStockId))
             {
                 CartItem cartItem = cartItems.Where(c => c.ProductStockId == addToCartForUsers.ProductStockId).First();
@@ -62,6 +62,7 @@ namespace Business.Concrete
                 cart.CartItems.Add(result.Data.CartItemId);
                 cart.TotalPrice += result.Data.UnitPrice;
             }
+            */
 
             cart.UpdateDate = DateTime.Now;
             _cartDal.Update(cart);
@@ -81,6 +82,7 @@ namespace Business.Concrete
             _cartDal.Add(cart);
             return new SuccessResult("Sepet Oluşturuldu.");
         }
+        /*
         public IDataResult<CartItem> CreateCartItem(AddToCartForUsersDto addToCartForUsers, IDataResult<ProductStocks> productStocks)
         {
             CartItem cartItem = new CartItem();
@@ -95,6 +97,7 @@ namespace Business.Concrete
             _itemDal.Add(cartItem);
             return new SuccessDataResult<CartItem>(cartItem);
         }
+        */
 
         public IResult ClearCart(int userId)
         {

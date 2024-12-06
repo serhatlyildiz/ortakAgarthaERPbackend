@@ -14,7 +14,7 @@ namespace Entities.Concrete
         public int ilNo { get; set; }
         public string iladi { get; set; }
         public string bolgeNo { get; set; }
-        public bool Status { get; set; }
+    
 
     }
 }
