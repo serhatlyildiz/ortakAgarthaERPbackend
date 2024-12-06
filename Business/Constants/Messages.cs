@@ -53,12 +53,12 @@
         public static string OrderUpdated = "Sipariş güncellendi";
         public static string OrderDeleted = " numaralı siparişiniz iptal edilmiştir";
 
-        //--------------------------------------------PRODUCTSTOCKS-----------------------------------------------
-        public static string ProductStocksAdded = "Stoğa Eklendi";
-        public static string ProductStocksListed = "Stoklar Listelendi";
-        public static string ProductStocksNotFound = "Stok bulunamadı";
-        public static string ProductStocksUpdated = "Stok güncellendi";
-        public static string ProductStocksDeleted = "Stok bilgisi silindi";
+        //--------------------------------------------PRODUCTDETAILS-----------------------------------------------
+        public static string ProductDetailsAdded = "Stoğa Eklendi";
+        public static string ProductDetailsListed = "Stoklar Listelendi";
+        public static string ProductDetailsNotFound = "Stok bulunamadı";
+        public static string ProductDetailsUpdated = "Stok güncellendi";
+        public static string ProductDetailsDeleted = "Stok bilgisi silindi";
 
         //---------------------------------------------COLORS--------------------------------------------------------
         public static string ColorAdded = "Renk eklendi";

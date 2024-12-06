@@ -45,6 +45,9 @@ namespace Business.DependencyRevolvers.Autofac
             builder.RegisterType<ColorsManager>().As<IColorsService>().SingleInstance();
             builder.RegisterType<EfColorsDal>().As<IColorDal>().SingleInstance();
 
+            builder.RegisterType<ProductDetailsManager>().As<IProductDetailsService>().SingleInstance();
+            builder.RegisterType<EfProductDetialsDal>().As<IProductDetailsDal>().SingleInstance();
+
             builder.RegisterType<ProductStocksManager>().As<IProductStocksService>().SingleInstance();
             builder.RegisterType<EfProductStocksDal>().As<IProductStocksDal>().SingleInstance();
 

@@ -92,17 +92,17 @@ namespace Core.DataAccess.EntityFramework
             {
 
 
-                Expression<Func<TEntity, bool>> statusCondition = x => EF.Property<bool>(x, "Status") == true;
+                //Expression<Func<TEntity, bool>> statusCondition = x => EF.Property<bool>(x, "Status") == true;
 
-                if (filter != null)
-                {
-                    var combinedFilter = filter.And(statusCondition);
-                    return context.Set<TEntity>().Where(combinedFilter).ToList();
-                }
-                else
-                {
-                    return context.Set<TEntity>().Where(statusCondition).ToList();
-                }
+                //if (filter != null)
+                //{
+                //    var combinedFilter = filter.And(statusCondition);
+                //    return context.Set<TEntity>().Where(combinedFilter).ToList();
+                //}
+                //else
+                //{
+                //    return context.Set<TEntity>().Where(statusCondition).ToList();
+                //}
 
 
                 return filter == null

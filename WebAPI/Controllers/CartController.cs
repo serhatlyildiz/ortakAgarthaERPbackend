@@ -15,6 +15,7 @@ namespace WebAPI.Controllers
             _cartService = cartService;
         }
 
+        /*
         [HttpPost("add-to-cart")]
         public ActionResult Add(AddToCartForUsersDto addToCartForUsersDto)
         {
@@ -25,5 +26,6 @@ namespace WebAPI.Controllers
             }
             return Ok(result);
         }
+        */
     }
 }

@@ -24,31 +24,33 @@ namespace DataAccess.Concrete.EntityFramework
                 var productDetails = (from p in context.Products
                                       join c in context.Categories on p.CategoryId equals c.CategoryId
                                       join sc in context.SuperCategories on c.SuperCategoryId equals sc.SuperCategoryId
-                                      join ps in context.ProductStocks on p.ProductId equals ps.ProductId
+                                      join pd in context.ProductDetails on p.ProductId equals pd.ProductId
+                                      join ps in context.ProductStocks on pd.ProductDetailsId equals ps.ProductDetailsId
                                       join co in context.Colors on ps.ProductColorId equals co.ColorId
                                       select new ProductDetailDto
                                       {
-                                          ProductStockId = ps.ProductStockId,
+                                          ProductDetailsId = pd.ProductDetailsId,
                                           ProductId = p.ProductId,
-                                          CategoryId = c.CategoryId,
-                                          SuperCategoryId = c.SuperCategoryId,
                                           ColorId = ps.ProductColorId,
-                                          ProductStocksId = ps.ProductStockId,
+                                          ProductStocksId = ps.ProductStocksId,
+                                          SuperCategoryId = c.SuperCategoryId,
+                                          CategoryId = c.CategoryId,
                                           ProductName = p.ProductName,
+                                          SuperCategoryName = sc.SuperCategoryName,
+                                          CategoryName = c.CategoryName,
                                           ProductDescription = p.ProductDescription,
                                           UnitPrice = p.UnitPrice,
                                           UnitsInStock = ps.UnitsInStock,
-                                          ProductSize = ps.ProductSize,
                                           ColorName = co.ColorName,
+                                          ProductSize = pd.ProductSize,
                                           Images = ps.Images ?? new List<string>(), // Eğer resim yoksa boş liste döndür
-                                          CategoryName = c.CategoryName,
-                                          SuperCategoryName = sc.SuperCategoryName,
                                           Status = ps.Status
                                       }).ToList();
 
-                return productDetails.Where(x => x.Status == true).ToList();
+                return productDetails.Where(x => x.Status).ToList();
             }
         }
+
 
         public List<ProductDetailDto> GetProductDetailsWithFilters(ProductFilterModel filter)
         {
@@ -57,50 +59,63 @@ namespace DataAccess.Concrete.EntityFramework
                 var query = from p in context.Products
                             join c in context.Categories on p.CategoryId equals c.CategoryId
                             join sc in context.SuperCategories on c.SuperCategoryId equals sc.SuperCategoryId
-                            join ps in context.ProductStocks on p.ProductId equals ps.ProductId
+                            join pd in context.ProductDetails on p.ProductId equals pd.ProductId
+                            join ps in context.ProductStocks on pd.ProductDetailsId equals ps.ProductDetailsId
                             join co in context.Colors on ps.ProductColorId equals co.ColorId
                             select new ProductDetailDto
                             {
-                                ProductStockId = ps.ProductStockId,
+                                ProductDetailsId = pd.ProductDetailsId,
                                 ProductId = p.ProductId,
-                                CategoryId = c.CategoryId,
-                                SuperCategoryId = c.SuperCategoryId,
                                 ColorId = ps.ProductColorId,
-                                ProductStocksId = ps.ProductStockId,
+                                ProductStocksId = ps.ProductStocksId,
+                                SuperCategoryId = c.SuperCategoryId,
+                                CategoryId = c.CategoryId,
                                 ProductName = p.ProductName,
+                                SuperCategoryName = sc.SuperCategoryName,
+                                CategoryName = c.CategoryName,
                                 ProductDescription = p.ProductDescription,
                                 UnitPrice = p.UnitPrice,
                                 UnitsInStock = ps.UnitsInStock,
-                                ProductSize = ps.ProductSize,
                                 ColorName = co.ColorName,
+                                ProductSize = pd.ProductSize,
                                 Images = ps.Images ?? new List<string>(), // Eğer resim yoksa boş liste döndür
-                                CategoryName = c.CategoryName,
-                                SuperCategoryName = sc.SuperCategoryName,
                                 Status = ps.Status
                             };
 
                 // Dinamik filtreleme
                 if (!string.IsNullOrEmpty(filter.ProductName))
                     query = query.Where(q => q.ProductName.Contains(filter.ProductName));
+
                 if (!string.IsNullOrEmpty(filter.SuperCategoryName))
                     query = query.Where(q => q.SuperCategoryName.Contains(filter.SuperCategoryName));
+
                 if (!string.IsNullOrEmpty(filter.CategoryName))
                     query = query.Where(q => q.CategoryName.Contains(filter.CategoryName));
+
                 if (filter.MinPrice.HasValue)
                     query = query.Where(q => q.UnitPrice >= filter.MinPrice.Value);
+
                 if (filter.MaxPrice.HasValue)
                     query = query.Where(q => q.UnitPrice <= filter.MaxPrice.Value);
+
                 if (filter.MinStock.HasValue)
                     query = query.Where(q => q.UnitsInStock >= filter.MinStock.Value);
+
                 if (filter.MaxStock.HasValue && filter.MaxStock.Value > 0)
                     query = query.Where(q => q.UnitsInStock <= filter.MaxStock.Value);
+
                 if (!string.IsNullOrEmpty(filter.ColorName))
                     query = query.Where(q => q.ColorName.Contains(filter.ColorName));
+
                 if (!string.IsNullOrEmpty(filter.ProductSize))
                     query = query.Where(q => q.ProductSize.Equals(filter.ProductSize));
 
-                return query.ToList().Where(x => x.Status == true).ToList();
+                if (filter.Status.HasValue)
+                    query = query.Where(q => q.Status == filter.Status.Value);
+
+                return query.ToList();
             }
         }
+
     }
 }

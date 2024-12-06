@@ -85,12 +85,13 @@ namespace Business.Concrete
             return new SuccessDataResult<Product>(_ProductDal.Get(p => p.ProductId == id));
         }
 
-
+        
         [SecuredOperation("product.add,admin")]
         public IDataResult<List<ProductDetailDto>> GetProductDetailsForAdmin()
         {
             return new SuccessDataResult<List<ProductDetailDto>>(_ProductDal.GetProductDetails());
         }
+        
 
         [SecuredOperation("product.add,admin")]
         [ValidationAspect(typeof(ProductValidator))]
@@ -179,18 +180,21 @@ namespace Business.Concrete
             return new SuccessResult(result.ProductName + Messages.ProductDeleted);
         }
 
+        
         public IDataResult<List<ProductDetailDto>> GetProductDetails()
         {
             var productDetails = _ProductDal.GetProductDetails();
             return new SuccessDataResult<List<ProductDetailDto>>(productDetails);
         }
+        
 
-
+        
         public IDataResult<List<ProductDetailDto>> GetProductDetailsWithFilters(ProductFilterModel filter)
         {
             var result = _ProductDal.GetProductDetailsWithFilters(filter);
             return new SuccessDataResult<List<ProductDetailDto>>(result, Messages.ProductsFiltered);
         }
+        
 
         public IResult Restore(int productID)
         {
@@ -205,7 +209,7 @@ namespace Business.Concrete
             return new SuccessResult(result.ProductName + Messages.Restored);
 
         }
-
+        
         public IDataResult<List<ProductDetailDto>> GetProductStockDetails(int productStockId)
         {
             var productDetails = _ProductDal.GetProductDetails()
