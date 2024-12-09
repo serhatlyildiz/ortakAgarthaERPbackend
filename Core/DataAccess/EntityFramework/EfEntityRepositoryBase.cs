@@ -38,52 +38,12 @@ namespace Core.DataAccess.EntityFramework
         {
             using (TContext context = new TContext())
             {
-                /*                Expression<Func<TEntity, bool>> statusCondition = x => EF.Property<bool>(x, "Status") == true;
+                Expression<Func<TEntity, bool>> statusCondition = x => EF.Property<bool>(x, "Status") == true;
+                var combinedFilter = filter.And(statusCondition);
+                return context.Set<TEntity>().SingleOrDefault(combinedFilter);
 
-                                var combinedFilter = filter.And(statusCondition);
-                                return context.Set<TEntity>().SingleOrDefault(combinedFilter);*/
-
-                return context.Set<TEntity>().SingleOrDefault(filter);
-
-                //foreach (var entity in entities)
-                //{
-                //    var status = typeof(TEntity)?.GetProperty("Status")?.GetValue(entity);
-                //    if (status != null || status.Equals(true))
-                //    {
-                //        return context.Set<TEntity>().SingleOrDefault(filter);
-                //    }
-                //    else
-                //    {
-
-                //    }
-                //}
+                //return context.Set<TEntity>().SingleOrDefault(filter);    //bu satır Status kontrolü olmadan yapıldan filtreleme
             }
-
-            //using (TContext context = new TContext())
-            //{
-            //    // İlk sorgu
-            //    var entity = context.Set<TEntity>().SingleOrDefault(filter);
-
-            //    // entity null ise veya Status property’si yoksa işlem yapmadan dön
-            //    if (entity == null) return null;
-
-            //    // Status property’sini kontrol et
-            //    var statusProperty = typeof(TEntity).GetProperty("Status");
-            //    if (statusProperty == null)
-            //    {
-            //        throw new InvalidOperationException($"The entity type {typeof(TEntity).Name} does not have a 'Status' property.");
-            //    }
-
-            //    var statusValue = statusProperty.GetValue(entity);
-            //    if (statusValue == null || !statusValue.Equals(true))
-            //    {
-            //        return null; // Status false ise null döndür
-            //    }
-
-            //    // Status true ise entity döndür
-            //    return entity;
-            //}
-
         }
 
         public List<TEntity> GetAll(Expression<Func<TEntity, bool>> filter = null)
@@ -92,22 +52,21 @@ namespace Core.DataAccess.EntityFramework
             {
 
 
-                //Expression<Func<TEntity, bool>> statusCondition = x => EF.Property<bool>(x, "Status") == true;
+                Expression<Func<TEntity, bool>> statusCondition = x => EF.Property<bool>(x, "Status") == true;
 
-                //if (filter != null)
-                //{
-                //    var combinedFilter = filter.And(statusCondition);
-                //    return context.Set<TEntity>().Where(combinedFilter).ToList();
-                //}
-                //else
-                //{
-                //    return context.Set<TEntity>().Where(statusCondition).ToList();
-                //}
+                if (filter != null)
+                {
+                    var combinedFilter = filter.And(statusCondition);
+                    return context.Set<TEntity>().Where(combinedFilter).ToList();
+                }
+                else
+                {
+                    return context.Set<TEntity>().Where(statusCondition).ToList();
+                }
 
-
-                return filter == null
-                    ? context.Set<TEntity>().ToList()
-                    : context.Set<TEntity>().Where(filter).ToList();
+                /*   return filter == null
+                       ? context.Set<TEntity>().ToList()
+                       : context.Set<TEntity>().Where(filter).ToList();*/  //Status kontrolü olmadan filteleme
             }
         }
 

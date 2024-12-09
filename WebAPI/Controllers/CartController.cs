@@ -15,7 +15,7 @@ namespace WebAPI.Controllers
             _cartService = cartService;
         }
 
-        /*
+
         [HttpPost("add-to-cart")]
         public ActionResult Add(AddToCartForUsersDto addToCartForUsersDto)
         {
@@ -26,6 +26,21 @@ namespace WebAPI.Controllers
             }
             return Ok(result);
         }
-        */
+
+        [HttpPost("clear-cart")]
+        public IActionResult Clear(int userId)
+        {
+            var result = _cartService.ClearCart(userId);
+            if (!result.Success) return BadRequest(result);
+            return Ok(result);
+        }
+
+        [HttpPost("your-cart")]
+        public IActionResult YourCart(int userId)
+        {
+            var result = _cartService.GetCart(userId);
+            if (!result.Success) return BadRequest(result);
+            return Ok(result);
+        }
     }
 }
