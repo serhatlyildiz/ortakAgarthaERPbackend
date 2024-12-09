@@ -14,6 +14,7 @@
         public static string Restored = " Geri yüklendi.";
         public static string ProductUpdated = "Ürün güncellendi";
         public static string ProductsFiltered = "Filtreleme uygulandı";
+        public static string EmptyCart = "Sepetiniz şuan boş.";
 
         //------------------------------------------- CATEGORY ------------------------------------------
         public static string CategoryLimitExceded = "Kategori limiti aşıldığı için yeni ürün eklenemiyor";
@@ -59,6 +60,7 @@
         public static string ProductDetailsNotFound = "Stok bulunamadı";
         public static string ProductDetailsUpdated = "Stok güncellendi";
         public static string ProductDetailsDeleted = "Stok bilgisi silindi";
+        public static string OutOfStock = "Stoklarımız Tükendi";
 
         //---------------------------------------------COLORS--------------------------------------------------------
         public static string ColorAdded = "Renk eklendi";

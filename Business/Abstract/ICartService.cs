@@ -6,8 +6,9 @@ namespace Business.Abstract
 {
     public interface ICartService
     {
-            //Cart GetCartByUserId(int userId);
-            //IResult AddToCart(AddToCartForUsersDto addToCartForUsers);
-            //IResult ClearCart(int userId);
+        Cart GetCartByUserId(int userId);
+        IResult AddToCart(AddToCartForUsersDto addToCartForUsers);
+        IResult ClearCart(int userId);
+        IDataResult<CartDto> GetCart(int userId);
     }
 }

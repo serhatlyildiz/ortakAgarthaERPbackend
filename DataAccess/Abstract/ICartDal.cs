@@ -6,7 +6,6 @@ namespace DataAccess.Abstract
 {
     public interface ICartDal : IEntityRepository<Cart>
     {
-        public List<CartDto> GetCarts();
-        public CartDto GetCartByUserId(int userId);
+        public CartDto GetCartsByUserId(int userId);
     }
 }
