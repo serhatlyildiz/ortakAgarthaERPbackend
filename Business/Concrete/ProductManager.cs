@@ -91,33 +91,67 @@ namespace Business.Concrete
         {
             return new SuccessDataResult<List<ProductDetailDto>>(_ProductDal.GetProductDetails());
         }
-        
 
-        [SecuredOperation("product.add,admin")]
-        [ValidationAspect(typeof(ProductValidator))]
-        [CacheRemoveAspect("IProductService.Get")]
-        public IResult Update(Product product)
+
+        public IResult Update(Product product, ProductDetails productDetails, ProductStocks productStocks)
         {
-            // Güncellenmek istenen ürünün veritabanında mevcut olup olmadığını kontrol et
+            // Ürün güncellenmek isteniyor
             var productToUpdate = _ProductDal.Get(p => p.ProductId == product.ProductId);
-
             if (productToUpdate == null)
             {
-                return new ErrorResult(Messages.ProductNotFound); // Eğer ürün yoksa hata döndür
+                return new ErrorResult(Messages.ProductNotFound);
             }
 
-            IResult result = BusinessRules.Run(CheckIfProductCountOfCategoryCorrect(product.CategoryId),
-                CheckIfProductNameExists(product.ProductName), CheckIfCategoryLimitExceded());
+            // Yalnızca güncellenebilir alanları kontrol ediyoruz
+            productToUpdate.ProductName = product.ProductName ?? productToUpdate.ProductName;
+            productToUpdate.ProductDescription = product.ProductDescription ?? productToUpdate.ProductDescription;
+            productToUpdate.UnitPrice = product.UnitPrice != 0 ? product.UnitPrice : productToUpdate.UnitPrice;
 
-            if (result != null)
+            // SuperCategoryId ve CategoryId'yi güncelleme
+            if (product.CategoryId != 0)
             {
-                return result;
+                productToUpdate.CategoryId = product.CategoryId;
+                // CategoryId'ye göre SuperCategoryId'yi güncelle
+                var category = _categoryService.GetById(product.CategoryId).Data;
+                if (category != null)
+                {
+                    category.SuperCategoryId = category.SuperCategoryId;
+                }
             }
 
-            // Ürünün güncellenmesini sağla
-            _ProductDal.Update(product);
-            return new SuccessResult(Messages.ProductUpdated); // Başarı mesajı döndür
+            _ProductDal.Update(productToUpdate); // Product güncellemesi
+
+            // Ürün Detayları
+            var productDetailsToUpdate = _ProductDal.GetProductDetailsById(productDetails.ProductDetailsId);
+            if (productDetailsToUpdate != null)
+            {
+                productDetailsToUpdate.ProductSize = productDetails.ProductSize ?? productDetailsToUpdate.ProductSize;
+                _ProductDal.UpdateProductDetails(productDetailsToUpdate); // ProductDetails güncellemesi
+            }
+
+            // Ürün Stokları
+            var productStocksToUpdate = _ProductDal.GetProductStockById(productStocks.ProductStocksId);
+            if (productStocksToUpdate != null)
+            {
+                productStocksToUpdate.UnitsInStock = productStocks.UnitsInStock != 0 ? productStocks.UnitsInStock : productStocksToUpdate.UnitsInStock;
+                productStocksToUpdate.Status = true;
+                productStocksToUpdate.ProductColorId = productStocks.ProductColorId != 0 ? productStocks.ProductColorId : productStocksToUpdate.ProductColorId;
+                productStocksToUpdate.Images = productStocks.Images ?? productStocksToUpdate.Images;
+
+                // ColorId ekle
+                productStocksToUpdate.ProductColorId = productStocks.ProductColorId != 0 ? productStocks.ProductColorId : productStocksToUpdate.ProductColorId;
+
+                _ProductDal.UpdateProductStocks(productStocksToUpdate); // ProductStocks güncellemesi
+            }
+
+            return new SuccessResult(Messages.ProductUpdated);
         }
+
+
+
+
+
+
 
 
         private IResult CheckIfProductCountOfCategoryCorrect(int categoryId)

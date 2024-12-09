@@ -13,5 +13,11 @@ namespace DataAccess.Abstract
     {
         List<ProductDetailDto> GetProductDetails();
         List<ProductDetailDto> GetProductDetailsWithFilters(ProductFilterModel filter);
+        ProductDetails GetProductDetailsById(int productDetailsId);
+        ProductStocks GetProductStockById(int productStocksId);
+
+        void Update(Product product);
+        void UpdateProductDetails(ProductDetails productDetails);  // Yeni metod
+        void UpdateProductStocks(ProductStocks productStocks);
     }
 }

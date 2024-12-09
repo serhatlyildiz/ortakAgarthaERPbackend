@@ -72,5 +72,8 @@
         public static string InvalidOrExpiredToken = "Geçersiz veya süresi dolmuş bir token.";
         public static string PasswordResetSuccessful = "Şifre başarıyla sıfırlandı.";
 
+        //------------------------------------------PRODUCT-STOCKS--------------------------------------------------
+        public static string ProductStockNotFound = "Stok bulunamadı";
+
     }
 }

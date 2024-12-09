@@ -87,5 +87,15 @@ namespace Business.Concrete
             }
             return new SuccessResult();
         }
+
+        public IDataResult<Category> GetById(int categoryId)
+        {
+            var result = _categoryDal.Get(c => c.CategoryId == categoryId);
+            if (result == null)
+            {
+                return new ErrorDataResult<Category>("Kategori bulunamadı.");
+            }
+            return new SuccessDataResult<Category>(result);
+        }
     }
 }
