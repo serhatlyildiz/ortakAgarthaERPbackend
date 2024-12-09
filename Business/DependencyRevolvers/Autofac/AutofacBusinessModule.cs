@@ -51,6 +51,8 @@ namespace Business.DependencyRevolvers.Autofac
             builder.RegisterType<ProductStocksManager>().As<IProductStocksService>().SingleInstance();
             builder.RegisterType<EfProductStocksDal>().As<IProductStocksDal>().SingleInstance();
 
+            builder.RegisterType<ProductImageManager>().As<IProductImageService>().SingleInstance();
+
             builder.RegisterType<EfCartItemDal>().As<ICartItemDal>().SingleInstance();
 
             var assembly = System.Reflection.Assembly.GetExecutingAssembly();

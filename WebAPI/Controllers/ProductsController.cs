@@ -103,17 +103,20 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost("update")]
-        public IActionResult Update(Product product)
+        public IActionResult Update([FromBody] ProductUpdateDto productUpdateDto)
         {
-            var result = _productService.Update(product);
+            var result = _productService.Update(productUpdateDto.Product, productUpdateDto.ProductDetails, productUpdateDto.ProductStocks);
+
             if (result.Success)
             {
                 return Ok(result);
             }
+
             return BadRequest(result);
         }
 
-        
+
+
         [HttpPost("filter")]
         public IActionResult Filter([FromBody] ProductFilterModel filter)
         {

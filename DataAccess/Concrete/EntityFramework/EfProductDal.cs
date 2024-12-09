@@ -117,5 +117,47 @@ namespace DataAccess.Concrete.EntityFramework
             }
         }
 
+        public void Update(Product product)
+        {
+            using (var context = new NorthwindContext())
+            {
+                context.Products.Update(product);
+                context.SaveChanges();
+            }
+        }
+
+        public void UpdateProductDetails(ProductDetails productDetails)
+        {
+            using (var context = new NorthwindContext())
+            {
+                context.ProductDetails.Update(productDetails);
+                context.SaveChanges();
+            }
+        }
+
+        public void UpdateProductStocks(ProductStocks productStocks)
+        {
+            using (var context = new NorthwindContext())
+            {
+                context.ProductStocks.Update(productStocks);
+                context.SaveChanges();
+            }
+        }
+
+        public ProductDetails GetProductDetailsById(int productDetailsId)
+        {
+            using (var context = new NorthwindContext())
+            {
+                return context.ProductDetails.FirstOrDefault(pd => pd.ProductDetailsId == productDetailsId);
+            }
+        }
+
+        public ProductStocks GetProductStockById(int productStocksId)
+        {
+            using (var context = new NorthwindContext())
+            {
+                return context.ProductStocks.FirstOrDefault(ps => ps.ProductStocksId == productStocksId);
+            }
+        }
     }
 }

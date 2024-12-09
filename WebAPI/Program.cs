@@ -1,5 +1,6 @@
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using Business.Concrete;
 using Business.DependencyRevolvers.Autofac;
 using Core.DependencyRevolvers;
 using Core.Extensions;
@@ -39,6 +40,7 @@ builder.Services.AddSingleton<ILogEventEnricher, UsernameEnricher>(); // Enriche
 builder.Services.AddSingleton<ILogEventEnricher, EmailEnricher>(); // Enricher'ý da burada ekliyoruz
 builder.Services.AddSingleton<ILogEventEnricher, IpAddressEnricher>(); // Enricher'ý da burada ekliyoruz
 builder.Services.AddScoped<IPasswordResetDal, EfPasswordResetDal>();
+builder.Services.AddScoped<ProductImageManager>();
 
 
 
