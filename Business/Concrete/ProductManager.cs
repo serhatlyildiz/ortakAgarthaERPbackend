@@ -106,18 +106,7 @@ namespace Business.Concrete
             productToUpdate.ProductName = product.ProductName ?? productToUpdate.ProductName;
             productToUpdate.ProductDescription = product.ProductDescription ?? productToUpdate.ProductDescription;
             productToUpdate.UnitPrice = product.UnitPrice != 0 ? product.UnitPrice : productToUpdate.UnitPrice;
-
-            // SuperCategoryId ve CategoryId'yi güncelleme
-            if (product.CategoryId != 0)
-            {
-                productToUpdate.CategoryId = product.CategoryId;
-                // CategoryId'ye göre SuperCategoryId'yi güncelle
-                var category = _categoryService.GetById(product.CategoryId).Data;
-                if (category != null)
-                {
-                    category.SuperCategoryId = category.SuperCategoryId;
-                }
-            }
+            productToUpdate.CategoryId = product.CategoryId != 0 ? product.CategoryId : productToUpdate.CategoryId;
 
             _ProductDal.Update(productToUpdate); // Product güncellemesi
 
@@ -146,13 +135,6 @@ namespace Business.Concrete
 
             return new SuccessResult(Messages.ProductUpdated);
         }
-
-
-
-
-
-
-
 
         private IResult CheckIfProductCountOfCategoryCorrect(int categoryId)
         {

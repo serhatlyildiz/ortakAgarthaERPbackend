@@ -31,22 +31,25 @@ namespace Business.Concrete
         {
             try
             {
-                var uploadPath = @"C:\kamp-frontend\ortakAgarthaERPfrontend\src\assets\productImages";  // Fotoğrafın kaydedileceği dizin
+                // Fotoğrafların kaydedileceği dizin
+                var uploadPath = @"C:\kamp-frontend\ortakAgarthaERPfrontend\src\assets\productImages";
 
                 if (!Directory.Exists(uploadPath))
                 {
                     Directory.CreateDirectory(uploadPath);
                 }
 
+                // Dosyanın tam yolunu GUID ile oluştur
                 var filePath = Path.Combine(uploadPath, $"{photoId}{Path.GetExtension(file.FileName)}");
 
-                // Dosyayı kaydetme
+                // Dosyayı kaydet
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
                     file.CopyTo(stream);
                 }
 
-                return $"/assets/productImages/{photoId}{Path.GetExtension(file.FileName)}";  // Fotoğrafın yüklendiği yolu döndürüyoruz
+                // Göreceli yolu frontend'e döndür
+                return $"assets/productImages/{photoId}{Path.GetExtension(file.FileName)}";
             }
             catch (Exception ex)
             {
@@ -54,5 +57,31 @@ namespace Business.Concrete
                 throw new Exception("Fotoğraf yükleme hatası: " + ex.Message);
             }
         }
+
+
+        public bool DeletePhoto(string fileName)
+        {
+            try
+            {
+                var uploadPath = @"C:\kamp-frontend\ortakAgarthaERPfrontend\src\assets\productImages";
+                var filePath = Path.Combine(uploadPath, fileName);
+
+                if (File.Exists(filePath))
+                {
+                    File.Delete(filePath);
+                    _logger.LogInformation($"Fotoğraf silindi: {filePath}");
+                    return true;
+                }
+
+                _logger.LogWarning($"Fotoğraf bulunamadı: {filePath}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Fotoğraf silinirken hata oluştu: {ex.Message}");
+                throw new Exception("Fotoğraf silme hatası: " + ex.Message);
+            }
+        }
+
     }
 }

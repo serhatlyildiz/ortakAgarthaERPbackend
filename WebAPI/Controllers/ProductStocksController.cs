@@ -12,5 +12,16 @@ namespace WebAPI.Controllers
         {
             _productStocksService = productStocksService;
         }
+
+        [HttpGet("delete")]
+        public IActionResult Delete(int productStockId)
+        {
+            var result = _productStocksService.Delete(productStockId);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Core.Entities;
+using Core.Entities.Concrete;
 using LinqKit;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
@@ -38,11 +39,16 @@ namespace Core.DataAccess.EntityFramework
         {
             using (TContext context = new TContext())
             {
-                Expression<Func<TEntity, bool>> statusCondition = x => EF.Property<bool>(x, "Status") == true;
-                var combinedFilter = filter.And(statusCondition);
-                return context.Set<TEntity>().SingleOrDefault(combinedFilter);
-
-                //return context.Set<TEntity>().SingleOrDefault(filter);    //bu satır Status kontrolü olmadan yapıldan filtreleme
+                if (typeof(TEntity) == typeof(Users))
+                {
+                    return context.Set<TEntity>().SingleOrDefault(filter);
+                }
+                else
+                {
+                    Expression<Func<TEntity, bool>> statusCondition = x => EF.Property<bool>(x, "Status") == true;
+                    var combinedFilter = filter.And(statusCondition);
+                    return context.Set<TEntity>().SingleOrDefault(combinedFilter);
+                }
             }
         }
 
@@ -51,22 +57,25 @@ namespace Core.DataAccess.EntityFramework
             using (TContext context = new TContext())
             {
 
-
-                Expression<Func<TEntity, bool>> statusCondition = x => EF.Property<bool>(x, "Status") == true;
-
-                if (filter != null)
+                if (typeof(TEntity) == typeof(Users))
                 {
-                    var combinedFilter = filter.And(statusCondition);
-                    return context.Set<TEntity>().Where(combinedFilter).ToList();
+                    return filter == null
+                       ? context.Set<TEntity>().ToList()
+                       : context.Set<TEntity>().Where(filter).ToList();
                 }
                 else
                 {
-                    return context.Set<TEntity>().Where(statusCondition).ToList();
+                    Expression<Func<TEntity, bool>> statusCondition = x => EF.Property<bool>(x, "Status") == true;
+                    if (filter != null)
+                    {
+                        var combinedFilter = filter.And(statusCondition);
+                        return context.Set<TEntity>().Where(combinedFilter).ToList();
+                    }
+                    else
+                    {
+                        return context.Set<TEntity>().Where(statusCondition).ToList();
+                    }
                 }
-
-                /*   return filter == null
-                       ? context.Set<TEntity>().ToList()
-                       : context.Set<TEntity>().Where(filter).ToList();*/  //Status kontrolü olmadan filteleme
             }
         }
 
