@@ -35,7 +35,7 @@ namespace WebAPI.Controllers
             return Ok(result);
         }
 
-        [HttpPost("your-cart")]
+        [HttpGet("your-cart")]
         public IActionResult YourCart(int userId)
         {
             var result = _cartService.GetCart(userId);
