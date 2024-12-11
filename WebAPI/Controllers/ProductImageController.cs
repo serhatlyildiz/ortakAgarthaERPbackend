@@ -27,5 +27,16 @@ namespace WebAPI.Controllers
 
             return Ok(savedPaths);
         }
+
+        [HttpPost("delete")]
+        public IActionResult DeletePhoto([FromBody] string fileName)
+        {
+            if (_productImageManager.DeletePhoto(fileName))
+            {
+                return Ok(new { Message = "Fotoğraf başarıyla silindi." });
+            }
+
+            return NotFound(new { Message = "Fotoğraf bulunamadı." });
+        }
     }
 }

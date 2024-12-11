@@ -144,12 +144,12 @@ namespace Business.Concrete
 
             if (!string.IsNullOrEmpty(filter.City))
             {
-                query = query.Where(u => u.City.Contains(filter.City));
+                query = query.Where(u => u.City.Equals(filter.City));
             }
 
             if (!string.IsNullOrEmpty(filter.District))
             {
-                query = query.Where(u => u.District.Contains(filter.District));
+                query = query.Where(u => u.District.Equals(filter.District));
             }
 
             if (filter.Status.HasValue)

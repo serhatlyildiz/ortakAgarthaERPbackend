@@ -16,7 +16,7 @@ namespace Business.Concrete
 
         public IDataResult<List<iller>> GetAll()
         {
-            return new SuccessDataResult<List<iller>>(_illerDal.GetAll(), "");
+            return new SuccessDataResult<List<iller>>(_illerDal.GetAll().OrderBy(i => i.ilNo).ToList(), "");
         }
 
         public IDataResult<iller> GetById(int ilId)

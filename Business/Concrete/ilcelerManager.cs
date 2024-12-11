@@ -18,7 +18,7 @@ namespace Business.Concrete
 
         public IDataResult<List<ilceler>> GetAllByIllerId(int ilId)
         {
-            return new SuccessDataResult<List<ilceler>>(_ilcelerDal.GetAll(i => i.ilno == ilId));
+            return new SuccessDataResult<List<ilceler>>(_ilcelerDal.GetAll(i => i.ilno == ilId).OrderBy(p => p.ilce).ToList());
         }
 
         public IDataResult<ilceler> GetById(int ilcelerId)
