@@ -125,5 +125,17 @@ namespace Business.Concrete
             if (result == null) return new ErrorDataResult<CartDto>(result, Messages.EmptyCart);
             return new SuccessDataResult<CartDto>(result);
         }
+
+        public IResult DeleteProduct(AddToCartForUsersDto itemDelete)
+        {
+            var cart = _cartDal.Get(x => x.UserId == itemDelete.UserId);
+            if (cart == null || !cart.CartItems.Contains(itemDelete.ProductStockId)) return new ErrorResult();
+
+            var result = _itemDal.Get(x => x.CartItemId == itemDelete.ProductStockId);
+            if (result == null) return new ErrorResult("Sıkıntılı silme işlemi");
+
+            _itemDal.Delete(result);
+            return new SuccessResult("Sepetten kaldırıldı.");
+        }
     }
 }
