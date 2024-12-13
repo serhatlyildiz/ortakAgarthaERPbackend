@@ -103,9 +103,9 @@ namespace WebAPI.Controllers
         
 
         [HttpPost("add")]
-        public IActionResult Add(Product product)
+        public IActionResult Add(ProductUpdateDto productUpdateDto)
         {
-            var result = _productService.Add(product);
+            var result = _productService.Add(productUpdateDto);
             if (result.Success)
             {
                 return Ok(result);

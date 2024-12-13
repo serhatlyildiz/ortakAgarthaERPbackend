@@ -16,17 +16,21 @@ namespace Business.Concrete
     {
         IProductDal _ProductDal;
         ICategoryService _categoryService;
+        IProductDetailsService _productDetailsService;
+        IProductStocksService _productStockService;
 
-        public ProductManager(IProductDal productDal, ICategoryService categoryService)
+        public ProductManager(IProductDal productDal, ICategoryService categoryService, IProductDetailsService productDetailsService, IProductStocksService productStockService)
         {
             _ProductDal = productDal;
             _categoryService = categoryService;
+            _productDetailsService = productDetailsService;
+            _productStockService = productStockService;
         }
 
         [SecuredOperation("product.add,admin")]
         [ValidationAspect(typeof(ProductValidator))]
         [CacheRemoveAspect("IProductService.Get")]
-        public IResult Add(Product product)
+        public IResult Add(ProductUpdateDto productUpdateDto)
         {
             // Business rule: Product code must be in uppercase
             product.ProductCode = product.ProductCode.ToUpper();
@@ -37,6 +41,7 @@ namespace Business.Concrete
                 return new ErrorResult("Product code cannot be 'navi'.");
             }
 
+
             // Business rules checks
             IResult result = BusinessRules.Run(
                 CheckIfProductCountOfCategoryCorrect(product.CategoryId),
@@ -45,12 +50,20 @@ namespace Business.Concrete
                 CheckIfProductCodeExists(product.ProductCode)  // Check if the product code already exists
             );
 
-            if (result != null)
-            {
-                return result;
-            }
+            if (result != null) return result;
 
-            _ProductDal.Add(product);
+
+            _ProductDal.Add(productUpdateDto.Product);
+
+            var resultProduct = _ProductDal.GetAll().Last();
+            productUpdateDto.ProductDetails.ProductId = resultProduct.ProductId;
+
+            _productDetailsService.Add(productUpdateDto.ProductDetails);
+
+            var resultProductDetail = _productDetailsService.GetAll().Data.Last();
+            productUpdateDto.ProductStocks.ProductDetailsId = resultProductDetail.ProductDetailsId;
+
+            _productStockService.Add(productUpdateDto.ProductStocks);
 
             return new SuccessResult(Messages.ProductAdded);
         }

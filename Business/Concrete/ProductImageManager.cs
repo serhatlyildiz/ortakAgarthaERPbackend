@@ -48,8 +48,11 @@ namespace Business.Concrete
                     file.CopyTo(stream);
                 }
 
-                // Göreceli yolu frontend'e döndür
-                return $"assets/productImages/{photoId}{Path.GetExtension(file.FileName)}";
+                // Dosya içeriğini okuyarak Base64 formatına çevir
+                byte[] fileBytes = File.ReadAllBytes(filePath);
+                string base64String = Convert.ToBase64String(fileBytes);
+
+                return base64String; // Base64 string döndür
             }
             catch (Exception ex)
             {
@@ -57,6 +60,7 @@ namespace Business.Concrete
                 throw new Exception("Fotoğraf yükleme hatası: " + ex.Message);
             }
         }
+
 
 
         public bool DeletePhoto(string fileName)
@@ -82,6 +86,5 @@ namespace Business.Concrete
                 throw new Exception("Fotoğraf silme hatası: " + ex.Message);
             }
         }
-
     }
 }
