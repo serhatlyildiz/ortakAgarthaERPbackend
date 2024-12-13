@@ -16,5 +16,6 @@ namespace Entities.Concrete
         public int ProductId { get; set; }
         public string ProductSize { get; set; }
         public bool Status { get; set; }
+        public string ProductCode { get; set; }
     }
 }
