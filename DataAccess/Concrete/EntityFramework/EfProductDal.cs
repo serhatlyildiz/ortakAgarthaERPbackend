@@ -44,10 +44,63 @@ namespace DataAccess.Concrete.EntityFramework
                                           ColorName = co.ColorName,
                                           ProductSize = pd.ProductSize,
                                           Images = ps.Images ?? new List<string>(), // Eğer resim yoksa boş liste döndür
-                                          Status = ps.Status
+                                          Status = ps.Status,
+                                          ProductCode = p.ProductCode,
                                       }).ToList();
 
                 return productDetails.Where(x => x.Status).ToList();
+            }
+        }
+
+        public List<ProductDto> GetProductDto()
+        {
+            using (NorthwindContext context = new NorthwindContext())
+            {
+                var productDto = (from p in context.Products
+                                      join c in context.Categories on p.CategoryId equals c.CategoryId
+                                      join sc in context.SuperCategories on c.SuperCategoryId equals sc.SuperCategoryId
+                                      select new ProductDto
+                                      {
+                                          ProductId = p.ProductId,
+                                          SuperCategoryId = c.SuperCategoryId,
+                                          CategoryId = c.CategoryId,
+                                          ProductName = p.ProductName,
+                                          SuperCategoryName = sc.SuperCategoryName,
+                                          CategoryName = c.CategoryName,
+                                          ProductDescription = p.ProductDescription,
+                                          UnitPrice = p.UnitPrice,
+                                          Status = p.Status,
+                                          ProductCode = p.ProductCode,
+                                      }).ToList();
+
+                return productDto.Where(x => x.Status).ToList();
+            }
+        }
+
+        public List<ProductDto> GetByProductCodeForProductDto(string productCode)
+        {
+            productCode = productCode.ToUpper();
+            using (NorthwindContext context = new NorthwindContext())
+            {
+                var productDto = (from p in context.Products
+                                  join c in context.Categories on p.CategoryId equals c.CategoryId
+                                  join sc in context.SuperCategories on c.SuperCategoryId equals sc.SuperCategoryId
+                                  where p.ProductCode == productCode
+                                  select new ProductDto
+                                  {
+                                      ProductId = p.ProductId,
+                                      SuperCategoryId = c.SuperCategoryId,
+                                      CategoryId = c.CategoryId,
+                                      ProductName = p.ProductName,
+                                      SuperCategoryName = sc.SuperCategoryName,
+                                      CategoryName = c.CategoryName,
+                                      ProductDescription = p.ProductDescription,
+                                      UnitPrice = p.UnitPrice,
+                                      Status = p.Status,
+                                      ProductCode = p.ProductCode,
+                                  }).ToList();
+
+                return productDto.Where(x => x.Status).ToList();
             }
         }
 
@@ -79,7 +132,8 @@ namespace DataAccess.Concrete.EntityFramework
                                 ColorName = co.ColorName,
                                 ProductSize = pd.ProductSize,
                                 Images = ps.Images ?? new List<string>(), // Eğer resim yoksa boş liste döndür
-                                Status = ps.Status
+                                Status = ps.Status,
+                                ProductCode = p.ProductCode
                             };
 
                 // Dinamik filtreleme
@@ -112,6 +166,9 @@ namespace DataAccess.Concrete.EntityFramework
 
                 if (filter.Status.HasValue)
                     query = query.Where(q => q.Status == filter.Status.Value);
+
+                if (!string.IsNullOrEmpty(filter.ProductCode))
+                    query = query.Where(q => q.ProductCode.Equals(filter.ProductCode));
 
                 return query.ToList();
             }

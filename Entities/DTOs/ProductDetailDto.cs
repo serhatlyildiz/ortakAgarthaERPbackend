@@ -16,4 +16,5 @@
     public string ProductSize { get; set; }
     public List<string> Images { get; set; }
     public bool Status { get; set; }
+    public string ProductCode { get; set; }
 }

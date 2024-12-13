@@ -19,6 +19,6 @@ namespace Entities.Concrete
         [Column(TypeName = "decimal(18,2)")]
         public decimal UnitPrice { get; set; }
         public bool Status { get; set; }
-
+        public string ProductCode { get; set; }
     }
 }

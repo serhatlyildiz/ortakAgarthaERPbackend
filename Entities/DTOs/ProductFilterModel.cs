@@ -19,5 +19,6 @@ namespace Entities.DTOs
         public string? SuperCategoryName { get; set; }
         public string? CategoryName { get; set; }
         public bool? Status { get; set; }
+        public string? ProductCode { get; set; }
     }
 }

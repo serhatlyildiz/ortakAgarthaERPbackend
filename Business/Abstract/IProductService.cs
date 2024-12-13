@@ -16,5 +16,7 @@ namespace Business.Abstract
         IDataResult<List<ProductDetailDto>> GetProductDetailsWithFilters(ProductFilterModel filter);
         IResult Restore(int productID);
         IDataResult<List<ProductDetailDto>> GetProductStockDetails(int productStockId);
+        IDataResult<List<ProductDto>> GetProductDto();
+        IDataResult<List<ProductDto>> GetByProductCodeForProductDto(string productCode);
     }
 }
