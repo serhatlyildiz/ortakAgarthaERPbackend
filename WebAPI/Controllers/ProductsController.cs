@@ -44,6 +44,17 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
+        [HttpGet("getbyproductcodeforproductdto")]
+        public IActionResult GetByProductCodeForProductDto(string productCode)
+        {
+            var result = _productService.GetByProductCodeForProductDto(productCode);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+
         [HttpGet("getallbycategory")]
         public IActionResult GetAllByCategory(int categoryId)
         {
@@ -67,7 +78,18 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
-        
+        [HttpGet("getproductdto")]
+        public IActionResult GetProductDto()
+        {
+            var result = _productService.GetProductDto();
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+
+
         [HttpGet("getproductstockdetails")]
         public IActionResult GetProductStockDetails(int productStockId)
         {

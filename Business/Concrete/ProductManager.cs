@@ -23,22 +23,27 @@ namespace Business.Concrete
             _categoryService = categoryService;
         }
 
-        //Claim
         [SecuredOperation("product.add,admin")]
         [ValidationAspect(typeof(ProductValidator))]
         [CacheRemoveAspect("IProductService.Get")]
         public IResult Add(Product product)
         {
+            // Business rule: Product code must be in uppercase
+            product.ProductCode = product.ProductCode.ToUpper();
 
-            //business codes
+            // Business rule: Check if the product code is reserved (e.g., "navi")
+            if (product.ProductCode.ToLower() == "navi")
+            {
+                return new ErrorResult("Product code cannot be 'navi'.");
+            }
 
-            //Kural 1 - Aynı isimde ürün eklenemez
-            //Kural 2 - 10dan fazla aynı kategoride ürün eklenememsin
-            //Kural 3 - Eğer mevcut kategori sayısı 15'i geçtiyse yeni ürün eklenemez
-
-
-            IResult result = BusinessRules.Run(CheckIfProductCountOfCategoryCorrect(product.CategoryId),
-                CheckIfProductNameExists(product.ProductName), CheckIfCategoryLimitExceded());
+            // Business rules checks
+            IResult result = BusinessRules.Run(
+                CheckIfProductCountOfCategoryCorrect(product.CategoryId),
+                CheckIfProductNameExists(product.ProductName),
+                CheckIfCategoryLimitExceded(),
+                CheckIfProductCodeExists(product.ProductCode)  // Check if the product code already exists
+            );
 
             if (result != null)
             {
@@ -64,8 +69,6 @@ namespace Business.Concrete
             return new SuccessDataResult<List<Product>>(_ProductDal.GetAll().Where(p => p.Status == true).ToList(), Messages.ProductsListed);
         }
 
-
-
         public IDataResult<List<Product>> GetAllByCategoryId(int id)
         {
             var result = new SuccessDataResult<List<Product>>(GetAllForAdmin().Data.Where(p => p.CategoryId == id).ToList());
@@ -90,6 +93,12 @@ namespace Business.Concrete
         public IDataResult<List<ProductDetailDto>> GetProductDetailsForAdmin()
         {
             return new SuccessDataResult<List<ProductDetailDto>>(_ProductDal.GetProductDetails());
+        }
+
+        //[SecuredOperation("product.add,admin")]
+        public IDataResult<List<ProductDto>> GetByProductCodeForProductDto(string productCode)
+        {
+            return new SuccessDataResult<List<ProductDto>>(_ProductDal.GetByProductCodeForProductDto(productCode));
         }
 
 
@@ -156,6 +165,17 @@ namespace Business.Concrete
             }
             return new SuccessResult();
         }
+
+        private IResult CheckIfProductCodeExists(string productCode)
+        {
+            var existingProduct = _ProductDal.Get(p => p.ProductCode == productCode);
+            if (existingProduct != null)
+            {
+                return new ErrorResult("Ürün kodu mevcut");
+            }
+            return new SuccessResult();
+        }
+
 
         private IResult CheckIfCategoryLimitExceded()
         {
@@ -234,6 +254,12 @@ namespace Business.Concrete
 
             // Veritabanından alınan veriyi DTO'ya dönüştürme (varsa)
             return new SuccessDataResult<List<ProductDetailDto>>(productDetails);
+        }
+
+        public IDataResult<List<ProductDto>> GetProductDto()
+        {
+            var productDto = _ProductDal.GetProductDto();
+            return new SuccessDataResult<List<ProductDto>>(productDto);
         }
     }
 }

@@ -19,5 +19,7 @@ namespace DataAccess.Abstract
         void Update(Product product);
         void UpdateProductDetails(ProductDetails productDetails);  // Yeni metod
         void UpdateProductStocks(ProductStocks productStocks);
+        List<ProductDto> GetProductDto();
+        List<ProductDto> GetByProductCodeForProductDto(string productCode);
     }
 }
