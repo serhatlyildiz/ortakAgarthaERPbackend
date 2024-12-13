@@ -10,7 +10,7 @@ namespace Business.Abstract
         IDataResult<List<Product>> GetAllByCategoryId(int id);
         IDataResult<List<ProductDetailDto>> GetProductDetails();
         IDataResult<Product> GetById(int productId);
-        IResult Add(Product product);
+        IResult Add(ProductUpdateDto productUpdateDto);
         IResult Update(Product product, ProductDetails productDetails, ProductStocks productStocks);
         IResult Delete(int productID);
         IDataResult<List<ProductDetailDto>> GetProductDetailsWithFilters(ProductFilterModel filter);

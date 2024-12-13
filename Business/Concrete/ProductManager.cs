@@ -16,18 +16,22 @@ namespace Business.Concrete
     {
         IProductDal _ProductDal;
         ICategoryService _categoryService;
+        IProductDetailsService _productDetailsService;
+        IProductStocksService _productStockService;
 
-        public ProductManager(IProductDal productDal, ICategoryService categoryService)
+        public ProductManager(IProductDal productDal, ICategoryService categoryService, IProductDetailsService productDetailsService, IProductStocksService productStockService)
         {
             _ProductDal = productDal;
             _categoryService = categoryService;
+            _productDetailsService = productDetailsService;
+            _productStockService = productStockService;
         }
 
         //Claim
         [SecuredOperation("product.add,admin")]
         [ValidationAspect(typeof(ProductValidator))]
         [CacheRemoveAspect("IProductService.Get")]
-        public IResult Add(Product product)
+        public IResult Add(ProductUpdateDto productUpdateDto)
         {
 
             //business codes
@@ -37,15 +41,25 @@ namespace Business.Concrete
             //Kural 3 - Eğer mevcut kategori sayısı 15'i geçtiyse yeni ürün eklenemez
 
 
-            IResult result = BusinessRules.Run(CheckIfProductCountOfCategoryCorrect(product.CategoryId),
-                CheckIfProductNameExists(product.ProductName), CheckIfCategoryLimitExceded());
+            //IResult result = BusinessRules.Run(CheckIfProductCountOfCategoryCorrect(product.CategoryId),
+            //    CheckIfProductNameExists(product.ProductName), CheckIfCategoryLimitExceded());
 
-            if (result != null)
-            {
-                return result;
-            }
+            //if (result != null)
+            //{
+            //    return result;
+            //}
 
-            _ProductDal.Add(product);
+            _ProductDal.Add(productUpdateDto.Product);
+
+            var resultProduct = _ProductDal.GetAll().Last();
+            productUpdateDto.ProductDetails.ProductId = resultProduct.ProductId;
+
+            _productDetailsService.Add(productUpdateDto.ProductDetails);
+
+            var resultProductDetail = _productDetailsService.GetAll().Data.Last();
+            productUpdateDto.ProductStocks.ProductDetailsId = resultProductDetail.ProductDetailsId;
+
+            _productStockService.Add(productUpdateDto.ProductStocks);
 
             return new SuccessResult(Messages.ProductAdded);
         }

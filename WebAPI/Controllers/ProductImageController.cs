@@ -17,15 +17,17 @@ namespace WebAPI.Controllers
         [HttpPost("upload")]
         public IActionResult UploadPhotos([FromForm] List<IFormFile> files)
         {
-            var savedPaths = new List<string>();
+            var base64List = new List<string>();
             foreach (var file in files)
             {
                 var photoId = Guid.NewGuid(); // GUID ile isimlendirme
                 var path = _productImageManager.SavePhoto(photoId, file);
-                savedPaths.Add(path);
+                var base64String = _productImageManager.SavePhoto(photoId, file);
+
+                base64List.Add(base64String);
             }
 
-            return Ok(savedPaths);
+            return Ok(base64List); // Sadece Base64 string listesini döndür
         }
 
         [HttpPost("delete")]
