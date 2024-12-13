@@ -32,6 +32,27 @@ namespace Business.Concrete
         [CacheRemoveAspect("IProductService.Get")]
         public IResult Add(ProductUpdateDto productUpdateDto)
         {
+
+            _ProductDal.Add(productUpdateDto.Product);
+
+            var resultProduct = _ProductDal.GetAll().Last();
+            productUpdateDto.ProductDetails.ProductId = resultProduct.ProductId;
+
+            _productDetailsService.Add(productUpdateDto.ProductDetails);
+
+            var resultProductDetail = _productDetailsService.GetAll().Data.Last();
+            productUpdateDto.ProductStocks.ProductDetailsId = resultProductDetail.ProductDetailsId;
+
+            _productStockService.Add(productUpdateDto.ProductStocks);
+
+            return new SuccessResult(Messages.ProductAdded);
+        }
+
+        [SecuredOperation("product.add,admin")]
+        [ValidationAspect(typeof(ProductValidator))]
+        [CacheRemoveAspect("IProductService.Get")]
+        public IResult StockProductAdd(Product product)
+        {
             // Business rule: Product code must be in uppercase
             product.ProductCode = product.ProductCode.ToUpper();
 
@@ -52,20 +73,10 @@ namespace Business.Concrete
 
             if (result != null) return result;
 
-
-            _ProductDal.Add(productUpdateDto.Product);
-
-            var resultProduct = _ProductDal.GetAll().Last();
-            productUpdateDto.ProductDetails.ProductId = resultProduct.ProductId;
-
-            _productDetailsService.Add(productUpdateDto.ProductDetails);
-
-            var resultProductDetail = _productDetailsService.GetAll().Data.Last();
-            productUpdateDto.ProductStocks.ProductDetailsId = resultProductDetail.ProductDetailsId;
-
-            _productStockService.Add(productUpdateDto.ProductStocks);
+            _ProductDal.Add(product);
 
             return new SuccessResult(Messages.ProductAdded);
+
         }
 
         [CacheAspect] //key,value
