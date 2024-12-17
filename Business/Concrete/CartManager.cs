@@ -27,52 +27,53 @@ namespace Business.Concrete
             var user = _userService.GetById(addToCartForUsers.UserId);
             if (user == null) return new ErrorResult(Messages.UserNotFound);
 
-            var result = _productService.GetProductStockDetails(addToCartForUsers.ProductStockId);
-            if (!result.Data.Any()) return new ErrorResult(Messages.ProductNotFound);
-
-            var productStocks = result.Data[0];
-            if (productStocks.UnitsInStock <= 0) return new ErrorResult(Messages.OutOfStock);
-
-
             var cart = GetCartByUserId(addToCartForUsers.UserId);
-
             if (cart == null)
             {
                 CreateCart(addToCartForUsers.UserId);
                 cart = GetCartByUserId(addToCartForUsers.UserId);
             }
 
-            List<CartItem> cartItems = _itemDal.GetAll().Where(ci => cart.CartItems.Contains(ci.CartItemId)).ToList();
-
-            if (cartItems.Any(ci => ci.ProductStockId == addToCartForUsers.ProductStockId))
+            foreach (var item in addToCartForUsers.Details)
             {
-                CartItem cartItem = cartItems.Where(c => c.ProductStockId == addToCartForUsers.ProductStockId).First();
-                cartItem.Quantity += addToCartForUsers.Quantity;
-                if (cartItem.Quantity > productStocks.UnitsInStock)
+                var result = _productService.GetProductStockDetails(item.ProductStockId);
+                if (!result.Data.Any()) return new ErrorResult(Messages.ProductNotFound);
+
+                var productStocks = result.Data[0];
+                if (productStocks.UnitsInStock <= 0) return new ErrorResult(Messages.OutOfStock);
+
+                List<CartItem> cartItems = _itemDal.GetAll().Where(ci => cart.CartItems.Contains(ci.CartItemId)).ToList();
+
+                if (cartItems.Any(ci => ci.ProductStockId == item.ProductStockId))
                 {
-                    return new ErrorResult("Stok sınırına ulaşıldı.");
+                    CartItem cartItem = cartItems.Where(c => c.ProductStockId == item.ProductStockId).First();
+                    cartItem.Quantity += item.Quantity;
+                    if (cartItem.Quantity > productStocks.UnitsInStock)
+                    {
+                        continue;
+                    }
+                    if (cartItem.Quantity <= 0)
+                    {
+                        cartItem.Quantity = 0;
+                        _itemDal.Delete(cartItem);
+                        continue;
+                    }
+                    cartItem.UnitPrice = _productService.GetById(productStocks.ProductId).Data.UnitPrice * cartItem.Quantity;
+                    cart.TotalPrice += cartItem.UnitPrice;
+                    _itemDal.Update(cartItem);
                 }
-                if (cartItem.Quantity <= 0)
+                else
                 {
-                    cartItem.Quantity = 0;
-                    _itemDal.Delete(cartItem);
-                    return new ErrorResult("Ürün sepetten kaldırıldı.");
+                    var result1 = CreateCartItem(item, productStocks);
+                    if (!result1.Success) continue;
+                    cart.CartItems.Add(result1.Data.CartItemId);
+                    cart.TotalPrice += result1.Data.UnitPrice;
                 }
-                cartItem.UnitPrice = _productService.GetById(productStocks.ProductId).Data.UnitPrice * cartItem.Quantity;
-                cart.TotalPrice += cartItem.UnitPrice;
-                _itemDal.Update(cartItem);
-            }
-            else
-            {
-                var result1 = CreateCartItem(addToCartForUsers, productStocks);
-                if (!result1.Success) return new ErrorResult("Stok sınırı aşıldı.");
-                cart.CartItems.Add(result1.Data.CartItemId);
-                cart.TotalPrice += result1.Data.UnitPrice;
-            }
 
 
-            cart.UpdateDate = DateTime.Now;
-            _cartDal.Update(cart);
+                cart.UpdateDate = DateTime.Now;
+                _cartDal.Update(cart);
+            }
             return new SuccessResult("Ürün eklendi.");
         }
 
@@ -90,12 +91,12 @@ namespace Business.Concrete
             return new SuccessResult("Sepet Oluşturuldu.");
         }
 
-        public IDataResult<CartItem> CreateCartItem(AddToCartForUsersDto addToCartForUsers, ProductDetailDto productStocks)
+        public IDataResult<CartItem> CreateCartItem(AddToCartDetail detail, ProductDetailDto productStocks)
         {
             CartItem cartItem = new CartItem();
-            cartItem.ProductStockId = addToCartForUsers.ProductStockId;
+            cartItem.ProductStockId = detail.ProductStockId;
             cartItem.Status = true;
-            cartItem.Quantity = addToCartForUsers.Quantity;
+            cartItem.Quantity = detail.Quantity;
             cartItem.UnitPrice = _productService.GetById(productStocks.ProductId).Data.UnitPrice * cartItem.Quantity;
             if (cartItem.Quantity > productStocks.UnitsInStock)
             {
@@ -128,13 +129,16 @@ namespace Business.Concrete
 
         public IResult DeleteProduct(AddToCartForUsersDto itemDelete)
         {
-            var cart = _cartDal.Get(x => x.UserId == itemDelete.UserId);
-            if (cart == null || !cart.CartItems.Contains(itemDelete.ProductStockId)) return new ErrorResult();
+            foreach (var item in itemDelete.Details)
+            {
+                var cart = _cartDal.Get(x => x.UserId == itemDelete.UserId);
+                if (cart == null || !cart.CartItems.Contains(item.ProductStockId)) return new ErrorResult();
 
-            var result = _itemDal.Get(x => x.CartItemId == itemDelete.ProductStockId);
-            if (result == null) return new ErrorResult("Sıkıntılı silme işlemi");
+                var result = _itemDal.Get(x => x.CartItemId == item.ProductStockId);
+                if (result == null) return new ErrorResult("Sıkıntılı silme işlemi");
 
-            _itemDal.Delete(result);
+                _itemDal.Delete(result);
+            }
             return new SuccessResult("Sepetten kaldırıldı.");
         }
     }
