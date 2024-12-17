@@ -87,5 +87,11 @@ namespace Business.Concrete
             _productDetailsDal.Update(productStocks);
             return new SuccessResult(Messages.ProductDetailsUpdated); // Başarı mesajı döndür
         }
+
+        public List<ProductDetails> GetAllByProductIdAndSize(int productId, string productSize)
+        {
+            return _productDetailsDal.GetAll(p => p.ProductId == productId && p.ProductSize == productSize);
+        }
+
     }
 }
