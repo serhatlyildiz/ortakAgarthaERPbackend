@@ -41,5 +41,10 @@ namespace Business.Concrete
         {
             return new SuccessDataResult<List<ProductStocks>>(_productStocksDal.GetAll());
         }
+
+        public List<ProductStocks> GetAllByProductDetailsIdAndColor(int productDetailsId, int productColorId)
+        {
+            return _productStocksDal.GetAll(p => p.ProductDetailsId == productDetailsId && p.ProductColorId == productColorId);
+        }
     }
 }

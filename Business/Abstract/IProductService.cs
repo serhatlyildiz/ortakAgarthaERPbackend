@@ -20,7 +20,8 @@ namespace Business.Abstract
         IDataResult<List<ProductDetailDto>> GetProductStockDetails(int productStockId);
         IDataResult<List<ProductDto>> GetProductDto();
         IDataResult<List<ProductDto>> GetByProductCodeForProductDto(string productCode);
-        IResult StockProductAdd(Product product);
+        IResult ProductAdd(Product product);
+        IResult ProductStockAdd(ProductStockAddDto productStockAddDto);
         IDataResult<List<ProductDetailDto>> GetProductStockDetailsByProduct(int productId);
     }
 }

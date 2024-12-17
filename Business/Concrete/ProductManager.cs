@@ -10,6 +10,7 @@ using DataAccess.Abstract;
 using DataAccess.Concrete.EntityFramework;
 using Entities.Concrete;
 using Entities.DTOs;
+using System.Transactions;
 
 namespace Business.Concrete
 {
@@ -52,7 +53,7 @@ namespace Business.Concrete
         [SecuredOperation("product.add,admin")]
         [ValidationAspect(typeof(ProductValidator))]
         [CacheRemoveAspect("IProductService.Get")]
-        public IResult StockProductAdd(Product product)
+        public IResult ProductAdd(Product product)
         {
             // Business rule: Product code must be in uppercase
             product.ProductCode = product.ProductCode.ToUpper();
@@ -80,6 +81,79 @@ namespace Business.Concrete
 
         }
 
+        [SecuredOperation("product.add,admin")]
+        [CacheRemoveAspect("IProductService.Get")]
+        public IResult ProductStockAdd(ProductStockAddDto productStockAddDto)
+        {
+            int productDetailsIdPrivate;
+            using (var transaction = new TransactionScope())
+            {
+                try
+                {
+                    // 1. Aynı ProductId ve ProductSize için tüm ProductDetailsId'leri al
+                    var matchingProductDetailsList = _productDetailsService
+                        .GetAllByProductIdAndSize(productStockAddDto.ProductId, productStockAddDto.ProductSize);
+
+                    // 2. Bu ProductDetailsId'ler ile ProductStocks tablosunda ColorId kontrolü yap
+                    foreach (var productDetails in matchingProductDetailsList)
+                    {
+                        // Bu ProductDetailsId ile aynı renk olup olmadığını kontrol et
+                        var existingProductStocks = _productStockService.GetAllByProductDetailsIdAndColor(
+                            productDetails.ProductDetailsId,
+                            productStockAddDto.ProductColorId
+                        );
+
+                        if (existingProductStocks != null && existingProductStocks.Any())
+                        {
+                            // Aynı renk için stok bulundu, işlem iptal
+                            return new ErrorResult("Bu ürün boyutu ve rengi için stok zaten mevcut.");
+                        }
+                    }
+
+                    if (matchingProductDetailsList.Count>0)
+                    {
+                        productDetailsIdPrivate = Convert.ToInt32(matchingProductDetailsList[0].ProductDetailsId);
+                    }
+                    else
+                    {
+                        // 3. ProductDetails ekleme (eğer mevcut değilse)
+                        var productDetailsEntity = new ProductDetails
+                        {
+                            ProductId = productStockAddDto.ProductId,
+                            ProductSize = productStockAddDto.ProductSize,
+                            Status = productStockAddDto.Status,
+                            ProductCode = productStockAddDto.ProductCode
+                        };
+
+                        _productDetailsService.Add(productDetailsEntity);
+
+                        productDetailsIdPrivate = productDetailsEntity.ProductDetailsId;
+                    }   
+
+                    // 4. ProductStocks ekleme
+                    var productStocks = new ProductStocks
+                    {
+                        ProductDetailsId = productDetailsIdPrivate,
+                        ProductColorId = productStockAddDto.ProductColorId,
+                        UnitsInStock = productStockAddDto.UnitsInStock,
+                        Status = productStockAddDto.Status,
+                        Images = productStockAddDto.Images
+                    };
+
+                    _productStockService.Add(productStocks);
+
+                    // 5. İşlemleri ta
+                    // mamla
+                    transaction.Complete();
+                    return new SuccessResult("Ürün ve detayları başarıyla eklendi.");
+                }
+                catch (Exception ex)
+                {
+                    // Hata durumunda geriye hata mesajı döner
+                    return new ErrorResult($"Ürün eklenirken bir hata oluştu: {ex.Message}");
+                }
+            }
+        }
 
         [CacheAspect] //key,value
         [PerformanceAspect(5000)]
@@ -108,6 +182,7 @@ namespace Business.Concrete
         {
             return new SuccessDataResult<Product>(_ProductDal.Get(p => p.ProductId == id));
         }
+        
         [CacheAspect]
         public IDataResult<Product> GetById(int id)
         {
@@ -144,6 +219,24 @@ namespace Business.Concrete
             productToUpdate.CategoryId = product.CategoryId != 0 ? product.CategoryId : productToUpdate.CategoryId;
 
             _ProductDal.Update(productToUpdate); // Product güncellemesi
+
+            var matchingProductDetailsList = _productDetailsService
+                        .GetAllByProductIdAndSize(product.ProductId, productDetails.ProductSize);
+
+            foreach (var productDetails1 in matchingProductDetailsList)
+            {
+                // Bu ProductDetailsId ile aynı renk olup olmadığını kontrol et
+                var existingProductStocks = _productStockService.GetAllByProductDetailsIdAndColor(
+                    productDetails1.ProductDetailsId,
+                    productStocks.ProductColorId
+                );
+
+                if (existingProductStocks != null && existingProductStocks.Any())
+                {
+                    // Aynı renk için stok bulundu, işlem iptal
+                    return new ErrorResult("Bu ürün boyutu ve rengi için stok zaten mevcut.");
+                }
+            }
 
             // Ürün Detayları
             var productDetailsToUpdate = _ProductDal.GetProductDetailsById(productDetails.ProductDetailsId);

@@ -135,10 +135,21 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
-        [HttpPost("productstockadd")]
-        public IActionResult ProductStockAdd(Product product)
+        [HttpPost("productadd")]
+        public IActionResult ProductAdd(Product product)
         {
-            var result = _productService.StockProductAdd(product);
+            var result = _productService.ProductAdd(product);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+
+        [HttpPost("productstockadd")]
+        public IActionResult ProductStockAdd(ProductStockAddDto productStockAddDto)
+        {
+            var result = _productService.ProductStockAdd(productStockAddDto);
             if (result.Success)
             {
                 return Ok(result);
