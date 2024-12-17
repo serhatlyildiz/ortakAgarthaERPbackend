@@ -1,4 +1,5 @@
 ﻿using Core.DataAccess;
+using DataAccess.Concrete.EntityFramework;
 using Entities.Concrete;
 using Entities.DTOs;
 using System;
@@ -12,6 +13,7 @@ namespace DataAccess.Abstract
     public interface IProductDal:IEntityRepository<Product>
     {
         List<ProductDetailDto> GetProductDetails();
+        List<ProductDetailDto2> GetProductDetails2();
         List<ProductDetailDto> GetProductDetailsWithFilters(ProductFilterModel filter);
         ProductDetails GetProductDetailsById(int productDetailsId);
         ProductStocks GetProductStockById(int productStocksId);

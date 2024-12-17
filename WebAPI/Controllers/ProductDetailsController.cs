@@ -87,7 +87,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet("restore")]
-        public IActionResult getRestore(int productId)
+        public IActionResult GetRestore(int productId)
         {
             var result = _productDetailsService.GetByProductId(productId);
             if (result.Success)
