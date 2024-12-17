@@ -1,4 +1,5 @@
 ﻿using Core.Utilities.Results;
+using DataAccess.Concrete.EntityFramework;
 using Entities.Concrete;
 using Entities.DTOs;
 
@@ -8,6 +9,7 @@ namespace Business.Abstract
     {
         IDataResult<List<Product>> GetAll();
         IDataResult<List<Product>> GetAllByCategoryId(int id);
+        IDataResult<List<ProductDetailDto2>> GetProductDetails2();
         IDataResult<List<ProductDetailDto>> GetProductDetails();
         IDataResult<Product> GetById(int productId);
         IResult Add(ProductUpdateDto productUpdateDto);
@@ -20,5 +22,6 @@ namespace Business.Abstract
         IDataResult<List<ProductDto>> GetByProductCodeForProductDto(string productCode);
         IResult ProductAdd(Product product);
         IResult ProductStockAdd(ProductStockAddDto productStockAddDto);
+        IDataResult<List<ProductDetailDto>> GetProductStockDetailsByProduct(int productId);
     }
 }

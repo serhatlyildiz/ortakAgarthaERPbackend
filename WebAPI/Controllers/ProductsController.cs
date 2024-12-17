@@ -66,11 +66,23 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
-        
+
         [HttpGet("getproductdetails")]
         public IActionResult GetProductDetails()
         {
             var result = _productService.GetProductDetails();
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }       
+        
+        
+        [HttpGet("getproductdetails2")]
+        public IActionResult GetProductDetails2()
+        {
+            var result = _productService.GetProductDetails2();
             if (result.Success)
             {
                 return Ok(result);
@@ -100,7 +112,17 @@ namespace WebAPI.Controllers
             }
             return BadRequest(result);
         }
-        
+
+        [HttpGet("get-product-stock-details-by-product")]
+        public IActionResult GetProductStockDetailsByProduct(int productId)
+        {
+            var result = _productService.GetProductStockDetailsByProduct(productId);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
 
         [HttpPost("add")]
         public IActionResult Add(ProductUpdateDto productUpdateDto)
@@ -171,7 +193,7 @@ namespace WebAPI.Controllers
             }
             return BadRequest(result.Message);
         }
-        
+
 
         [HttpGet("restore")]
         public IActionResult Restore(int productID)

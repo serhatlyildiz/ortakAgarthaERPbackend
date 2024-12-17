@@ -340,6 +340,12 @@ namespace Business.Concrete
         {
             var productDetails = _ProductDal.GetProductDetails();
             return new SuccessDataResult<List<ProductDetailDto>>(productDetails);
+        }        
+        
+        public IDataResult<List<ProductDetailDto2>> GetProductDetails2()
+        {
+            var productDetails = _ProductDal.GetProductDetails2();
+            return new SuccessDataResult<List<ProductDetailDto2>>(productDetails);
         }
         
 
@@ -373,6 +379,15 @@ namespace Business.Concrete
 
             // Veritabanından alınan veriyi DTO'ya dönüştürme (varsa)
             return new SuccessDataResult<List<ProductDetailDto>>(productDetails);
+        }
+
+        public IDataResult<List<ProductDetailDto>> GetProductStockDetailsByProduct(int productId)
+        {
+            var productDetails = _ProductDal.GetProductDetails().Where(p => p.ProductId == productId).ToList();
+
+            if(productDetails != null) return new SuccessDataResult<List<ProductDetailDto>>(productDetails);
+
+            return new ErrorDataResult<List<ProductDetailDto>>("Veri bulunamadı");
         }
 
         public IDataResult<List<ProductDto>> GetProductDto()
