@@ -23,5 +23,8 @@ namespace Business.Abstract
         IResult ProductAdd(Product product);
         IResult ProductStockAdd(ProductStockAddDto productStockAddDto);
         IDataResult<List<ProductDetailDto>> GetProductStockDetailsByProduct(int productId);
+        IDataResult<List<ProductWithTotalStockDto>> GetProductsWithTotalStock();
+        IDataResult<List<ProductDetailDto2>> GetByCategoryIdProductDetails2(int superCategoryId, int? categoryId);
+
     }
 }

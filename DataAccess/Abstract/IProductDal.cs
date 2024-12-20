@@ -23,5 +23,7 @@ namespace DataAccess.Abstract
         void UpdateProductStocks(ProductStocks productStocks);
         List<ProductDto> GetProductDto();
         List<ProductDto> GetByProductCodeForProductDto(string productCode);
+        List<ProductWithTotalStockDto> GetProductsWithTotalStock();
+        List<ProductDetailDto2> GetByCategoryIdProductDetails2(int superCategoryId, int? categoryId);
     }
 }

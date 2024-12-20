@@ -115,6 +115,79 @@ namespace DataAccess.Concrete.EntityFramework
             }
         }
 
+        public List<ProductDetailDto2> GetByCategoryIdProductDetails2(int superCategoryId, int? categoryId)
+        {
+            using (NorthwindContext context = new NorthwindContext())
+            {
+                // Veritabanı sorgusunu temel al
+                var query = from p in context.Products
+                            join c in context.Categories on p.CategoryId equals c.CategoryId
+                            join sc in context.SuperCategories on c.SuperCategoryId equals sc.SuperCategoryId
+                            join pd in context.ProductDetails on p.ProductId equals pd.ProductId
+                            join ps in context.ProductStocks on pd.ProductDetailsId equals ps.ProductDetailsId
+                            join co in context.Colors on ps.ProductColorId equals co.ColorId
+                            where ps.Status == true // Sadece aktif stoklar
+                                  && c.SuperCategoryId == superCategoryId // SuperCategoryId filtresi
+                            select new
+                            {
+                                ProductDetailsId = pd.ProductDetailsId,
+                                ProductId = p.ProductId,
+                                ColorId = ps.ProductColorId,
+                                ProductStocksId = ps.ProductStocksId,
+                                SuperCategoryId = c.SuperCategoryId,
+                                CategoryId = c.CategoryId,
+                                ProductName = p.ProductName,
+                                SuperCategoryName = sc.SuperCategoryName,
+                                CategoryName = c.CategoryName,
+                                ProductDescription = p.ProductDescription,
+                                UnitPrice = p.UnitPrice,
+                                UnitsInStock = ps.UnitsInStock,
+                                ColorName = co.ColorName,
+                                ProductSize = pd.ProductSize,
+                                Images = ps.Images,
+                                ProductCode = p.ProductCode
+                            };
+
+                // Eğer categoryId 0 veya null değilse, ek filtre uygula
+                if (categoryId.HasValue && categoryId > 0)
+                {
+                    query = query.Where(x => x.CategoryId == categoryId.Value);
+                }
+
+                // Veriyi işleyip DTO'ya dönüştür
+                var productDetails = query.AsEnumerable()
+                                          .GroupBy(x => x.ProductId) // ProductId ile gruplama
+                                          .SelectMany(group => group
+                                              .OrderBy(item => item.ProductSize) // Bedene göre sıralama
+                                              .Select((item, index) => new ProductDetailDto2
+                                              {
+                                                  ProductDetailsId = item.ProductDetailsId,
+                                                  ProductId = item.ProductId,
+                                                  ColorId = item.ColorId,
+                                                  ProductStocksId = item.ProductStocksId,
+                                                  SuperCategoryId = item.SuperCategoryId,
+                                                  CategoryId = item.CategoryId,
+                                                  ProductName = item.ProductName,
+                                                  SuperCategoryName = item.SuperCategoryName,
+                                                  CategoryName = item.CategoryName,
+                                                  ProductDescription = item.ProductDescription,
+                                                  UnitPrice = item.UnitPrice,
+                                                  UnitsInStock = item.UnitsInStock,
+                                                  ColorName = item.ColorName,
+                                                  ProductSize = item.ProductSize,
+                                                  Images = item.Images ?? new List<string>(),
+                                                  Status = true, // Zaten aktif stokları seçiyoruz
+                                                  ProductCode = item.ProductCode,
+                                                  RowNum = index + 1 // Sıra numarası
+                                              }))
+                                          .ToList();
+
+                // Sadece RowNum = 1 olanları döndür
+                return productDetails.Where(x => x.RowNum == 1).ToList();
+            }
+        }
+
+
         public List<ProductDto> GetProductDto()
         {
             using (NorthwindContext context = new NorthwindContext())
@@ -279,5 +352,27 @@ namespace DataAccess.Concrete.EntityFramework
                 return context.ProductStocks.FirstOrDefault(ps => ps.ProductStocksId == productStocksId);
             }
         }
+
+        public List<ProductWithTotalStockDto> GetProductsWithTotalStock()
+        {
+            using (var context = new NorthwindContext())
+            {
+                var result = from p in context.Products
+                             join pd in context.ProductDetails on p.ProductId equals pd.ProductId
+                             join ps in context.ProductStocks on pd.ProductDetailsId equals ps.ProductDetailsId
+                             group ps by new { p.ProductId, p.ProductName, p.ProductCode, p.UnitPrice, p.CategoryId } into g
+                             select new ProductWithTotalStockDto
+                             {
+                                 ProductId = g.Key.ProductId,
+                                 ProductName = g.Key.ProductName,
+                                 ProductCode = g.Key.ProductCode,
+                                 UnitPrice = g.Key.UnitPrice,
+                                 TotalStock = g.Sum(x => x.UnitsInStock) // Toplam stok hesaplaması
+                             };
+
+                return result.ToList();
+            }
+        }
+
     }
 }

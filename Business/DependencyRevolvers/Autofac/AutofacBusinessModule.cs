@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using Autofac.Extras.DynamicProxy;
 using Business.Abstract;
+using Business.BusinessAspect.Autofac;
 using Business.Concrete;
 using Castle.DynamicProxy;
 using Core.Utilities.Interceptors;
@@ -51,6 +52,9 @@ namespace Business.DependencyRevolvers.Autofac
             builder.RegisterType<ProductStocksManager>().As<IProductStocksService>().SingleInstance();
             builder.RegisterType<EfProductStocksDal>().As<IProductStocksDal>().SingleInstance();
 
+            builder.RegisterType<ProductStatusHistoryManager>().As<IProductStatusHistoryService>().SingleInstance();
+            builder.RegisterType<EfProductStatusHistoryDal>().As<IProductStatusHistoryDal>().SingleInstance();
+
             builder.RegisterType<ProductImageManager>().As<IProductImageService>().SingleInstance();
 
             builder.RegisterType<EfCartItemDal>().As<ICartItemDal>().SingleInstance();
@@ -70,6 +74,7 @@ namespace Business.DependencyRevolvers.Autofac
             }).SingleInstance();
 
             builder.RegisterType<PerformanceAspect>().AsSelf();
+
         }
     }
 }
