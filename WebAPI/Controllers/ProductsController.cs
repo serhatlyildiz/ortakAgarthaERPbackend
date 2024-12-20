@@ -33,6 +33,19 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
+        [HttpGet("getproductswithtotalstock")]
+        public IActionResult GetProductTotalStock()
+        {
+            Thread.Sleep(1000);
+
+            var result = _productService.GetProductsWithTotalStock();
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+
         [HttpGet("getbyid")]
         public IActionResult Get(int id)
         {
@@ -83,6 +96,17 @@ namespace WebAPI.Controllers
         public IActionResult GetProductDetails2()
         {
             var result = _productService.GetProductDetails2();
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+
+        [HttpGet("getbycategoryidproductdetails2")]
+        public IActionResult GetByCategoryIdProductDetails2(int superCategoryId, int? categoryId)
+        {
+            var result = _productService.GetByCategoryIdProductDetails2(superCategoryId, categoryId);
             if (result.Success)
             {
                 return Ok(result);

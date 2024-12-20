@@ -42,8 +42,6 @@ builder.Services.AddSingleton<ILogEventEnricher, IpAddressEnricher>(); // Enrich
 builder.Services.AddScoped<IPasswordResetDal, EfPasswordResetDal>();
 builder.Services.AddScoped<ProductImageManager>();
 
-
-
 var tokenOptions = builder.Configuration.GetSection("TokenOptions").Get<TokenOptions>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -89,8 +87,8 @@ columnOptions.AdditionalColumns = new Collection<SqlColumn>
 // Logger yapýlandýrmasý
 var log = new LoggerConfiguration()
     .Enrich.With(new UsernameEnricher(builder.Services.BuildServiceProvider().GetRequiredService<IHttpContextAccessor>())) // Enricher ile kullanýcý adýný ekliyoruz
-    .Enrich.With(new IpAddressEnricher(builder.Services.BuildServiceProvider().GetRequiredService<IHttpContextAccessor>())) // Dinamik IP adresini ekliyoruz
     .Enrich.With(new EmailEnricher(builder.Services.BuildServiceProvider().GetRequiredService<IHttpContextAccessor>())) // Dinamik e-posta ekliyoruz
+    .Enrich.With(new IpAddressEnricher(builder.Services.BuildServiceProvider().GetRequiredService<IHttpContextAccessor>())) // Dinamik IP adresini ekliyoruz
     .Enrich.WithMachineName()
     .WriteTo.Seq(builder.Configuration["Seq:ServerURL"])
     .Enrich.FromLogContext()

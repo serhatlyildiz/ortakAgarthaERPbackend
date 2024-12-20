@@ -196,13 +196,14 @@ namespace Business.Concrete
             return new SuccessDataResult<List<ProductDetailDto>>(_ProductDal.GetProductDetails());
         }
 
-        //[SecuredOperation("product.add,admin")]
+        [SecuredOperation("product.add,admin")]
         public IDataResult<List<ProductDto>> GetByProductCodeForProductDto(string productCode)
         {
             return new SuccessDataResult<List<ProductDto>>(_ProductDal.GetByProductCodeForProductDto(productCode));
         }
 
-
+        [SecuredOperation("product.add,admin")]
+        [CacheRemoveAspect("IProductService.Get")]
         public IResult Update(Product product, ProductDetails productDetails, ProductStocks productStocks)
         {
             // Ürün güncellenmek isteniyor
@@ -223,18 +224,26 @@ namespace Business.Concrete
             var matchingProductDetailsList = _productDetailsService
                         .GetAllByProductIdAndSize(product.ProductId, productDetails.ProductSize);
 
-            foreach (var productDetails1 in matchingProductDetailsList)
+            if (productStocks.ProductColorId == _productStockService.GetById(productStocks.ProductStocksId).Data.ProductColorId &&
+                productDetails.ProductSize == _productDetailsService.GetById(productDetails.ProductDetailsId).Data.ProductSize)
             {
-                // Bu ProductDetailsId ile aynı renk olup olmadığını kontrol et
-                var existingProductStocks = _productStockService.GetAllByProductDetailsIdAndColor(
-                    productDetails1.ProductDetailsId,
-                    productStocks.ProductColorId
-                );
 
-                if (existingProductStocks != null && existingProductStocks.Any())
+            }
+            else 
+            {
+                foreach (var productDetails1 in matchingProductDetailsList)
                 {
-                    // Aynı renk için stok bulundu, işlem iptal
-                    return new ErrorResult("Bu ürün boyutu ve rengi için stok zaten mevcut.");
+                    // Bu ProductDetailsId ile aynı renk olup olmadığını kontrol et
+                    var existingProductStocks = _productStockService.GetAllByProductDetailsIdAndColor(
+                        productDetails1.ProductDetailsId,
+                        productStocks.ProductColorId
+                    );
+
+                    if (existingProductStocks != null && existingProductStocks.Any())
+                    {
+                        // Aynı renk için stok bulundu, işlem iptal
+                        return new ErrorResult("Bu ürün boyutu ve rengi için stok zaten mevcut.");
+                    }
                 }
             }
 
@@ -334,7 +343,6 @@ namespace Business.Concrete
             _ProductDal.Delete(result);
             return new SuccessResult(result.ProductName + Messages.ProductDeleted);
         }
-
         
         public IDataResult<List<ProductDetailDto>> GetProductDetails()
         {
@@ -347,9 +355,7 @@ namespace Business.Concrete
             var productDetails = _ProductDal.GetProductDetails2();
             return new SuccessDataResult<List<ProductDetailDto2>>(productDetails);
         }
-        
 
-        
         public IDataResult<List<ProductDetailDto>> GetProductDetailsWithFilters(ProductFilterModel filter)
         {
             var result = _ProductDal.GetProductDetailsWithFilters(filter);
@@ -394,6 +400,22 @@ namespace Business.Concrete
         {
             var productDto = _ProductDal.GetProductDto();
             return new SuccessDataResult<List<ProductDto>>(productDto);
+        }
+
+        public IDataResult<List<ProductWithTotalStockDto>> GetProductsWithTotalStock()
+        {
+            var result = _ProductDal.GetProductsWithTotalStock();
+            if (result != null)
+            {
+                return new SuccessDataResult<List<ProductWithTotalStockDto>>(result, "Ürünler başarıyla yüklendi.");
+            }
+            return new ErrorDataResult<List<ProductWithTotalStockDto>>("Ürünler yüklenirken bir hata oluştu.");
+        }
+
+        public IDataResult<List<ProductDetailDto2>> GetByCategoryIdProductDetails2(int superCategoryId, int? categoryId)
+        {
+            var productDetails = _ProductDal.GetByCategoryIdProductDetails2(superCategoryId, categoryId);
+            return new SuccessDataResult<List<ProductDetailDto2>>(productDetails);
         }
     }
 }
