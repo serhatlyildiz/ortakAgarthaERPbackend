@@ -6,7 +6,7 @@ namespace WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CartController : Controller
+    public class CartController : ControllerBase
     {
         private ICartService _cartService;
 
@@ -27,13 +27,18 @@ namespace WebAPI.Controllers
             return Ok(result);
         }
 
-        [HttpPost("clear-cart")]
+        [HttpGet("clear-cart")]
         public IActionResult Clear(int userId)
         {
             var result = _cartService.ClearCart(userId);
             if (!result.Success) return BadRequest(result);
             return Ok(result);
         }
+
+/*        [HttpGet("clear-cart-item")]
+        public IActionResult ClearItem(int productStockId)
+        { 
+        }*/
 
         [HttpGet("your-cart")]
         public IActionResult YourCart(int userId)

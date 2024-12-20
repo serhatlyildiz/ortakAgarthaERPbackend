@@ -77,7 +77,7 @@ namespace Business.Concrete
             return new SuccessResult("Ürün eklendi.");
         }
 
-        public IResult CreateCart(int userId)
+        public void CreateCart(int userId)
         {
             Cart cart = new Cart();
             cart.UserId = userId;
@@ -88,7 +88,6 @@ namespace Business.Concrete
             cart.IsCompleted = false;
             cart.TotalPrice = 0;
             _cartDal.Add(cart);
-            return new SuccessResult("Sepet Oluşturuldu.");
         }
 
         public IDataResult<CartItem> CreateCartItem(AddToCartDetail detail, ProductDetailDto productStocks)
@@ -123,7 +122,7 @@ namespace Business.Concrete
         public IDataResult<CartDto> GetCart(int userId)
         {
             var result = _cartDal.GetCartsByUserId(userId);
-            if (result == null) return new ErrorDataResult<CartDto>(result, Messages.EmptyCart);
+            if (result == null) return new ErrorDataResult<CartDto>(Messages.EmptyCart);
             return new SuccessDataResult<CartDto>(result);
         }
 
