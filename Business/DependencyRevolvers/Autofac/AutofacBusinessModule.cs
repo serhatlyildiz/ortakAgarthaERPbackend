@@ -3,6 +3,7 @@ using Autofac.Extras.DynamicProxy;
 using Business.Abstract;
 using Business.Concrete;
 using Castle.DynamicProxy;
+using Core.Utilities.Helpers;
 using Core.Utilities.Interceptors;
 using Core.Utilities.Security.JWT;
 using DataAccess.Abstract;
@@ -54,6 +55,9 @@ namespace Business.DependencyRevolvers.Autofac
             builder.RegisterType<ProductImageManager>().As<IProductImageService>().SingleInstance();
 
             builder.RegisterType<EfCartItemDal>().As<ICartItemDal>().SingleInstance();
+
+            builder.RegisterType<SalahTime>().SingleInstance();
+
 
             var assembly = System.Reflection.Assembly.GetExecutingAssembly();
 

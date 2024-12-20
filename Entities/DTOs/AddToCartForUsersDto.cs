@@ -7,4 +7,5 @@ namespace Entities.DTOs
         public int UserId { get; set; }
         public List<AddToCartDetail> Details { get; set; }
     }
+
 }
