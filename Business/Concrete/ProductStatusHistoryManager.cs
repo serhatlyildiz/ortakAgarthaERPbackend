@@ -18,10 +18,12 @@ namespace Business.Concrete
     public class ProductStatusHistoryManager : IProductStatusHistoryService
     {
         IProductStatusHistoryDal _productStatusHistoryDal;
+        IProductStocksService _productStocksService;
 
-        public ProductStatusHistoryManager(IProductStatusHistoryDal productStatusHistoryDal) 
+        public ProductStatusHistoryManager(IProductStatusHistoryDal productStatusHistoryDal, IProductStocksService productStocksService) 
         {
             _productStatusHistoryDal = productStatusHistoryDal;
+            _productStocksService = productStocksService;
         }
 
         public IDataResult<List<ProductStatusHistory>> GetAll()
@@ -31,6 +33,10 @@ namespace Business.Concrete
 
         public IResult Add(ProductStatusHistory productStatusHistory)
         {
+            if (productStatusHistory.Remarks == "Yeni stok eklendi")
+            {
+                productStatusHistory.ProductStockId = _productStocksService.GetLastProductStockId();
+            }
             _productStatusHistoryDal.Add(productStatusHistory);
 
             return new SuccessResult("Log kaydı Başarılı");

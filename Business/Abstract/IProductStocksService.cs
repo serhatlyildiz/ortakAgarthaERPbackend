@@ -10,5 +10,6 @@ namespace Business.Abstract
         IDataResult<List<ProductStocks>> GetAll();
         IDataResult<ProductStocks> GetById(int id);
         List<ProductStocks> GetAllByProductDetailsIdAndColor(int productDetailsId, int productColorId);
+        int GetLastProductStockId();
     }
 }

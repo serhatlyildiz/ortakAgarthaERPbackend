@@ -42,6 +42,20 @@ namespace Business.Concrete
             return new SuccessDataResult<List<ProductStocks>>(_productStocksDal.GetAll());
         }
 
+        public int GetLastProductStockId()
+        {
+            // Son kaydın ProductStocksId'sini almak için sıralama yapıyoruz.
+            var lastProductStock = _productStocksDal.GetAll().OrderByDescending(x => x.ProductStocksId).FirstOrDefault();
+
+            // Eğer kayıt varsa, ProductStocksId'yi döndürüyoruz; yoksa -1 döndürürüz.
+            if (lastProductStock != null)
+            {
+                return lastProductStock.ProductStocksId;
+            }
+
+            return -1; // Son kayıt yoksa -1 döner
+        }
+
         public List<ProductStocks> GetAllByProductDetailsIdAndColor(int productDetailsId, int productColorId)
         {
             return _productStocksDal.GetAll(p => p.ProductDetailsId == productDetailsId && p.ProductColorId == productColorId);
