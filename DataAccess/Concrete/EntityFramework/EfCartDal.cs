@@ -23,7 +23,7 @@ namespace DataAccess.Concrete.EntityFramework
                             .Select(ci => new CartItemDto
                             {
                                 CartItemId = ci.CartItemId,
-                                ProductStockId = ci.ProductStockId,
+                                ProductStocksId = ci.ProductStockId,
                                 Quantity = ci.Quantity,
                                 UnitPrice = ci.UnitPrice
                             }).ToList()
