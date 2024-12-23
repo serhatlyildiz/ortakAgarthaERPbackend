@@ -23,5 +23,15 @@ namespace WebAPI.Controllers
             }
             return BadRequest(result);
         }
+        [HttpGet("getlast")]
+        public ActionResult<int> GetLastProductStockId()
+        {
+            var lastProductStockId = _productStocksService.GetLastProductStockId();
+            if (lastProductStockId != -1)
+            {
+                return Ok(lastProductStockId);
+            }
+            return NotFound("Son kayıt bulunamadı.");
+        }
     }
 }
