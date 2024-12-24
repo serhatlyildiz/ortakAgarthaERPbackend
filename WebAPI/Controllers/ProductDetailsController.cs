@@ -75,6 +75,18 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
+        [HttpGet("getallbyproductidandsize")]
+        public IActionResult GetAllByProductIdAndSize(int productId, string productSize)
+        {
+            var result = _productDetailsService.GetAllByProductIdAndSize(productId, productSize);
+            if (result != null && result.Count > 0)
+            {
+                return Ok(new { Success = true, Data = result });
+            }
+
+            return BadRequest(new { Success = false, Message = "No records found for the given ProductId and ProductSize." });
+        }
+
         [HttpGet("getbyproductid")]
         public IActionResult GetByProductId(int productId)
         {

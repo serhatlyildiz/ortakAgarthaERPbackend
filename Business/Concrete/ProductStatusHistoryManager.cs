@@ -42,7 +42,7 @@ namespace Business.Concrete
             return new SuccessResult("Log kaydı Başarılı");
         }
 
-        public IDataResult<List<ProductStatusHistoryDto>> GetProductStatusHistoryWithDetails(int? productStockId = null, DateTime? startDate = null, DateTime? endDate = null, string? productCode = null, string? operations = null)
+        public IDataResult<List<ProductStatusHistoryDto>> GetProductStatusHistoryWithDetails(string? userEmail = null, DateTime? startDate = null, DateTime? endDate = null, string? productCode = null, string? operations = null)
         {
             using (var context = new NorthwindContext()) // Veritabanı bağlamı
             {
@@ -51,7 +51,7 @@ namespace Business.Concrete
                             join details in context.ProductDetails on stock.ProductDetailsId equals details.ProductDetailsId
                             join product in context.Products on details.ProductId equals product.ProductId
                             join user in context.Users on history.ChangedBy equals user.Id
-                            where (productStockId == null || history.ProductStockId == productStockId)
+                            where (string.IsNullOrEmpty(userEmail) || user.Email.Contains(userEmail))
                                && (startDate == null || history.ChangeDate >= startDate)
                                && (endDate == null || history.ChangeDate <= endDate)
                                && (string.IsNullOrEmpty(productCode) || product.ProductCode.Contains(productCode))
@@ -74,6 +74,36 @@ namespace Business.Concrete
                             };
 
                 var result = query.ToList();
+
+                return new SuccessDataResult<List<ProductStatusHistoryDto>>(result, Messages.ProductsListed);
+            }
+        }
+
+        public IDataResult<List<ProductStatusHistoryDto>> GetAllDto()
+        {
+            using (var context = new NorthwindContext())
+            {
+                var result = (from history in context.ProductStatusHistories
+                              join stock in context.ProductStocks on history.ProductStockId equals stock.ProductStocksId
+                              join details in context.ProductDetails on stock.ProductDetailsId equals details.ProductDetailsId
+                              join product in context.Products on details.ProductId equals product.ProductId
+                              join user in context.Users on history.ChangedBy equals user.Id
+                              select new ProductStatusHistoryDto
+                              {
+                                  HistoryId = history.HistoryId,
+                                  ProductStockId = history.ProductStockId,
+                                  ProductId = product.ProductId,
+                                  ProductDetailsId = details.ProductDetailsId,
+                                  Status = history.Status,
+                                  ChangedBy = history.ChangedBy,
+                                  ProductCode = product.ProductCode,
+                                  ChangedByFirstName = user.FirstName,
+                                  ChangedByLastName = user.LastName,
+                                  Email = user.Email,
+                                  ChangeDate = history.ChangeDate,
+                                  Operations = history.Operations,
+                                  Remarks = history.Remarks
+                              }).ToList();
 
                 return new SuccessDataResult<List<ProductStatusHistoryDto>>(result, Messages.ProductsListed);
             }

@@ -15,7 +15,7 @@ namespace Business.Abstract
         IResult Add(ProductStatusHistory productStatusHistory);
 
         IDataResult<List<ProductStatusHistoryDto>> GetProductStatusHistoryWithDetails(
-            int? productStockId = null,
+            string? userEmail = null,
             DateTime? startDate = null,
             DateTime? endDate = null,
             string? productCode = null,
@@ -23,5 +23,7 @@ namespace Business.Abstract
         //IDataResult<List<ProductStatusHistory>> GetAllByDate(DateTime firstInterval, DateTime lastInterval);
         //IDataResult<List<ProductStatusHistory>> GetAllByChangedBy(int userId);
         //IDataResult<List<ProductStatusHistory>> GetAllByProductStockId(int productStockId);
+
+        IDataResult<List<ProductStatusHistoryDto>> GetAllDto();
     }
 }
