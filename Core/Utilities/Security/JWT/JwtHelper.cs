@@ -1,6 +1,7 @@
 ﻿using Core.Entities.Concrete;
 using Core.Extensions;
 using Core.Utilities.Security.Encryption;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -13,11 +14,12 @@ namespace Core.Utilities.Security.JWT
         public IConfiguration Configuration { get; }
         private TokenOptions _tokenOptions;
         private DateTime _accessTokenExpiration;
-        public JwtHelper(IConfiguration configuration)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public JwtHelper(IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
         {
             Configuration = configuration;
             _tokenOptions = Configuration.GetSection("TokenOptions").Get<TokenOptions>();
-
+            _httpContextAccessor = httpContextAccessor;
         }
         public AccessToken CreateToken(Users user, List<OperationClaim> operationClaims)
         {
@@ -59,5 +61,10 @@ namespace Core.Utilities.Security.JWT
             return claims;
         }
 
+        public string? GetUserEmailFromToken()
+        {
+            Claim? emailClaim = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.Email);
+            return emailClaim != null || emailClaim?.Value != "" ? emailClaim?.Value : null;
+        }
     }
 }

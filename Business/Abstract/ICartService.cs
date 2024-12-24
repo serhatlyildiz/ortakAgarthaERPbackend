@@ -1,4 +1,5 @@
-﻿using Core.Utilities.Results;
+﻿using Core.Entities.Concrete;
+using Core.Utilities.Results;
 using Entities.Concrete;
 using Entities.DTOs;
 
@@ -7,9 +8,10 @@ namespace Business.Abstract
     public interface ICartService
     {
         Cart GetCartByUserId(int userId);
-        IResult AddToCart(AddToCartForUsersDto addToCartForUsers);
-        IResult ClearCart(int userId);
-        IResult DeleteProduct(AddToCartForUsersDto itemDelete);
-        IDataResult<CartDto> GetCart(int userId);
+        IResult AddToCart(List<AddToCartDetail> addToCartDetail);
+        IResult ClearCart();
+        IResult DeleteProduct(List<AddToCartDetail> itemDelete);
+        IDataResult<CartDto> GetCart();
+        IResult RemoveItem(int cartItemId);
     }
 }
