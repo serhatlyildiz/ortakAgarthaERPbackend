@@ -30,13 +30,13 @@ namespace WebAPI.Controllers
 
         [HttpGet("getproductstatushistorywithdetails")]
         public IActionResult GetProductStatusHistoryWithDetails(
-    int? productStockId = null,
+    string? userEmail = null,
     DateTime? startDate = null,
     DateTime? endDate = null,
     string? productCode = null, string? operations = null)
         {
             var result = _productStatusHistoryService.GetProductStatusHistoryWithDetails(
-                productStockId, startDate, endDate, productCode, operations);
+                userEmail, startDate, endDate, productCode, operations);
 
             if (result.Success)
             {
@@ -54,6 +54,17 @@ namespace WebAPI.Controllers
                 return Ok(result);
             }
             return BadRequest(result);
+        }
+
+        [HttpGet("getalldto")]
+        public IActionResult GetAllDto()
+        {
+            var result = _productStatusHistoryService.GetAllDto();
+            if (result.Success)
+            {
+                return Ok(result.Data);
+            }
+            return BadRequest(result.Message);
         }
 
     }
