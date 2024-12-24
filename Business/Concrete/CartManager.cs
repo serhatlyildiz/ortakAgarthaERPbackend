@@ -1,6 +1,8 @@
 ﻿using Business.Abstract;
 using Business.Constants;
+using Core.Entities.Concrete;
 using Core.Utilities.Results;
+using Core.Utilities.Security.JWT;
 using DataAccess.Abstract;
 using Entities.Concrete;
 using Entities.DTOs;
@@ -13,28 +15,37 @@ namespace Business.Concrete
         private ICartItemDal _itemDal;
         private readonly IProductService _productService;
         private readonly IUserService _userService;
+        private readonly ITokenHelper _jwt;
 
-        public CartManager(ICartDal cartDal, ICartItemDal cartItemDal, IProductService productService, IUserService userService)
+        public CartManager(ICartDal cartDal, ICartItemDal cartItemDal, IProductService productService, IUserService userService, ITokenHelper jwt)
         {
             _cartDal = cartDal;
             _itemDal = cartItemDal;
             _productService = productService;
             _userService = userService;
+            _jwt = jwt;
         }
 
-        public IResult AddToCart(AddToCartForUsersDto addToCartForUsers)
+        public Users? AuthorizeId()
         {
-            var user = _userService.GetById(addToCartForUsers.UserId);
+            string? email = _jwt.GetUserEmailFromToken();
+            if (email == null || email == "") return null;
+            return _userService.GetByMail(email);
+        }
+
+        public IResult AddToCart(List<AddToCartDetail> addToCartDetail)
+        {
+            var user = AuthorizeId();
             if (user == null) return new ErrorResult(Messages.UserNotFound);
 
-            var cart = GetCartByUserId(addToCartForUsers.UserId);
+            var cart = GetCartByUserId(user.Id);
             if (cart == null)
             {
-                CreateCart(addToCartForUsers.UserId);
-                cart = GetCartByUserId(addToCartForUsers.UserId);
+                CreateCart(user.Id);
+                cart = GetCartByUserId(user.Id);
             }
 
-            foreach (var item in addToCartForUsers.Details)
+            foreach (var item in addToCartDetail)
             {
                 var result = _productService.GetProductStockDetails(item.ProductStockId);
                 if (!result.Data.Any()) return new ErrorResult(Messages.ProductNotFound);
@@ -58,6 +69,7 @@ namespace Business.Concrete
                         _itemDal.Delete(cartItem);
                         continue;
                     }
+                    cart.TotalPrice -= cartItem.UnitPrice;
                     cartItem.UnitPrice = _productService.GetById(productStocks.ProductId).Data.UnitPrice * cartItem.Quantity;
                     cart.TotalPrice += cartItem.UnitPrice;
                     _itemDal.Update(cartItem);
@@ -106,11 +118,14 @@ namespace Business.Concrete
         }
 
 
-        public IResult ClearCart(int userId)
+        public IResult ClearCart()
         {
-            var cart = GetCartByUserId(userId);
+            var user = AuthorizeId();
+            if (user == null) return new ErrorResult(Messages.UserNotFound);
+
+            var cart = GetCartByUserId(user.Id);
             if (cart != null) _cartDal.Delete(cart);
-            CreateCart(userId);
+            CreateCart(user.Id);
             return new SuccessResult("Sepet boşaldı.");
         }
 
@@ -119,18 +134,24 @@ namespace Business.Concrete
             return _cartDal.Get(c => c.UserId == userId);
         }
 
-        public IDataResult<CartDto> GetCart(int userId)
+        public IDataResult<CartDto> GetCart()
         {
-            var result = _cartDal.GetCartsByUserId(userId);
+            var user = AuthorizeId();
+            if (user == null) return new ErrorDataResult<CartDto>(Messages.UserNotFound);
+
+            var result = _cartDal.GetCartsByUserId(user.Id);
             if (result == null) return new ErrorDataResult<CartDto>(Messages.EmptyCart);
             return new SuccessDataResult<CartDto>(result);
         }
 
-        public IResult DeleteProduct(AddToCartForUsersDto itemDelete)
+        public IResult DeleteProduct(List<AddToCartDetail> itemDelete)
         {
-            foreach (var item in itemDelete.Details)
+            var user = AuthorizeId();
+            if (user == null) return new ErrorResult(Messages.UserNotFound);
+
+            foreach (var item in itemDelete)
             {
-                var cart = _cartDal.Get(x => x.UserId == itemDelete.UserId);
+                var cart = _cartDal.Get(x => x.UserId == user.Id);
                 if (cart == null || !cart.CartItems.Contains(item.ProductStockId)) return new ErrorResult();
 
                 var result = _itemDal.Get(x => x.CartItemId == item.ProductStockId);
@@ -139,6 +160,21 @@ namespace Business.Concrete
                 _itemDal.Delete(result);
             }
             return new SuccessResult("Sepetten kaldırıldı.");
+        }
+
+        public IResult RemoveItem(int cartItemId)
+        {
+            var user = AuthorizeId();
+            if (user == null) return new ErrorResult(Messages.UserNotFound);
+
+            CartItem? cartItem = _itemDal.Get(ci => ci.CartItemId == cartItemId);
+            _itemDal.Delete(cartItem);
+
+            Cart cart = _cartDal.Get(z => z.UserId == user.Id);
+            cart.CartItems.Remove(cartItemId);
+            _cartDal.Update(cart);
+
+            return new SuccessResult("Sepetten Kaldırıldı");
         }
     }
 }
