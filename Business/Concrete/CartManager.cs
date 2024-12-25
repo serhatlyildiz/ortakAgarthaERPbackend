@@ -144,21 +144,19 @@ namespace Business.Concrete
             return new SuccessDataResult<CartDto>(result);
         }
 
-        public IResult DeleteProduct(List<AddToCartDetail> itemDelete)
+        public IResult DeleteProduct(int productStocksId)
         {
             var user = AuthorizeId();
             if (user == null) return new ErrorResult(Messages.UserNotFound);
 
-            foreach (var item in itemDelete)
-            {
-                var cart = _cartDal.Get(x => x.UserId == user.Id);
-                if (cart == null || !cart.CartItems.Contains(item.ProductStockId)) return new ErrorResult();
+            var cart = _cartDal.Get(x => x.UserId == user.Id);
+            if (cart == null || !cart.CartItems.Contains(productStocksId)) return new ErrorResult();
 
-                var result = _itemDal.Get(x => x.CartItemId == item.ProductStockId);
-                if (result == null) return new ErrorResult("Sıkıntılı silme işlemi");
+            var result = _itemDal.Get(x => x.ProductStockId == productStocksId);
+            if (result == null) return new ErrorResult("Sıkıntılı silme işlemi");
 
-                _itemDal.Delete(result);
-            }
+            _itemDal.Delete(result);
+
             return new SuccessResult("Sepetten kaldırıldı.");
         }
 
