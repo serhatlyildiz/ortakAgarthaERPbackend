@@ -8,6 +8,6 @@ namespace Core.Entities
 {
     public interface IEntity
     {
-
+        public bool Status { get; set; }
     }
 }
