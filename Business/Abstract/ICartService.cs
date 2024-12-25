@@ -10,7 +10,7 @@ namespace Business.Abstract
         Cart GetCartByUserId(int userId);
         IResult AddToCart(List<AddToCartDetail> addToCartDetail);
         IResult ClearCart();
-        IResult DeleteProduct(List<AddToCartDetail> itemDelete);
+        IResult DeleteProduct(int productStocksId);
         IDataResult<CartDto> GetCart();
         IResult RemoveItem(int cartItemId);
     }

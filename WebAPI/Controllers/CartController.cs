@@ -44,9 +44,9 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet("clear-cart-item")]
-        public IActionResult ClearItem(int productStockId)
+        public IActionResult ClearItem(int cartItemId)
         {
-            var result = _cartService.RemoveItem(productStockId);
+            var result = _cartService.RemoveItem(cartItemId);
             if (!result.Success) return BadRequest(result);
             return Ok(result);
         }
