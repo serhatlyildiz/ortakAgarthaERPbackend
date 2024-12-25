@@ -1,6 +1,7 @@
 ﻿using Business.Abstract;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
+using DataAccess.Concrete.EntityFramework;
 using Entities.Concrete;
 
 namespace Business.Concrete
@@ -56,9 +57,14 @@ namespace Business.Concrete
             return -1; // Son kayıt yoksa -1 döner
         }
 
-        public List<ProductStocks> GetAllByProductDetailsIdAndColor(int productDetailsId, int productColorId)
+        public List<ProductDetailDto2> GetAllByProductDetailsIdAndColor(int productDetailsId, int productColorId)
         {
-            return _productStocksDal.GetAll(p => p.ProductDetailsId == productDetailsId && p.ProductColorId == productColorId);
+            return _productStocksDal.GetAllByProductDetailsIdAndColor(productDetailsId, productColorId);
+        }
+
+        public List<ProductDetailDto2> GetAllByProductDetailsId(int productDetailsId)
+        {
+            return _productStocksDal.GetAllByProductDetailsId(productDetailsId);
         }
     }
 }
