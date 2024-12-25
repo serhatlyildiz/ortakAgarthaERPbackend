@@ -85,8 +85,10 @@ namespace Business.Concrete
         public IResult RequestPasswordReset(PasswordResetRequestDto passwordResetRequestDto)
         {
             var user = _userService.GetByMail(passwordResetRequestDto.Email);
-            if (user == null)
-                return new ErrorResult(Messages.UserNotFound);
+            if (user == null) return new ErrorResult(Messages.UserNotFound);
+
+            var oldTokens = _passwordResetDal.GetAll(x => x.UserId == user.Id).ToList();
+            foreach (var oldToken in oldTokens) _passwordResetDal.Delete(oldToken);
 
             var token = TokenGenerator.GenerateToken();
             var expirationTime = DateTime.Now.AddMinutes(10);
@@ -96,12 +98,11 @@ namespace Business.Concrete
                 UserId = user.Id,
                 ResetToken = token,
                 ExpirationTime = expirationTime,
-                Status = false
+                Status = true
             };
 
             _passwordResetDal.Add(passwordReset);
 
-            // E-posta gönderme işlemi
             var result = EmailHelper.SendPasswordResetEmail(user.Email, token);
 
             return result;
@@ -109,7 +110,7 @@ namespace Business.Concrete
 
         public IResult ResetPassword(PasswordResetDto passwordResetDto)
         {
-            var resetEntry = _passwordResetDal.Get(p => p.ResetToken == passwordResetDto.ResetToken && !p.Status);
+            var resetEntry = _passwordResetDal.Get(p => p.ResetToken == passwordResetDto.ResetToken);
 
             if (resetEntry == null || resetEntry.ExpirationTime < DateTime.Now)
                 return new ErrorResult(Messages.InvalidOrExpiredToken);
@@ -125,9 +126,7 @@ namespace Business.Concrete
             user.PasswordSalt = passwordSalt;
 
             _userService.Update(user);
-
-            resetEntry.Status = true;
-            _passwordResetDal.Update(resetEntry);
+            _passwordResetDal.Delete(resetEntry);
 
             return new SuccessResult(Messages.PasswordResetSuccessful);
         }
