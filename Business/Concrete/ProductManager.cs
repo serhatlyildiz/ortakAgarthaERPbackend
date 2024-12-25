@@ -417,6 +417,12 @@ namespace Business.Concrete
             var productDetails = _ProductDal.GetByCategoryIdProductDetails2(superCategoryId, categoryId);
             return new SuccessDataResult<List<ProductDetailDto2>>(productDetails);
         }
+
+        public IDataResult<List<ProductDetailDto2>> GetByProductIdForProductDetails2(int productId)
+        {
+            var productDetails = _ProductDal.GetByProductIdForProductDetails2(productId);
+            return new SuccessDataResult<List<ProductDetailDto2>>(productDetails);
+        }
     }
 }
 

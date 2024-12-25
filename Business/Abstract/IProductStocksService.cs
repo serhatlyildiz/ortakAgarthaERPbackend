@@ -1,4 +1,5 @@
 ﻿using Core.Utilities.Results;
+using DataAccess.Concrete.EntityFramework;
 using Entities.Concrete;
 
 namespace Business.Abstract
@@ -9,7 +10,8 @@ namespace Business.Abstract
         IResult Add(ProductStocks productStocks);
         IDataResult<List<ProductStocks>> GetAll();
         IDataResult<ProductStocks> GetById(int id);
-        List<ProductStocks> GetAllByProductDetailsIdAndColor(int productDetailsId, int productColorId);
+        List<ProductDetailDto2> GetAllByProductDetailsIdAndColor(int productDetailsId, int productColorId);
+        List<ProductDetailDto2> GetAllByProductDetailsId(int productDetailsId);
         int GetLastProductStockId();
     }
 }

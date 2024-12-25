@@ -14,6 +14,7 @@ namespace DataAccess.Abstract
     {
         List<ProductDetailDto> GetProductDetails();
         List<ProductDetailDto2> GetProductDetails2();
+        public List<ProductDetailDto2> GetByProductIdForProductDetails2(int productId);
         List<ProductDetailDto> GetProductDetailsWithFilters(ProductFilterModel filter);
         ProductDetails GetProductDetailsById(int productDetailsId);
         ProductStocks GetProductStockById(int productStocksId);

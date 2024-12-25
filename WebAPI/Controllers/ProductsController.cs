@@ -1,4 +1,5 @@
 using Business.Abstract;
+using DataAccess.Concrete.EntityFramework;
 using Entities.Concrete;
 using Entities.DTOs;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -96,6 +97,17 @@ namespace WebAPI.Controllers
         public IActionResult GetProductDetails2()
         {
             var result = _productService.GetProductDetails2();
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+
+        [HttpGet("getbyproductidforproductdetails2")]
+        public IActionResult GetByProductIdForProductDetails2(int productId)
+        {
+            var result = _productService.GetByProductIdForProductDetails2(productId);
             if (result.Success)
             {
                 return Ok(result);

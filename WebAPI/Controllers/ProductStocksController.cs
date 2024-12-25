@@ -81,5 +81,16 @@ namespace WebAPI.Controllers
             }
             return NotFound("Belirtilen kriterlere uygun kayıt bulunamadı.");
         }
+
+        [HttpGet("getallbyproductdetailsid")]
+        public IActionResult GetAllByProductDetailsId(int productDetailsId)
+        {
+            var result = _productStocksService.GetAllByProductDetailsId(productDetailsId);
+            if (result != null && result.Count > 0)
+            {
+                return Ok(result);
+            }
+            return NotFound("Belirtilen kriterlere uygun kayıt bulunamadı.");
+        }
     }
 }
