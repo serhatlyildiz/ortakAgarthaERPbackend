@@ -53,7 +53,7 @@ namespace Business.Concrete
                             join user in context.Users on history.ChangedBy equals user.Id
                             where (string.IsNullOrEmpty(userEmail) || user.Email.Contains(userEmail))
                                && (startDate == null || history.ChangeDate >= startDate)
-                               && (endDate == null || history.ChangeDate <= endDate)
+                               && (endDate == null || history.ChangeDate <= endDate.Value.AddDays(1))
                                && (string.IsNullOrEmpty(productCode) || product.ProductCode.Contains(productCode))
                                && (string.IsNullOrEmpty(operations) || history.Operations.Contains(operations))
                             select new ProductStatusHistoryDto
