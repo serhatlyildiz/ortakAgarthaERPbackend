@@ -76,6 +76,7 @@ namespace Business.Concrete
                 }
                 else
                 {
+                    if (item.Quantity <= 0) return new ErrorResult("234565789");
                     var result1 = CreateCartItem(item, productStocks);
                     if (!result1.Success) continue;
                     cart.CartItems.Add(result1.Data.CartItemId);
